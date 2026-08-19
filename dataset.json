@@ -1,0 +1,15 @@
+{
+  "mode": "Animal",
+  "currentLetter": "A",
+  "selectedItem": "Ant",
+
+  "admin": {
+    "email": "admin@gmail.com"
+  },
+
+  "student": {
+    "name": "",
+    "class": "",
+    "score": 0
+  }
+}
