@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — AlphaMat Interactive 3D Learning Mat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="login-view-wrapper">
+
+  <header class="login-nav-header">
+    <a href="index.html" class="brand-group">
+      <div class="brand-logo-container">
+        <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+      </div>
+      <div class="brand-text-block">
+        <div class="brand-title">
+          Alpha<span class="text-coral">Mat</span>
+        </div>
+        <span class="brand-subtitle">Interactive 3D Learning Studio</span>
+      </div>
+    </a>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="index.html" class="btn-back-home">
+        ← Back to Website
+      </a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+        🌙
+      </button>
+    </div>
+  </header>
+
+  <div class="login-center-container">
+    <section class="login-split-card">
+      <!-- Left Banner -->
+      <div class="login-left-banner">
+        <div>
+          <p class="login-banner-tag">The AlphaMat Studio</p>
+          <h1 class="login-banner-title">A new way to see learning.</h1>
+          <p class="login-banner-desc">Step into a calmer, more curious world of letters, touch, and 3D discovery.</p>
+        </div>
+
+        <div class="login-giant-badge">
+          A
+        </div>
+      </div>
+
+      <!-- Right Form -->
+      <div class="login-form-side">
+        <p class="login-form-tag">Welcome Back</p>
+        <h2 class="login-form-title">Sign in to AlphaMat</h2>
+        <p class="login-form-sub">Continue your child or student's learning journey.</p>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Username / Email</label>
+            <input type="text" id="loginEmail" class="form-input" placeholder="admin" value="admin" required autofocus>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="admin123" value="admin123" required>
+          </div>
+
+          <div class="demo-hint-box">
+            <span>💡 Demo: <strong style="color: var(--coral);">admin / admin123</strong></span>
+            <button type="button" onclick="fillDemo()" style="color: var(--coral); font-weight: 700; background: none; cursor: pointer;">Auto-Fill</button>
+          </div>
+
+          <button type="submit" id="btnSubmit" class="btn-primary-lg" style="width: 100%; justify-content: center;">
+            <span>Login to Explorer Hub</span> <span>→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function fillDemo() {
+      document.getElementById('loginEmail').value = 'admin';
+      document.getElementById('loginPassword').value = 'admin123';
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pwd = document.getElementById('loginPassword').value.trim();
+      const btn = document.getElementById('btnSubmit');
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Signing In...</span>';
+      }
+
+      setTimeout(() => {
+        // Genuine page navigation to Category selection page
+        window.location.href = 'category.html';
+      }, 300);
+
+      return false;
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+  </script>
+</body>
+</html>

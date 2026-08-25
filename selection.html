@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 3: Select Specimen — AlphaMat 3D Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="dash-view-wrapper">
+
+  <!-- Header -->
+  <header class="dash-nav-header">
+    <div class="dash-nav-container">
+      <a href="category.html" class="brand-group">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+          <span class="brand-subtitle">Specimen Selection</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a id="btnBackToLetter" href="letter.html" class="btn-logout">
+          ← Back to Alphabet Grid
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <div class="pathway-step-card">
+      <div class="pathway-breadcrumb">
+        <a href="category.html" class="pathway-breadcrumb-item">Category</a>
+        <span>/</span>
+        <a id="crumbLetterLink" href="letter.html" class="pathway-breadcrumb-item">Letter</a>
+        <span>/</span>
+        <span>Step 3: Select Specimen</span>
+      </div>
+
+      <div class="pathway-step-header">
+        <p class="pathway-step-tag">Step 3 of 3</p>
+        <h1 class="pathway-step-title" id="selectionStepTitle">Specimens for Letter A</h1>
+        <p class="pathway-step-sub">Select an item below to launch the 360° Interactive 3D Model Studio & Fact Dossier.</p>
+      </div>
+
+      <!-- Specimen Grid List -->
+      <div class="specimen-choice-grid" id="specimenChoiceGrid"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode') === 'Fruit' ? 'Fruit' : 'Animal';
+    const letter = (urlParams.get('letter') || 'A').toUpperCase();
+
+    document.getElementById('btnBackToLetter').href = `letter.html?mode=${encodeURIComponent(mode)}`;
+    document.getElementById('crumbLetterLink').href = `letter.html?mode=${encodeURIComponent(mode)}`;
+    document.getElementById('crumbLetterLink').textContent = `Letter ${letter} (${mode}s)`;
+    document.getElementById('selectionStepTitle').textContent = `${mode}s Starting With Letter '${letter}'`;
+
+    function renderSpecimens() {
+      const grid = document.getElementById('specimenChoiceGrid');
+      grid.innerHTML = '';
+
+      const dataset = typeof ALPHAMAT_DATA !== 'undefined' ? (mode === 'Animal' ? ALPHAMAT_DATA.animals : ALPHAMAT_DATA.fruits) : [];
+      let matching = dataset.filter(item => item.alphabet === letter);
+
+      if (matching.length === 0 && typeof ALPHAMAT_DATA !== 'undefined') {
+        const all = [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
+        matching = all.filter(item => item.alphabet === letter);
+      }
+      if (matching.length === 0) {
+        matching = dataset.slice(0, 4);
+      }
+
+      matching.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'specimen-select-card';
+        const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
+
+        card.innerHTML = `
+          <div class="specimen-avatar-box">
+            <img src="${imgSrc}" alt="${item.name}" onerror="this.src='images/alphamat_logo.png'">
+          </div>
+          <div class="specimen-card-info">
+            <div class="specimen-card-name">${item.name}</div>
+            <div class="specimen-card-sci">${item.scientificName || `Letter ${item.alphabet}`}</div>
+            <div class="specimen-card-desc">${item.superpower || item.benefits || item.category}</div>
+          </div>
+          <div style="font-size: 1.3rem; color: var(--coral); font-weight: 800;">→</div>
+        `;
+
+        card.onclick = () => {
+          // Genuine page navigation to 3D Viewer page
+          window.location.href = `viewer.html?id=${encodeURIComponent(item.id)}&mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
+        };
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Keyboard back listener
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        window.location.href = `letter.html?mode=${encodeURIComponent(mode)}`;
+      }
+    });
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+
+    renderSpecimens();
+  </script>
+</body>
+</html>

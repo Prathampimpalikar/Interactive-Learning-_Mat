@@ -3,40 +3,79 @@ import socketserver
 import threading
 import os
 
-PORT = 8001
+DEFAULT_PORT = 8001
 
 
 class ReusableTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
 
-def start_server():
+def start_server(port=DEFAULT_PORT):
 
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(base_dir)
 
     Handler = http.server.SimpleHTTPRequestHandler
-    Handler.extensions_map['.glb'] = 'model/gltf-binary'
-    Handler.extensions_map['.gltf'] = 'model/gltf+json'
 
-    try:
-        httpd = ReusableTCPServer(("", PORT), Handler)
+    Handler.extensions_map.update({
+        ".glb": "model/gltf-binary",
+        ".gltf": "model/gltf+json",
+        ".js": "application/javascript",
+        ".json": "application/json",
+        ".css": "text/css",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".svg": "image/svg+xml"
+    })
 
-    except OSError:
-        print(f"Server already running on port {PORT}")
-        return None
+    httpd = None
+    current_port = port
 
-    print(f"Server Started : http://localhost:{PORT}")
+    for p in [port, 8080, 8000, 5000]:
 
-    thread = threading.Thread(target=httpd.serve_forever)
-    thread.daemon = True
+        try:
+            httpd = ReusableTCPServer(("", p), Handler)
+            current_port = p
+            break
+
+        except OSError:
+            continue
+
+    if httpd is None:
+
+        print("Could not start server.")
+        return None, None
+
+    print("--------------------------------")
+    print("Interactive Learning Mat")
+    print("--------------------------------")
+    print(f"Website: http://localhost:{current_port}")
+    print("Server is running...")
+    print("--------------------------------")
+
+    thread = threading.Thread(
+        target=httpd.serve_forever,
+        daemon=True
+    )
+
     thread.start()
 
-    return httpd
+    return httpd, current_port
 
 
 if __name__ == "__main__":
 
-    httpd = start_server()
+    httpd, port = start_server()
 
     if httpd is not None:
-        httpd.serve_forever()
+
+        try:
+            httpd.serve_forever()
+
+        except KeyboardInterrupt:
+
+            print("\nServer stopped.")
+
+            httpd.shutdown()
+            httpd.server_close()

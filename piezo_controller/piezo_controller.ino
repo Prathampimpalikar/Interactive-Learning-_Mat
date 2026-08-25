@@ -1,233 +1,47 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
+/*
+  =============================================================================
+  AlphaMat - ESP32 Single Piezo Sensor Controller (GPIO 32 -> Letter 'A')
+  =============================================================================
+  Hardware Setup:
+    - Piezo Signal Wire -> ESP32 GPIO 32 (Analog Input)
+    - Piezo Ground Wire -> ESP32 GND
+    - (Optional) 1M Ohm parallel resistor between GPIO 32 and GND for stability
 
-// =====================================================
-// WIFI
-// =====================================================
+  Behavior:
+    - Sends clean letter "A" over Serial at 115200 baud when piezo is pressed.
+    - Uses threshold detection with debounce logic to prevent double triggers.
+  =============================================================================
+*/
 
-const char* WIFI_SSID = "YOUR_WIFI_NAME";
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
-
-// =====================================================
-// FIREBASE
-// =====================================================
-
-// IMPORTANT:
-// Use your actual Firebase Realtime Database URL.
-const char* FIREBASE_URL =
-  "https://interactive-learning-mat-default-rtdb.firebaseio.com";
-
-// =====================================================
-// PIEZO PINS
-// =====================================================
-
-#define PIEZO_A 5
-#define PIEZO_B 4
-#define PIEZO_C 14
-#define PIEZO_D 12
-
-// =====================================================
-// VARIABLES
-// =====================================================
-
-unsigned long lastPressTime = 0;
-
-const unsigned long debounceTime = 1000;
-
-
-// =====================================================
-// SETUP
-// =====================================================
+// Configuration
+const int PIEZO_PIN   = 32;    // GPIO 32 for Letter 'A'
+const int THRESHOLD   = 150;   // Sensitivity threshold (adjust higher/lower if needed)
+const int DEBOUNCE_MS = 400;   // Debounce delay in milliseconds
 
 void setup() {
-
   Serial.begin(115200);
+  analogReadResolution(12);    // 12-bit resolution (0-4095) on ESP32
 
-  delay(1000);
-
-  Serial.println();
-  Serial.println("================================");
-  Serial.println(" INTERACTIVE LEARNING MAT");
-  Serial.println(" ESP32 PIEZO CONTROLLER");
-  Serial.println("================================");
-
-  // Piezo pins
-  pinMode(PIEZO_A, INPUT);
-  pinMode(PIEZO_B, INPUT);
-  pinMode(PIEZO_C, INPUT);
-  pinMode(PIEZO_D, INPUT);
-
-  // Connect WiFi
-  connectWiFi();
+  // Optional startup ready signal
+  Serial.println("ESP32 READY");
 }
-
-
-// =====================================================
-// WIFI CONNECTION
-// =====================================================
-
-void connectWiFi() {
-
-  Serial.println();
-  Serial.print("Connecting to WiFi: ");
-  Serial.println(WIFI_SSID);
-
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  while (WiFi.status() != WL_CONNECTED) {
-
-    delay(500);
-
-    Serial.print(".");
-  }
-
-  Serial.println();
-  Serial.println("WiFi Connected!");
-
-  Serial.print("ESP32 IP Address: ");
-  Serial.println(WiFi.localIP());
-}
-
-
-// =====================================================
-// SEND LETTER TO FIREBASE
-// =====================================================
-
-void sendLetter(String letter) {
-
-  if (WiFi.status() != WL_CONNECTED) {
-
-    Serial.println("WiFi disconnected.");
-
-    connectWiFi();
-  }
-
-  HTTPClient http;
-
-  String url = String(FIREBASE_URL) +
-               "/admin/currentLetter.json";
-
-  Serial.println();
-  Serial.println("Sending letter: " + letter);
-  Serial.println("Firebase URL:");
-  Serial.println(url);
-
-  http.begin(url);
-
-  http.addHeader(
-    "Content-Type",
-    "application/json"
-  );
-
-  // Firebase needs JSON string
-  String jsonData = "\"" + letter + "\"";
-
-  int httpResponseCode =
-    http.PUT(jsonData);
-
-  Serial.print("Firebase Response: ");
-  Serial.println(httpResponseCode);
-
-  if (httpResponseCode > 0) {
-
-    String response =
-      http.getString();
-
-    Serial.println("Firebase reply:");
-    Serial.println(response);
-
-  } else {
-
-    Serial.print("Firebase Error: ");
-    Serial.println(httpResponseCode);
-  }
-
-  http.end();
-}
-
-
-// =====================================================
-// CHECK PIEZO
-// =====================================================
-
-void checkPiezo() {
-
-  // ---------------------------------
-  // PIEZO A
-  // ---------------------------------
-
-  if (digitalRead(PIEZO_A) == HIGH) {
-
-    if (millis() - lastPressTime > debounceTime) {
-
-      Serial.println("PIEZO 1 PRESSED → LETTER A");
-
-      sendLetter("A");
-
-      lastPressTime = millis();
-    }
-  }
-
-
-  // ---------------------------------
-  // PIEZO B
-  // ---------------------------------
-
-  else if (digitalRead(PIEZO_B) == HIGH) {
-
-    if (millis() - lastPressTime > debounceTime) {
-
-      Serial.println("PIEZO 2 PRESSED → LETTER B");
-
-      sendLetter("B");
-
-      lastPressTime = millis();
-    }
-  }
-
-
-  // ---------------------------------
-  // PIEZO C
-  // ---------------------------------
-
-  else if (digitalRead(PIEZO_C) == HIGH) {
-
-    if (millis() - lastPressTime > debounceTime) {
-
-      Serial.println("PIEZO 3 PRESSED → LETTER C");
-
-      sendLetter("C");
-
-      lastPressTime = millis();
-    }
-  }
-
-
-  // ---------------------------------
-  // PIEZO D
-  // ---------------------------------
-
-  else if (digitalRead(PIEZO_D) == HIGH) {
-
-    if (millis() - lastPressTime > debounceTime) {
-
-      Serial.println("PIEZO 4 PRESSED → LETTER D");
-
-      sendLetter("D");
-
-      lastPressTime = millis();
-    }
-  }
-}
-
-
-// =====================================================
-// LOOP
-// =====================================================
 
 void loop() {
+  int value = analogRead(PIEZO_PIN);
 
-  checkPiezo();
+  // Trigger when piezo hit exceeds threshold
+  if (value > THRESHOLD) {
+    // Send clean 'A' to Python hardware listener
+    Serial.println("A");
 
-  delay(50);
+    // Wait debounce period
+    delay(DEBOUNCE_MS);
+
+    // Wait until piezo vibration settles below threshold
+    while (analogRead(PIEZO_PIN) > THRESHOLD) {
+      delay(10);
+    }
+  }
+
+  delay(10);
 }

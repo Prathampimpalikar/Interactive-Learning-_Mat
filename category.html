@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 1: Choose Category — AlphaMat 3D Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="dash-view-wrapper">
+
+  <!-- Header -->
+  <header class="dash-nav-header">
+    <div class="dash-nav-container">
+      <a href="category.html" class="brand-group">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+          <span class="brand-subtitle">Category Selection</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          🌙
+        </button>
+        <a href="login.html" class="btn-logout">
+          🔒 Log Out
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <!-- Breadcrumb & Step Header -->
+    <div class="pathway-step-card">
+      <div class="pathway-breadcrumb">
+        <span class="pathway-breadcrumb-item">AlphaMat Explorer Hub</span>
+        <span>/</span>
+        <span>Step 1: Choose Curriculum Category</span>
+      </div>
+
+      <div class="pathway-step-header">
+        <p class="pathway-step-tag">Step 1 of 3</p>
+        <h1 class="pathway-step-title">What would you like to explore today?</h1>
+        <p class="pathway-step-sub">Select Animals or Fruits below (or press key <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">1</kbd> for Animals, <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">2</kbd> for Fruits) to open the Alphabet Grid.</p>
+      </div>
+
+      <!-- Category Choices Grid -->
+      <div class="category-choice-grid">
+        <!-- Animals Card -->
+        <div class="category-select-card animal-card" onclick="selectCategory('Animal')">
+          <div class="category-card-icon">🐯</div>
+          <h2 class="category-card-title">Animals Curriculum</h2>
+          <p class="category-card-desc">
+            Explore 30+ wildlife species, jungle predators, birds, mammals & aquatic creatures with 3D models, lifespans, and superpowers.
+          </p>
+          <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center;">
+            <span>Select Animals (A - Z)</span> <span>→</span>
+          </button>
+        </div>
+
+        <!-- Fruits Card -->
+        <div class="category-select-card fruit-card" onclick="selectCategory('Fruit')">
+          <div class="category-card-icon">🍎</div>
+          <h2 class="category-card-title">Fruits Curriculum</h2>
+          <p class="category-card-desc">
+            Discover 30+ tropical fruits, berries, citrus varieties & health benefits with vitamin profiles, harvest seasons, and 3D exploration.
+          </p>
+          <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center; background: var(--mint-strong); box-shadow: none;">
+            <span>Select Fruits (A - Z)</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectCategory(mode) {
+      window.location.href = `letter.html?mode=${encodeURIComponent(mode)}`;
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '1') selectCategory('Animal');
+      if (e.key === '2') selectCategory('Fruit');
+    });
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+  </script>
+</body>
+</html>

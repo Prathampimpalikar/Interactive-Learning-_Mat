@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 2: Choose Alphabet Letter — AlphaMat 3D Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="dash-view-wrapper">
+
+  <!-- Header -->
+  <header class="dash-nav-header">
+    <div class="dash-nav-container">
+      <a href="category.html" class="brand-group">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+          <span class="brand-subtitle" id="letterNavSubtitle">Alphabet Choice</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="category.html" class="btn-logout">
+          ← Change Category
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <div class="pathway-step-card">
+      <div class="pathway-breadcrumb">
+        <a href="category.html" class="pathway-breadcrumb-item">Step 1: Category</a>
+        <span>/</span>
+        <span id="crumbCategoryName" style="color: var(--coral);">Animals</span>
+        <span>/</span>
+        <span>Step 2: Choose Letter (A–Z)</span>
+      </div>
+
+      <div class="pathway-step-header">
+        <p class="pathway-step-tag">Step 2 of 3</p>
+        <h1 class="pathway-step-title" id="letterStepTitle">Choose an Alphabet Letter</h1>
+        <p class="pathway-step-sub">Select any letter below or step on your physical piezo sensor mat to explore all specimens.</p>
+      </div>
+
+      <!-- Live Piezo Sensor Status Banner -->
+      <div class="piezo-live-banner">
+        <div class="piezo-live-indicator">
+          <div class="piezo-indicator-dot"></div>
+          <div>
+            <div class="piezo-live-text">⚡ Tactile Piezo Mat Sensor Listener Active</div>
+            <div class="piezo-live-sub">Step on any alphabet pad (A to Z) on your physical sensor mat, or press any letter key on your keyboard.</div>
+          </div>
+        </div>
+        <div class="piezo-live-badge">
+          <span>🖲️</span> <span id="livePiezoStatusText">Awaiting Step (A–Z)</span>
+        </div>
+      </div>
+
+      <!-- Full 26-Letter Grid (A to Z) -->
+      <div class="letter-choice-grid" id="letterChoiceGrid"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode') === 'Fruit' ? 'Fruit' : 'Animal';
+
+    // Update headers
+    document.getElementById('letterStepTitle').textContent = `Choose an Alphabet Letter for ${mode}s`;
+    document.getElementById('crumbCategoryName').textContent = `${mode}s`;
+    document.getElementById('letterNavSubtitle').textContent = `${mode} Alphabet Choice`;
+    document.getElementById('livePiezoStatusText').textContent = `Awaiting Step on ${mode} Mat (A–Z)`;
+
+    // Web Audio Chime
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    function playStepTone() {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(480, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(720, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    // Render 26 Letters
+    function renderGrid() {
+      const grid = document.getElementById('letterChoiceGrid');
+      grid.innerHTML = '';
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      const dataset = typeof ALPHAMAT_DATA !== 'undefined' ? (mode === 'Animal' ? ALPHAMAT_DATA.animals : ALPHAMAT_DATA.fruits) : [];
+
+      letters.forEach(char => {
+        const matchCount = dataset.filter(item => item.alphabet === char).length;
+        const btn = document.createElement('div');
+        btn.className = 'letter-choice-btn';
+        btn.id = `letter-btn-${char}`;
+        btn.setAttribute('data-letter', char);
+        btn.innerHTML = `
+          <div class="letter-char">${char}</div>
+          <div class="letter-count-label">${matchCount > 0 ? `${matchCount} ${mode.toLowerCase()}s` : 'Explore'}</div>
+        `;
+        btn.onclick = () => selectLetter(char);
+        grid.appendChild(btn);
+      });
+    }
+
+    // Letter Selection & Navigation to Step 3
+    let isNavigating = false;
+
+    function selectLetter(char) {
+      if (isNavigating) return;
+      char = char.toUpperCase();
+      isNavigating = true;
+
+      playStepTone();
+
+      const btn = document.getElementById(`letter-btn-${char}`);
+      if (btn) {
+        document.querySelectorAll('.letter-choice-btn').forEach(b => b.classList.remove('piezo-active'));
+        btn.classList.add('piezo-active');
+      }
+
+      const badge = document.getElementById('livePiezoStatusText');
+      if (badge) {
+        badge.innerHTML = `⚡ Step Detected: <strong>Letter ${char}</strong> — Opening ${mode}s...`;
+      }
+
+      // 800ms delay so user clearly sees Letter A selected before opening options
+      setTimeout(() => {
+        window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(char)}`;
+      }, 800);
+    }
+
+    // Global Key Listener for Physical Mat Emulation
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      if (/^[A-Z]$/.test(key)) {
+        selectLetter(key);
+      }
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        window.location.href = 'category.html';
+      }
+    });
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+
+    // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_listener.py)
+    let lastHardwareTimestamp = Date.now() / 1000;
+    let initialHardwareCheck = true;
+
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (initialHardwareCheck) {
+              // Ignore past events recorded before page was loaded
+              lastHardwareTimestamp = eventData.timestamp;
+              initialHardwareCheck = false;
+              return;
+            }
+
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const letter = String(eventData.letter).trim().toUpperCase();
+              if (/^[A-Z]$/.test(letter)) {
+                console.log(`[Hardware Piezo Step Detected]: Letter ${letter} (GPIO ${eventData.gpio || 32})`);
+                selectLetter(letter);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        // Silently wait for hardware listener / event file creation
+      }
+    }
+    // Poll hardware_event.json every 350ms
+    setInterval(pollHardwareEvent, 350);
+
+    // 📡 Live Firebase Realtime Database Listener (Syncs with ESP32 Mat Triggers)
+    let lastFirebaseLetter = '';
+    const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
+
+    async function pollFirebaseLiveStep() {
+      try {
+        const response = await fetch(FIREBASE_URL, { cache: 'no-store' });
+        if (response.ok) {
+          const letterVal = await response.json();
+          if (letterVal && typeof letterVal === 'string') {
+            const letter = letterVal.trim().toUpperCase();
+            if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
+              lastFirebaseLetter = letter;
+              console.log('[Firebase Live Step Detected]:', letter);
+              selectLetter(letter);
+            }
+          }
+        }
+      } catch (e) {
+        // Network silent
+      }
+    }
+    // Poll Firebase every 400ms for fast real-time response
+    setInterval(pollFirebaseLiveStep, 400);
+
+    renderGrid();
+  </script>
+</body>
+</html>

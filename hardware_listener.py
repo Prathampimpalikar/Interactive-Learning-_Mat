@@ -1,114 +1,167 @@
-import threading
+"""
+AlphaMat - Hardware Serial Listener for ESP32 Piezo Mat
+Reads serial signals from ESP32, creates hardware_event.json for web platform.
+"""
+
+import os
+import json
 import time
+import threading
+import serial
 
-try:
-    import serial
-    import serial.tools.list_ports
-    SERIAL_AVAILABLE = True
-except (ImportError, ModuleNotFoundError):
-    SERIAL_AVAILABLE = False
+# ==========================================
+# CONFIGURATION
+# ==========================================
+PORT = "COM5"
+BAUD_RATE = 115200
+
+# Future 26-sensor mapping architecture
+# Current test: GPIO 32 -> Letter A
+GPIO_TO_LETTER = {
+    32: "A"
+}
+LETTER_TO_GPIO = {v: k for k, v in GPIO_TO_LETTER.items()}
+
+# Event output file in project root
+EVENT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hardware_event.json")
+
+# ESP32 boot messages to ignore
+BOOT_KEYWORDS = [
+    "rst:", "boot:", "configsip", "load:", "entry", "ets", "waiting",
+    "ready", "esp32 ready", "clk", "cs", "mode:", "flash:", "cpu"
+]
 
 
-class HardwareListener:
-    _instance = None
+def write_hardware_event(letter, gpio=32):
+    """Write hardware event JSON file for the website to read."""
+    event_data = {
+        "letter": letter,
+        "gpio": gpio,
+        "timestamp": time.time()
+    }
+    temp_file = f"{EVENT_FILE}.tmp"
+    try:
+        with open(temp_file, "w", encoding="utf-8") as f:
+            json.dump(event_data, f, indent=4)
+        if os.path.exists(temp_file):
+            os.replace(temp_file, EVENT_FILE)
+    except Exception:
+        # Fallback direct write
+        try:
+            with open(EVENT_FILE, "w", encoding="utf-8") as f:
+                json.dump(event_data, f, indent=4)
+        except Exception as e:
+            print(f"[Error writing hardware_event.json]: {e}")
 
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super(HardwareListener, cls).__new__(cls, *args, **kwargs)
-            cls._instance._initialized = False
-        return cls._instance
 
-    def __init__(self):
-        if self._initialized:
-            return
-        self._initialized = True
-        self.serial_port = None
-        self.thread = None
-        self.running = False
-        self.active_window = None
-        self.callback = None
+def is_boot_message(line):
+    """Check if the incoming line is an ESP32 boot/debug message."""
+    lower_line = line.lower()
+    for kw in BOOT_KEYWORDS:
+        if kw in lower_line:
+            return True
+    return False
 
-        # Start scanning and reading in the background
-        self.start()
 
-    def register(self, window, callback):
-        """Register the current active window and the function to handle hardware triggers."""
-        self.active_window = window
-        self.callback = callback
-        print(f"[HardwareListener] Registered callback for window: {window}")
+def run_hardware_listener(callback=None):
+    """Main listener loop connecting to ESP32."""
+    esp32 = None
+    try:
+        esp32 = serial.Serial(PORT, BAUD_RATE, timeout=1)
 
-    def deregister(self):
-        """Deregister when the window is destroyed."""
-        self.active_window = None
-        self.callback = None
+        print("ESP32 CONNECTED")
+        print("Waiting for piezo...\n")
 
-    def start(self):
-        if not SERIAL_AVAILABLE:
-            print("[HardwareListener] 'pyserial' is not installed. Running in simulator/keyboard-only mode.")
-            return
-        if not self.running:
-            self.running = True
-            self.thread = threading.Thread(target=self._run_listener)
-            self.thread.daemon = True
-            self.thread.start()
-            print("[HardwareListener] Background thread started.")
+        # Allow serial port to stabilize
+        time.sleep(1.5)
 
-    def stop(self):
-        self.running = False
-        if self.serial_port and self.serial_port.is_open:
+        # Clear any stale startup buffer
+        try:
+            esp32.reset_input_buffer()
+        except Exception:
+            pass
+
+        while True:
+            if esp32.in_waiting > 0:
+                raw = esp32.readline()
+                try:
+                    line = raw.decode("utf-8", errors="ignore").strip()
+                except Exception:
+                    continue
+
+                if not line:
+                    continue
+
+                # Filter out boot log lines
+                if is_boot_message(line):
+                    continue
+
+                letter = line.upper()
+
+                # Process valid single letter
+                if letter in GPIO_TO_LETTER.values() or len(letter) == 1 and letter.isalpha():
+                    gpio_pin = LETTER_TO_GPIO.get(letter, 32)
+
+                    print(f"ESP32: {letter}")
+                    print("PIEZO PRESSED")
+                    print(f"LETTER {letter} DETECTED\n")
+
+                    write_hardware_event(letter, gpio_pin)
+
+                    if callback:
+                        try:
+                            callback(letter)
+                        except Exception:
+                            pass
+
+            time.sleep(0.05)
+
+    except serial.SerialException as e:
+        err_msg = str(e)
+        if "PermissionError" in err_msg or "Access is denied" in err_msg or "13" in err_msg:
+            print("=" * 60)
+            print(f"Could not connect to ESP32: {PORT} IS BUSY")
+            print("=" * 60)
+            print(f"COM5 IS BUSY")
+            print("Possible causes:")
+            print("  - Arduino Serial Monitor is open (Please CLOSE it)")
+            print("  - Thonny is open")
+            print("  - Another serial application or listener is open")
+            print("=" * 60)
+        else:
+            print("=" * 60)
+            print(f"Could not connect to ESP32 on port '{PORT}'")
+            print("=" * 60)
+            print("ESP32 NOT CONNECTED")
+            print("Check USB cable and COM port.")
+            print(f"Details: {e}")
+            print("=" * 60)
+
+    except KeyboardInterrupt:
+        print("\nHardware listener stopped.")
+
+    finally:
+        if esp32 and esp32.is_open:
             try:
-                self.serial_port.close()
+                esp32.close()
             except Exception:
                 pass
-        print("[HardwareListener] Stopped listener.")
-
-    def _find_arduino_port(self):
-        ports = serial.tools.list_ports.comports()
-        # Look for typical Arduino descriptions or USB serial converters
-        for port in ports:
-            desc = port.description.lower()
-            if any(term in desc for term in ["arduino", "ch340", "usb-serial", "usb serial", "ftdi"]):
-                return port.device
-        # Fallback to the first available COM port
-        if ports:
-            return ports[0].device
-        return None
-
-    def _run_listener(self):
-        while self.running:
-            port = self._find_arduino_port()
-            if not port:
-                # No Arduino/COM ports found, wait and scan again
-                time.sleep(2)
-                continue
-
-            try:
-                print(f"[HardwareListener] Connecting to COM port: {port}...")
-                self.serial_port = serial.Serial(port, 9600, timeout=1)
-                print(f"[HardwareListener] Successfully connected to {port}!")
-
-                while self.running and self.serial_port.is_open:
-                    if self.serial_port.in_waiting > 0:
-                        try:
-                            line = self.serial_port.readline().decode("utf-8", errors="ignore").strip()
-                            if line:
-                                print(f"[HardwareListener] Received: '{line}'")
-                                # Dispatch callback to the Tkinter thread
-                                if self.active_window and self.callback:
-                                    try:
-                                        if self.active_window.winfo_exists():
-                                            self.active_window.after(0, self.callback, line)
-                                    except Exception as e:
-                                        print(f"[HardwareListener] Callback invocation error: {e}")
-                        except Exception as e:
-                            print(f"[HardwareListener] Serial read error: {e}")
-                            break
-                    else:
-                        time.sleep(0.05)
-            except Exception as e:
-                print(f"[HardwareListener] Serial port connection error on {port}: {e}")
-                time.sleep(2)  # Retry connection after a short wait
 
 
-# Instantiate global listener
-listener = HardwareListener()
+class HardwareListenerThread:
+    """Threaded wrapper for main.py integration."""
+    def __init__(self):
+        self.callback = None
+        self._thread = None
+
+    def start(self):
+        self._thread = threading.Thread(target=run_hardware_listener, args=(self.callback,), daemon=True)
+        self._thread.start()
+
+
+# Global listener instance for main.py integration
+listener = HardwareListenerThread()
+
+
+if __name__ == "__main__":
+    run_hardware_listener()

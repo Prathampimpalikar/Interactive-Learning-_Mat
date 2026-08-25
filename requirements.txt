@@ -1,6 +1,28 @@
-customtkinter
-pandas
-openpyxl
-firebase-admin
-pillow
-pyserial
+# ==============================================================================
+# AlphaMat / Interactive Learning Mat - Python Dependencies
+# ==============================================================================
+# Install all required libraries using:
+#   pip install -r requirements.txt
+# ==============================================================================
+
+# GUI Framework & Component Styling
+customtkinter>=5.2.0
+
+# Image Processing (Assets, Icons, Splash Screens)
+pillow>=10.0.0
+
+# Dataset & Spreadsheet Processing
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# Firebase Cloud Realtime Database Integration
+firebase-admin>=6.0.0
+
+# Hardware Serial Communication (Arduino / ESP32 / Microcontrollers)
+pyserial>=3.5
+
+# HTTP Network Requests & API Integration
+requests>=2.31.0
+
+# Optional: Standalone Executable Packaging (.exe)
+pyinstaller>=6.0.0

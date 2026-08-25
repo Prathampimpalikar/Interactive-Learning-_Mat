@@ -86,9 +86,12 @@ class Letter:
     # -----------------------------------------
 
     def handle_hardware_input(self, data):
-        val = data.strip().upper()
-        if val in ["A", "B", "C", "D", "E", "F"]:
-            self.open_selection(val)
+        val = str(data).strip().upper()
+        print(f"[Letter Window] Hardware input received: '{val}'")
+        for char in ["A", "B", "C", "D", "E", "F"]:
+            if char in val:
+                self.open_selection(char)
+                return
 
     # -----------------------------------------
 

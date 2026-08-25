@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Interactive Studio — AlphaMat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Google Model Viewer for 3D & AR -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+    .specimen-dual-preview {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-top: 14px;
+    }
+    @media (max-width: 900px) {
+      .specimen-dual-preview {
+        grid-template-columns: 1fr;
+      }
+    }
+    .photo-preview-card {
+      background: var(--bg-sand);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 1px solid var(--border-subtle);
+    }
+    .photo-preview-img {
+      max-height: 320px;
+      width: 100%;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body class="dash-view-wrapper">
+
+  <!-- Header -->
+  <header class="dash-nav-header">
+    <div class="dash-nav-container">
+      <a href="category.html" class="brand-group">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+          <span class="brand-subtitle">3D Interactive Learning Studio</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a id="btnBackToSelection" href="selection.html" class="btn-logout">
+          ← Back to Specimens
+        </a>
+        <a href="category.html" class="btn-logout">
+          🔤 Change Category
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <!-- Breadcrumb -->
+    <div class="pathway-breadcrumb" style="margin-bottom: 20px;">
+      <a href="category.html" class="pathway-breadcrumb-item">Category</a>
+      <span>/</span>
+      <a id="crumbLetterLink" href="letter.html" class="pathway-breadcrumb-item">Letter</a>
+      <span>/</span>
+      <a id="crumbSelectionLink" href="selection.html" class="pathway-breadcrumb-item">Specimens</a>
+      <span>/</span>
+      <span id="crumbItemName" style="color: var(--text-highlight); font-weight: 800;">Viewer</span>
+    </div>
+
+    <!-- Main 3D Studio Split Grid -->
+    <div class="dash-studio-grid">
+      <!-- 3D Stage Card -->
+      <div class="dash-3d-stage-card" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <p style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--coral); letter-spacing: 0.15em;" id="viewerCategoryTag">
+              3D AR Specimen
+            </p>
+            <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;" id="viewerItemTitle">
+              Alligator
+            </h1>
+          </div>
+          <span style="font-size: 1.8rem;">🕶️</span>
+        </div>
+
+        <!-- 3D Model & Real Photo Viewport -->
+        <div class="dash-stage-viewport">
+          <div class="dash-stage-loader" id="viewerStageLoader">
+            <div class="loader-spinner"></div>
+            <p style="font-weight: 700;">Loading 3D Specimen...</p>
+          </div>
+
+          <model-viewer
+            id="studioViewer"
+            src="model/Alligator.glb"
+            alt="AlphaMat 3D Specimen"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="0"
+            shadow-intensity="1.4"
+            shadow-softness="0.7"
+            exposure="1.05"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-orbit="0deg 75deg 105%"
+            style="width: 100%; height: 420px;">
+          </model-viewer>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="dash-stage-controls-bar">
+          <button class="btn-speak" id="btnViewerSpeak" onclick="speakViewerItem()">
+            <span>🔊 Listen Audio & Fun Facts</span>
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button class="stage-btn" onclick="resetStudioCamera()" style="padding: 8px 16px; border-radius: var(--radius-full); background: var(--bg-sand); font-weight: 700; border: 1px solid var(--border-subtle); cursor: pointer;">🔄 Reset Angle</button>
+          </div>
+        </div>
+
+        <!-- Real Specimen Image Card -->
+        <div class="photo-preview-card" style="margin-top: 20px;">
+          <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+            📸 High-Resolution Specimen Photograph
+          </div>
+          <img id="viewerSpecimenImg" src="images/alphamat_logo.png" alt="Specimen Photo" class="photo-preview-img" onerror="this.src='images/alphamat_logo.png'">
+        </div>
+      </div>
+
+      <!-- Fact Dossier Card -->
+      <div class="fact-dossier-card">
+        <div class="fact-title-card">
+          <h2 class="fact-main-name" id="dossierName">Alligator</h2>
+          <div class="fact-sci-name" id="dossierSci">Alligator mississippiensis</div>
+        </div>
+
+        <div class="superpower-card" id="dossierSuperpowerCard">
+          <div class="superpower-header" id="dossierSuperpowerTitle">
+            <span>⚡</span> Superpower & Skill
+          </div>
+          <div class="superpower-text" id="dossierSuperpowerText">
+            Super Strong Jaw Bite & Silent Underwater Swimming.
+          </div>
+        </div>
+
+        <div class="specs-matrix">
+          <div class="spec-box">
+            <div class="spec-key">TAXONOMY / CLASS</div>
+            <div class="spec-val" id="dossierCategory">Reptile</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key">COLOR PROFILE</div>
+            <div class="spec-val" id="dossierColor">Olive Green</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key" id="dossierDietLabel">DIET / HABITAT</div>
+            <div class="spec-val" id="dossierDiet">Carnivore — River fish</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-key" id="dossierLifespanLabel">LIFESPAN / WEIGHT</div>
+            <div class="spec-val" id="dossierLifespan">35 – 50 years (300 kg)</div>
+          </div>
+        </div>
+
+        <div class="funfact-box" style="background: var(--bg-sand); padding: 18px; border-radius: var(--radius-md);">
+          <div class="funfact-header" style="font-weight: 800; color: var(--amber); margin-bottom: 6px;">
+            <span>💡</span> Did You Know?
+          </div>
+          <div class="funfact-text" id="dossierFunFact" style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6;">
+            Alligators can hold their breath underwater for up to two hours without coming up for air!
+          </div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md);">
+          <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; color: var(--coral); margin-bottom: 6px;">
+            📖 Full Educational Description
+          </div>
+          <p id="dossierDescription" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
+            Detailed description of this specimen.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id') || 'animal_1';
+    const mode = urlParams.get('mode') === 'Fruit' ? 'Fruit' : 'Animal';
+    const letter = (urlParams.get('letter') || 'A').toUpperCase();
+
+    // Setup Back Links
+    document.getElementById('btnBackToSelection').href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
+    document.getElementById('crumbLetterLink').href = `letter.html?mode=${encodeURIComponent(mode)}`;
+    document.getElementById('crumbLetterLink').textContent = `Letter ${letter}`;
+    document.getElementById('crumbSelectionLink').href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
+
+    // Find Item in Dataset
+    let activeItem = null;
+    if (typeof ALPHAMAT_DATA !== 'undefined') {
+      const all = [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
+      activeItem = all.find(item => item.id === id) || all.find(item => item.alphabet === letter) || all[0];
+    }
+
+    if (activeItem) {
+      document.title = `${activeItem.name} — AlphaMat 3D Studio`;
+      document.getElementById('viewerCategoryTag').textContent = `${mode} 3D AR Model`;
+      document.getElementById('viewerItemTitle').textContent = activeItem.name;
+      document.getElementById('crumbItemName').textContent = activeItem.name.split(' ')[0];
+
+      document.getElementById('dossierName').textContent = activeItem.name;
+      document.getElementById('dossierSci').textContent = activeItem.scientificName || `Alphabet Category: ${activeItem.alphabet}`;
+      document.getElementById('dossierSuperpowerText').textContent = activeItem.superpower || activeItem.benefits || 'Special natural adaptations & features.';
+      document.getElementById('dossierCategory').textContent = activeItem.category || (mode === 'Animal' ? 'Fauna' : 'Flora');
+      document.getElementById('dossierColor').textContent = activeItem.color || 'Natural vibrant shade';
+      document.getElementById('dossierDiet').textContent = activeItem.diet || activeItem.habitat || activeItem.taste || 'Varied';
+      document.getElementById('dossierLifespan').textContent = activeItem.lifespan ? `${activeItem.lifespan} (${activeItem.weight || ''})` : (activeItem.season || 'Seasonal');
+      document.getElementById('dossierFunFact').textContent = activeItem.funFact || `${activeItem.name} is a key discovery in the AlphaMat curriculum.`;
+      document.getElementById('dossierDescription').textContent = activeItem.description || '';
+
+      // Load Real Image
+      if (activeItem.image) {
+        document.getElementById('viewerSpecimenImg').src = `images/${encodeURIComponent(activeItem.image)}`;
+      }
+
+      // Load 3D Model
+      const viewer = document.getElementById('studioViewer');
+      const loader = document.getElementById('viewerStageLoader');
+      if (viewer && activeItem.model) {
+        if (loader) loader.classList.add('active');
+        viewer.src = `model/${encodeURIComponent(activeItem.model)}`;
+        viewer.addEventListener('load', () => {
+          if (loader) loader.classList.remove('active');
+        });
+        viewer.addEventListener('error', () => {
+          if (loader) loader.classList.remove('active');
+        });
+      }
+    }
+
+    function resetStudioCamera() {
+      const viewer = document.getElementById('studioViewer');
+      if (viewer) {
+        viewer.cameraOrbit = '0deg 75deg 105%';
+        viewer.resetTurntableRotation();
+      }
+    }
+
+    function speakViewerItem() {
+      if (!('speechSynthesis' in window)) {
+        alert('Speech synthesis is not supported in this browser.');
+        return;
+      }
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        document.getElementById('btnViewerSpeak').innerHTML = '<span>🔊 Listen Audio & Fun Facts</span>';
+        return;
+      }
+      if (!activeItem) return;
+
+      const text = `${activeItem.name}. Scientific classification: ${activeItem.scientificName || activeItem.category}. ${activeItem.description || ''} Fun fact: ${activeItem.funFact || ''}`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.05;
+
+      utterance.onstart = () => {
+        document.getElementById('btnViewerSpeak').innerHTML = '<span>⏸️ Stop Audio</span>';
+      };
+      utterance.onend = () => {
+        document.getElementById('btnViewerSpeak').innerHTML = '<span>🔊 Listen Audio & Fun Facts</span>';
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+  </script>
+</body>
+</html>

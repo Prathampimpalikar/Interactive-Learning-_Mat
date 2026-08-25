@@ -1,8 +1,8 @@
 import network
 import time
 
-SSID = "pratham"
-PASSWORD = "pratham05"
+SSID = "Airtel_Nishka"
+PASSWORD = "Nishka@123"
 
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)

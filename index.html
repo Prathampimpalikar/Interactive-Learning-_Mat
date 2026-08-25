@@ -1,506 +1,966 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Interactive Learning App - 3D Learning Mat</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>AlphaMat — Interactive 3D Learning Mat & EduTech Platform</title>
+  <meta name="description" content="AlphaMat transforms early childhood and STEM education by merging physical piezoelectric tactile mats with interactive 3D models, augmented reality (AR), audio speech synthesis, and gamified challenges.">
+  <meta name="keywords" content="AlphaMat, Interactive Learning Mat, 3D Educational App, STEM Toys, Piezo Sensor Mat, IoT EduTech, AR Learning">
+
+  <!-- Open Graph Meta -->
+  <meta property="og:title" content="AlphaMat — Touch. Learn. Explore in 3D.">
+  <meta property="og:description" content="A tactile learning beginning for a digital generation. Step on the physical mat, explore in real-time 3D & AR.">
+  <meta property="og:image" content="images/alphamat_logo.png">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts: Fraunces + Outfit / Plus Jakarta Sans + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Google Model Viewer (3D & AR) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
   <style>
-    :root {
-      --bg: #0b0f19;
-      --panel: #111827;
-      --card: #1f293d;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.35);
-      --accent-secondary: #818cf8;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.1);
-      --radius: 16px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #0b0f19 60%, #030712 100%);
-      color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 16px 24px;
-    }
-
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .brand-logo {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      font-weight: 800;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .brand-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 800;
-      background: linear-gradient(90deg, #fff, #93c5fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .badge {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    main {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 32px 24px 60px;
-      flex: 1;
-      width: 100%;
-    }
-
-    .hero-section {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .hero-section h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 800;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-section p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    .app-layout {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .sidebar {
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      backdrop-filter: blur(12px);
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-
-    .filter-btn {
-      flex: 1;
-      padding: 8px 12px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      color: #04101e;
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    .items-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 10px;
-      max-height: 480px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .items-grid::-webkit-scrollbar {
-      width: 6px;
-    }
-    .items-grid::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-    }
-
-    .model-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 6px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .model-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-      background: rgba(56, 189, 248, 0.1);
-    }
-
-    .model-card.active {
-      border-color: var(--accent);
-      background: rgba(56, 189, 248, 0.2);
-      box-shadow: 0 0 14px var(--accent-glow);
-    }
-
-    .model-icon {
-      font-size: 26px;
-    }
-
-    .model-name {
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-
-    .stage-container {
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      min-height: 580px;
-      backdrop-filter: blur(12px);
-    }
-
-    .stage-header {
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .active-info h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .active-info span {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .stage-tools {
-      display: flex;
-      gap: 10px;
-    }
-
-    .tool-btn {
-      padding: 8px 14px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .tool-btn:hover {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: var(--accent);
-    }
-
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      min-height: 500px;
-      flex: 1;
-      --poster-color: transparent;
-      outline: none;
-    }
-
-    .loading-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(11, 15, 25, 0.8);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      z-index: 10;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-
-    .loading-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255,255,255,0.1);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      background: rgba(11, 15, 25, 0.9);
-      margin-top: auto;
-    }
-
-    @media (max-width: 900px) {
-      .app-layout {
-        grid-template-columns: 1fr;
-      }
-      .stage-container {
-        min-height: 450px;
-      }
-      model-viewer {
-        min-height: 400px;
+    @media print {
+      body * { visibility: hidden; }
+      .certificate-preview-frame, .certificate-preview-frame * { visibility: visible; }
+      .certificate-preview-frame {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        border: 8px solid #192a2e !important;
+        box-shadow: none !important;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="nav-container">
-      <a href="#" class="brand">
-        <div class="brand-logo">🧩</div>
+
+  <!-- ========================================================================
+       SLIDE 1: OFFICIAL LANDING PAGE (#view-landing)
+       ======================================================================== -->
+  <div id="view-landing" class="app-view active-view">
+    <!-- Sticky Site Header -->
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <div class="brand-group" onclick="App.navigateTo('landing')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">Interactive 3D Learning Mat</span>
+          </div>
+        </div>
+
+        <nav aria-label="Primary Navigation">
+          <ul class="nav-links">
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#technology" class="nav-link">Technology</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <a href="login.html" class="btn-header-login">
+            Sign In
+          </a>
+          <a href="login.html" class="btn-header-cta">
+            <span>Start Adventure</span> <span>→</span>
+          </a>
+          <button class="theme-toggle" onclick="App.toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme">
+            🌙
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <!-- Prominent Company Logo Badge on Hero -->
+          <div class="hero-brand-badge">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Official Logo" class="hero-badge-logo" onerror="this.src='images/logo.jpg'">
+            <span class="hero-badge-text">AlphaMat™ • Smart Tactile Sensor Mat & 3D EduTech Hub</span>
+          </div>
+
+          <h1 class="hero-title">
+            Learning <em class="font-serif text-coral" style="font-style: italic;">comes</em> alive.
+          </h1>
+          <p class="hero-desc">
+            AlphaMat transforms alphabet, wildlife, and nature learning into an interactive multi-sensory experience where children touch physical sensor pads, listen to stories, and explore real-time 3D models.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="login.html" class="btn-primary-lg">
+              <span>🚀 Launch Learning Studio</span> <span>→</span>
+            </a>
+            <a href="#how-it-works" class="btn-secondary-lg">
+              <span>▶</span> <span>How It Works</span>
+            </a>
+          </div>
+
+          <div class="hero-trust-bar">
+            <div class="avatar-stack">
+              <span style="background: #9fb6be;">A</span>
+              <span style="background: #e7a33f;">M</span>
+              <span style="background: #6ca77d;">L</span>
+            </div>
+            <span>Made for curious minds, ages 3–8 • Over 60+ Interactive Lessons</span>
+          </div>
+        </div>
+
+        <!-- Hero Visual Showcase: Official Brand Logo & Presentation -->
+        <div class="hero-visual-wrap">
+          <div class="hero-logo-showcase-card">
+            <div class="hero-logo-display-frame">
+              <img src="images/alphamat_logo.png" alt="AlphaMat Official Brand Logo" class="hero-main-logo-image" onerror="this.src='images/logo.jpg'">
+            </div>
+            <div class="hero-logo-brand-info">
+              <div class="hero-logo-brand-title">
+                Alpha<span class="text-coral">Mat</span>™
+              </div>
+              <p class="hero-logo-brand-tagline">
+                Smart Tactile Sensor Mat & 3D Interactive Learning Studio
+              </p>
+              <div class="hero-logo-features-pill">
+                <span>⚡ Piezo Sensors</span>
+                <span>•</span>
+                <span>🕶️ 3D AR Models</span>
+                <span>•</span>
+                <span>🔊 Audio Narration</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="about-strip" id="about">
+      <div class="container about-grid">
+        <h2 class="about-headline">
+          A tactile beginning for a digital generation.
+        </h2>
+        <p class="about-body">
+          AlphaMat bridges the best of both worlds: a beautifully responsive physical mat that invites movement and tactile curiosity, paired with a rich 3D digital companion that brings every discovery to life. No passive video screens—just active physical exploration.
+        </p>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section-pad" id="how-it-works">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-tag">How It Works</span>
+          <h2 class="section-title">One touch. A world of learning.</h2>
+          <p class="section-subtitle">
+            Seamless hardware-to-digital communication brings instant delight to children and students.
+          </p>
+        </div>
+
+        <div class="how-steps-grid">
+          <article class="step-card">
+            <span class="step-num">01</span>
+            <h3 class="step-title">Touch</h3>
+            <p class="step-desc">
+              A child steps or presses on an alphabet pad on the tactile piezo sensor mat.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-num">02</span>
+            <h3 class="step-title">Detect</h3>
+            <p class="step-desc">
+              High-sensitivity piezoelectric sensors and ESP32 microcontroller convert touch pressure into real-time telemetry.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-num">03</span>
+            <h3 class="step-title">Explore</h3>
+            <p class="step-desc">
+              The studio instantly responds with 360° interactive 3D models, audio speech narration, and curriculum fun facts.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Banner -->
+    <section class="features-banner" id="features">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-tag" style="color: var(--coral);">The AlphaMat Advantage</span>
+          <h2 class="section-title">Designed for little hands. Built for big imaginations.</h2>
+          <p class="section-subtitle">
+            Carefully engineered to replace passive screen time with active, multi-sensory STEM discovery.
+          </p>
+        </div>
+
+        <div class="feature-cards-grid">
+          <div class="feature-item">
+            <div class="feature-icon-circle">🌱</div>
+            <h3 class="feature-title">Learning That Grows</h3>
+            <p class="feature-desc">
+              No boring drills or high pressure. Children discover phonics, animals, fruits, and ecosystems through self-directed play.
+            </p>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon-circle">📡</div>
+            <h3 class="feature-title">Responsive by Design</h3>
+            <p class="feature-desc">
+              Physical actions have an immediate digital echo, helping kids understand cause-and-effect and building motor memory.
+            </p>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon-circle">👓</div>
+            <h3 class="feature-title">See Every Angle in 3D & AR</h3>
+            <p class="feature-desc">
+              Rotate 3D models 360°, inspect animal anatomy, and project creatures into your living room or classroom with WebXR AR.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technology -->
+    <section class="section-pad" id="technology" style="background: var(--bg-main);">
+      <div class="container">
+        <div class="section-header-center">
+          <span class="section-tag">Technology</span>
+          <h2 class="section-title">Quietly clever under the surface.</h2>
+          <p class="section-subtitle">
+            Reliable hardware sensor telemetry and instant cloud sync built for seamless classrooms.
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px;">
+            <div style="font-size: 1.8rem; color: var(--coral); margin-bottom: 12px;">⚡</div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; margin-bottom: 6px;">ESP32 & Piezo Array</h3>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">The Signal: Low-latency physical matrix sensing and ADC pulse processing.</p>
+          </div>
+
+          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px;">
+            <div style="font-size: 1.8rem; color: var(--mint-strong); margin-bottom: 12px;">☁️</div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; margin-bottom: 6px;">Firebase Cloud Sync</h3>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">The Bridge: Real-time data keys synchronizing hardware steps with the app.</p>
+          </div>
+
+          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px;">
+            <div style="font-size: 1.8rem; color: var(--sky); margin-bottom: 12px;">🥽</div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; margin-bottom: 6px;">3D WebXR Studio</h3>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">The Response: Interactive 3D models, audio narration, and fun facts.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer" id="contact">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+              <img src="images/alphamat_logo.png" alt="AlphaMat Logo" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;" onerror="this.src='images/logo.jpg'">
+              <div class="brand-title">
+                Alpha<span class="text-coral">Mat</span>
+              </div>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; max-width: 360px;">
+              A physical-to-digital educational ecosystem that merges tactile sensor mats with real-time 3D models and augmented reality.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Explore</div>
+            <ul class="footer-links">
+              <li><a href="#about">About AlphaMat</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#features">Key Features</a></li>
+              <li><a href="#technology">Technology</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Access Studio</div>
+            <ul class="footer-links">
+              <li><a href="login.html">Teacher Sign In</a></li>
+              <li><a href="login.html">Student Explorer</a></li>
+              <li><a href="category.html">Direct Studio Demo</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Project & Code</div>
+            <ul class="footer-links">
+              <li><a href="https://github.com/prathampimpalikar/Interactive-Learning-_Mat" target="_blank" rel="noopener">GitHub Repository ↗</a></li>
+              <li><a href="html/viewer.html" target="_blank">Standalone Viewer ↗</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>© 2026 AlphaMat • Interactive Learning Mat Project. Developed by Pratham Pimpalikar.</div>
+          <div>Touch • Learn • Explore in 3D</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ========================================================================
+       SLIDE 2: DEDICATED FULL-SCREEN LOGIN SLIDE (#view-login)
+       ======================================================================== -->
+  <div id="view-login" class="app-view login-view-wrapper">
+    <header class="login-nav-header">
+      <div class="brand-group" onclick="App.navigateTo('landing')">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-back-home" onclick="App.navigateTo('landing')">
+        ← Back to website
+      </button>
+    </header>
+
+    <div class="login-center-container">
+      <section class="login-split-card">
+        <!-- Left Banner -->
+        <div class="login-left-banner">
+          <div>
+            <p class="login-banner-tag">The AlphaMat Studio</p>
+            <h1 class="login-banner-title">A new way to see learning.</h1>
+            <p class="login-banner-desc">Step into a calmer, more curious world of letters, touch, and 3D discovery.</p>
+          </div>
+
+          <div class="login-giant-badge">
+            A
+          </div>
+        </div>
+
+        <!-- Right Form -->
+        <div class="login-form-side">
+          <p class="login-form-tag">Welcome Back</p>
+          <h2 class="login-form-title">Sign in to AlphaMat</h2>
+          <p class="login-form-sub">Continue your child or student's learning journey.</p>
+
+          <form id="fullLoginForm" onsubmit="App.handleLogin(event); return false;">
+            <div class="form-group">
+              <label class="form-label" for="loginEmailInput">Username / Email</label>
+              <input type="text" id="loginEmailInput" class="form-input" placeholder="admin" value="admin" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="loginPasswordInput">Password</label>
+              <input type="password" id="loginPasswordInput" class="form-input" placeholder="admin123" value="admin123" required>
+            </div>
+
+            <div class="demo-hint-box">
+              <span>💡 Demo: <strong style="color: var(--coral);">admin / admin123</strong></span>
+              <button type="button" onclick="App.fillDemoCredentials()" style="color: var(--coral); font-weight: 700; background: none;">Auto-Fill</button>
+            </div>
+
+            <button type="submit" id="btnLoginSubmit" class="btn-primary-lg" style="width: 100%; justify-content: center;">
+              <span>Login to Explorer Hub</span> <span>→</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SLIDE 3: DASHBOARD WELCOME HUB (#view-dashboard)
+       ======================================================================== -->
+  <div id="view-dashboard" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">Explorer Dashboard</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <button class="theme-toggle" onclick="App.toggleTheme()" title="Toggle Theme">
+            🌙
+          </button>
+          <button class="btn-logout" onclick="App.handleLogout()">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-body">
+      <!-- Greeting Row -->
+      <div class="dash-greeting-row">
         <div>
-          <div class="brand-title">Interactive Learning App</div>
-        </div>
-      </a>
-      <span class="badge">3D & AR Enabled</span>
-    </div>
-  </header>
-
-  <main>
-    <div class="hero-section">
-      <h1>Explore & Learn in Interactive 3D</h1>
-      <p>Select any animal or fruit to view and rotate the 3D model in real time.</p>
-    </div>
-
-    <div class="app-layout">
-      <!-- Sidebar / Model Selector -->
-      <div class="sidebar">
-        <div class="filter-tabs">
-          <button class="filter-btn active" data-category="all">All</button>
-          <button class="filter-btn" data-category="animals">Animals 🦁</button>
-          <button class="filter-btn" data-category="fruits">Fruits 🍎</button>
+          <div style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: var(--coral); letter-spacing: 0.15em; margin-bottom: 4px;">
+            ✨ Welcome to AlphaMat
+          </div>
+          <h1 class="dash-greeting-title">Hello, explorer.</h1>
+          <p class="dash-greeting-sub">Choose a pathway below or launch your tactile discovery adventure.</p>
         </div>
 
-        <div class="items-grid" id="itemsGrid"></div>
+        <div class="session-ready-pill">
+          <div class="status-dot-pulse"></div>
+          <div>
+            <div style="font-weight: 800; font-size: 0.9rem;">Session Ready</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Hardware & Cloud Synced</div>
+          </div>
+        </div>
       </div>
 
-      <!-- 3D Stage -->
-      <div class="stage-container">
-        <div class="stage-header">
-          <div class="active-info">
-            <h3 id="currentTitle">Alligator</h3>
-            <span id="currentCategory">Category: Animals</span>
+      <!-- 4 Hardware Status Indicators -->
+      <div class="hardware-status-grid">
+        <div class="hw-card">
+          <div class="hw-header">
+            <span>ESP32 Telemetry</span>
+            <span>📶</span>
           </div>
-          <div class="stage-tools">
-            <button class="tool-btn" id="resetCamBtn">🔄 Reset Camera</button>
+          <div class="hw-status-text">
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--mint-strong);"></span>
+            <span>Connected</span>
           </div>
         </div>
 
-        <div class="loading-overlay" id="loadingOverlay">
-          <div class="spinner"></div>
-          <p>Loading 3D Model...</p>
+        <div class="hw-card">
+          <div class="hw-header">
+            <span>Piezo Sensor Grid</span>
+            <span>🖲️</span>
+          </div>
+          <div class="hw-status-text">
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--mint-strong);"></span>
+            <span>Ready (26 Nodes)</span>
+          </div>
         </div>
 
-        <model-viewer
-          id="viewer"
-          src="model/Alligator.glb"
-          camera-controls
-          auto-rotate
-          shadow-intensity="1.2"
-          shadow-softness="0.8"
-          exposure="1"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          alt="Interactive 3D model">
-        </model-viewer>
+        <div class="hw-card">
+          <div class="hw-header">
+            <span>Firebase Cloud DB</span>
+            <span>☁️</span>
+          </div>
+          <div class="hw-status-text">
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--mint-strong);"></span>
+            <span>Connected</span>
+          </div>
+        </div>
+
+        <div class="hw-card">
+          <div class="hw-header">
+            <span>Interactive Mat</span>
+            <span>⚡</span>
+          </div>
+          <div class="hw-status-text">
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--mint-strong);"></span>
+            <span>Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prominent Pathway Launch Card -->
+      <div class="pathway-step-card" style="text-align: center; padding: 50px 30px;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🌟</div>
+        <h2 style="font-family: var(--font-heading); font-size: 2.4rem; font-weight: 800; margin-bottom: 10px;">
+          Ready to Start Your Adventure?
+        </h2>
+        <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px;">
+          Choose between Animals and Fruits, pick a letter from A to Z, and interact with real 3D models with voice pronunciation.
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <button class="btn-primary-lg" onclick="App.navigateTo('category')">
+            <span>🚀 Start Adventure (Choose Category)</span> <span>→</span>
+          </button>
+          <button class="btn-secondary-lg" onclick="App.startDirectMode('Animal', 'A')">
+            <span>🐯 Explore Animals</span>
+          </button>
+          <button class="btn-secondary-lg" onclick="App.startDirectMode('Fruit', 'A')">
+            <span>🍎 Explore Fruits</span>
+          </button>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 
-  <footer>
-    <p>© 2026 Interactive Learning App • Interactive Learning Mat Project</p>
-  </footer>
+  <!-- ========================================================================
+       SLIDE 4: STEP 1 - CHOOSE CATEGORY (#view-category)
+       ======================================================================== -->
+  <div id="view-category" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">Category Selection</span>
+          </div>
+        </div>
 
-  <script>
-    const modelsData = [
-      { name: "Alligator", file: "Alligator.glb", category: "animals", icon: "🐊" },
-      { name: "Alpaca", file: "alpaca.glb", category: "animals", icon: "🦙" },
-      { name: "Ant", file: "ant.glb", category: "animals", icon: "🐜" },
-      { name: "Apple", file: "Apple.glb", category: "fruits", icon: "🍎" },
-      { name: "Avocado", file: "Avocado.glb", category: "fruits", icon: "🥑" },
-      { name: "Banana", file: "Banana .glb", category: "fruits", icon: "🍌" },
-      { name: "Bear", file: "Bear.glb", category: "animals", icon: "🐻" },
-      { name: "Bee", file: "Bee.glb", category: "animals", icon: "🐝" },
-      { name: "Blackberries", file: "Blackberries.glb", category: "fruits", icon: "🫐" },
-      { name: "Blueberries", file: "Blueberries.glb", category: "fruits", icon: "🫐" },
-      { name: "Buffalo", file: "Buffalo.glb", category: "animals", icon: "🦬" },
-      { name: "Camel", file: "Camel.glb", category: "animals", icon: "🐪" },
-      { name: "Cat", file: "Cat.glb", category: "animals", icon: "🐱" },
-      { name: "Cherry", file: "Cherry.glb", category: "fruits", icon: "🍒" },
-      { name: "Coconut", file: "Coconut.glb", category: "fruits", icon: "🥥" },
-      { name: "Cow", file: "Cow.glb", category: "animals", icon: "🐄" },
-      { name: "Red Ant", file: "Red ant.glb", category: "animals", icon: "🐜" }
-    ];
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-logout" onclick="App.navigateTo('dashboard')">
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </header>
 
-    const itemsGrid = document.getElementById('itemsGrid');
-    const viewer = document.getElementById('viewer');
-    const currentTitle = document.getElementById('currentTitle');
-    const currentCategory = document.getElementById('currentCategory');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const resetCamBtn = document.getElementById('resetCamBtn');
+    <div class="dash-body">
+      <div class="pathway-step-card">
+        <div class="pathway-breadcrumb">
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('dashboard')">Dashboard</span>
+          <span>/</span>
+          <span>Step 1: Choose Category</span>
+        </div>
 
-    let currentFilter = 'all';
-    let selectedModel = modelsData[0];
+        <div class="pathway-step-header">
+          <p class="pathway-step-tag">Step 1 of 3</p>
+          <h1 class="pathway-step-title">What would you like to explore today?</h1>
+          <p class="pathway-step-sub">Select Animals or Fruits to begin your interactive alphabet journey.</p>
+        </div>
 
-    function renderList() {
-      itemsGrid.innerHTML = '';
-      const filtered = modelsData.filter(item => currentFilter === 'all' || item.category === currentFilter);
-      
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = `model-card ${item.name === selectedModel.name ? 'active' : ''}`;
-        card.innerHTML = `
-          <div class="model-icon">${item.icon}</div>
-          <div class="model-name">${item.name}</div>
-        `;
-        card.onclick = () => selectModel(item);
-        itemsGrid.appendChild(card);
-      });
-    }
+        <div class="category-choice-grid">
+          <!-- Animals Card -->
+          <div class="category-select-card animal-card" onclick="App.selectCategory('Animal')">
+            <div class="category-card-icon">🐯</div>
+            <h3 class="category-card-title">Animals Curriculum</h3>
+            <p class="category-card-desc">
+              Explore 30+ wildlife species, predators, reptiles, birds & mammals with scientific superpowers and lifespans.
+            </p>
+            <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center;">
+              <span>Select Animals (A - Z)</span> <span>→</span>
+            </button>
+          </div>
 
-    function selectModel(item) {
-      selectedModel = item;
-      currentTitle.textContent = item.name;
-      currentCategory.textContent = `Category: ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}`;
-      
-      loadingOverlay.classList.add('active');
-      viewer.src = `model/${encodeURIComponent(item.file)}`;
-      
-      renderList();
-    }
+          <!-- Fruits Card -->
+          <div class="category-select-card fruit-card" onclick="App.selectCategory('Fruit')">
+            <div class="category-card-icon">🍎</div>
+            <h3 class="category-card-title">Fruits Curriculum</h3>
+            <p class="category-card-desc">
+              Discover 30+ tropical fruits, berries, citrus & health benefits with vitamin profiles and harvest seasons.
+            </p>
+            <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center; background: var(--mint-strong); box-shadow: none;">
+              <span>Select Fruits (A - Z)</span> <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    viewer.addEventListener('load', () => {
-      loadingOverlay.classList.remove('active');
-    });
+  <!-- ========================================================================
+       SLIDE 5: STEP 2 - CHOOSE LETTER (#view-letter)
+       ======================================================================== -->
+  <div id="view-letter" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle" id="letterNavSubtitle">Alphabet Choice</span>
+          </div>
+        </div>
 
-    viewer.addEventListener('error', () => {
-      loadingOverlay.classList.remove('active');
-    });
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-logout" onclick="App.navigateTo('category')">
+            ← Change Category
+          </button>
+        </div>
+      </div>
+    </header>
 
-    resetCamBtn.addEventListener('click', () => {
-      viewer.cameraOrbit = "0deg 75deg 105%";
-      viewer.resetTurntable();
-    });
+    <div class="dash-body">
+      <div class="pathway-step-card">
+        <div class="pathway-breadcrumb">
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('dashboard')">Dashboard</span>
+          <span>/</span>
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('category')" id="crumbCategoryName">Category</span>
+          <span>/</span>
+          <span>Step 2: Choose Letter</span>
+        </div>
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.getAttribute('data-category');
-        renderList();
-      });
-    });
+        <div class="pathway-step-header">
+          <p class="pathway-step-tag">Step 2 of 3</p>
+          <h1 class="pathway-step-title" id="letterStepTitle">Choose an Alphabet Letter</h1>
+          <p class="pathway-step-sub">Select any letter below (or step on your physical sensor mat) to view all matching specimens.</p>
+        </div>
 
-    renderList();
-  </script>
+        <!-- Live Piezo Sensor Status Banner -->
+        <div class="piezo-live-banner">
+          <div class="piezo-live-indicator">
+            <div class="piezo-indicator-dot"></div>
+            <div>
+              <div class="piezo-live-text">⚡ Physical Mat Sensor Listener Active</div>
+              <div class="piezo-live-sub">Step on any alphabet pad (A–Z) on your piezo mat or press any key on your keyboard.</div>
+            </div>
+          </div>
+          <div class="piezo-live-badge">
+            <span>🖲️</span> <span id="livePiezoStatusText">Awaiting Step (A–Z)</span>
+          </div>
+        </div>
+
+        <!-- 26-Letter Grid -->
+        <div class="letter-choice-grid" id="letterChoiceGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SLIDE 6: STEP 3 - SPECIMEN SELECTION LIST (#view-selection)
+       ======================================================================== -->
+  <div id="view-selection" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">Specimen Selection</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-logout" onclick="App.navigateTo('letter')">
+            ← Back to Letter Choice
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-body">
+      <div class="pathway-step-card">
+        <div class="pathway-breadcrumb">
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('dashboard')">Dashboard</span>
+          <span>/</span>
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('category')" id="crumbSelectionCat">Category</span>
+          <span>/</span>
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('letter')" id="crumbSelectionLetter">Letter</span>
+          <span>/</span>
+          <span>Step 3: Select Specimen</span>
+        </div>
+
+        <div class="pathway-step-header">
+          <p class="pathway-step-tag">Step 3 of 3</p>
+          <h1 class="pathway-step-title" id="selectionStepTitle">Specimens for Letter A</h1>
+          <p class="pathway-step-sub">Select an item below to launch the 360° 3D Model Viewer & Fact Dossier.</p>
+        </div>
+
+        <!-- Specimen Grid List -->
+        <div class="specimen-choice-grid" id="specimenChoiceGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SLIDE 7: STEP 4 - FULL 3D INTERACTIVE VIEWER STUDIO (#view-viewer)
+       ======================================================================== -->
+  <div id="view-viewer" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">3D Learning Studio</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn-logout" onclick="App.navigateTo('selection')">
+            ← Back to Specimen List
+          </button>
+          <button class="btn-logout" onclick="App.navigateTo('category')">
+            🔤 Change Category
+          </button>
+          <button class="theme-toggle" onclick="App.toggleTheme()" title="Toggle Theme">
+            🌙
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-body">
+      <!-- Breadcrumb -->
+      <div class="pathway-breadcrumb" style="margin-bottom: 20px;">
+        <span class="pathway-breadcrumb-item" onclick="App.navigateTo('dashboard')">Dashboard</span>
+        <span>/</span>
+        <span class="pathway-breadcrumb-item" onclick="App.navigateTo('category')" id="crumbViewerCat">Category</span>
+        <span>/</span>
+        <span class="pathway-breadcrumb-item" onclick="App.navigateTo('letter')" id="crumbViewerLetter">Letter</span>
+        <span>/</span>
+        <span class="pathway-breadcrumb-item" onclick="App.navigateTo('selection')">Specimens</span>
+        <span>/</span>
+        <span id="crumbViewerItemName" style="color: var(--text-highlight); font-weight: 800;">Viewer</span>
+      </div>
+
+      <!-- Main 3D Studio Split Grid -->
+      <div class="dash-studio-grid">
+        <!-- 3D Stage Card -->
+        <div class="dash-3d-stage-card" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <p style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--coral); letter-spacing: 0.15em;" id="viewerCategoryTag">
+                3D AR Model
+              </p>
+              <h2 style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800;" id="viewerItemTitle">
+                Alligator
+              </h2>
+            </div>
+            <span style="font-size: 1.5rem;">🕶️</span>
+          </div>
+
+          <div class="dash-stage-viewport">
+            <div class="dash-stage-loader" id="viewerStageLoader">
+              <div class="loader-spinner"></div>
+              <p style="font-weight: 700;">Loading 3D Specimen...</p>
+            </div>
+
+            <model-viewer
+              id="studioViewer"
+              src="model/Alligator.glb"
+              alt="AlphaMat 3D Specimen"
+              camera-controls
+              auto-rotate
+              auto-rotate-delay="0"
+              shadow-intensity="1.4"
+              shadow-softness="0.7"
+              exposure="1.05"
+              ar
+              ar-modes="webxr scene-viewer quick-look"
+              camera-orbit="0deg 75deg 105%">
+            </model-viewer>
+
+            <div class="stage-image-fallback" id="viewerImageFallback">
+              <div class="fallback-img-container">
+                <img id="viewerFallbackImg" src="images/alphamat_logo.png" alt="Specimen Spec">
+              </div>
+              <p style="margin-top: 14px; font-weight: 700;">Specimen Image Preview</p>
+            </div>
+          </div>
+
+          <div class="dash-stage-controls-bar">
+            <button class="btn-speak" id="btnViewerSpeak" onclick="App.speakViewerItem()">
+              <span>🔊 Listen Audio</span>
+            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="stage-btn" onclick="App.resetStudioCamera()">🔄 Reset</button>
+              <button class="stage-btn" onclick="App.takeStudioSnapshot()">📸 Photo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fact Dossier Card -->
+        <div class="fact-dossier-card">
+          <div class="fact-title-card">
+            <h3 class="fact-main-name" id="dossierName">Alligator</h3>
+            <div class="fact-sci-name" id="dossierSci">Alligator mississippiensis</div>
+          </div>
+
+          <div class="superpower-card" id="dossierSuperpowerCard">
+            <div class="superpower-header" id="dossierSuperpowerTitle">
+              <span>⚡</span> Superpower & Skill
+            </div>
+            <div class="superpower-text" id="dossierSuperpowerText">
+              Super Strong Jaw Bite & Silent Underwater Swimming.
+            </div>
+          </div>
+
+          <div class="specs-matrix">
+            <div class="spec-box">
+              <div class="spec-key">TAXONOMY / CLASS</div>
+              <div class="spec-val" id="dossierCategory">Reptile</div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-key">COLOR PROFILE</div>
+              <div class="spec-val" id="dossierColor">Olive Green</div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-key" id="dossierDietLabel">DIET / HABITAT</div>
+              <div class="spec-val" id="dossierDiet">Carnivore — River fish</div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-key" id="dossierLifespanLabel">LIFESPAN / WEIGHT</div>
+              <div class="spec-val" id="dossierLifespan">35 – 50 years (300 kg)</div>
+            </div>
+          </div>
+
+          <div class="funfact-box">
+            <div class="funfact-header">
+              <span>💡</span> Did You Know?
+            </div>
+            <div class="funfact-text" id="dossierFunFact">
+              Alligators can hold their breath underwater for up to two hours without coming up for air!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Studio Tools Tabs (Mat Simulator, Quiz, Certificate) -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 32px; box-shadow: var(--shadow-sm); margin-top: 36px;">
+        <div class="dash-subtabs-nav">
+          <button class="dash-subtab-btn active" onclick="App.switchStudioSubtab('simulator', this)">
+            🖲️ Virtual Mat Simulator
+          </button>
+          <button class="dash-subtab-btn" onclick="App.switchStudioSubtab('quiz', this)">
+            🎯 EduQuest Quiz
+          </button>
+          <button class="dash-subtab-btn" onclick="App.switchStudioSubtab('certificate', this)">
+            🏆 Student Certificate
+          </button>
+        </div>
+
+        <!-- Tab 1: Simulator -->
+        <div id="studioTab-simulator" class="dash-tab-content">
+          <div class="mat-sim-grid">
+            <div>
+              <div style="font-weight: 800; margin-bottom: 14px; font-size: 1rem;">
+                AlphaMat 26-Pad Tactile Sensor Array (A–Z)
+              </div>
+              <div class="sensor-nodes-grid" id="studioNodesGrid"></div>
+            </div>
+
+            <div>
+              <div style="font-weight: 800; margin-bottom: 14px; font-size: 1rem; display: flex; justify-content: space-between;">
+                <span>Serial Telemetry</span>
+                <span style="font-family: var(--font-mono); color: var(--mint-strong);">BAUD: 115200</span>
+              </div>
+              <div class="meter-track" style="margin-bottom: 12px;">
+                <div class="meter-fill" id="studioMeterFill"></div>
+              </div>
+              <div class="terminal-console" id="studioTelemetryLogs"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Quiz -->
+        <div id="studioTab-quiz" class="dash-tab-content" style="display: none;">
+          <div style="max-width: 760px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px;">
+              <span id="quizProgressNum">Question 1</span>
+              <div style="display: flex; gap: 14px;">
+                <span id="quizScoreLive" style="color: var(--coral);">0 pts</span>
+                <span id="quizStreakLive" style="color: var(--amber);">0 🔥</span>
+              </div>
+            </div>
+            <div class="quiz-track" style="margin-bottom: 20px;">
+              <div class="quiz-fill" id="quizFill"></div>
+            </div>
+
+            <div id="quizCategoryTag" style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--coral); margin-bottom: 6px;">
+              🌟 Discovery Trivia
+            </div>
+            <h3 id="quizQuestionText" style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; margin-bottom: 20px;">
+              Loading Question...
+            </h3>
+
+            <div class="quiz-options-grid" id="quizOptionsGrid"></div>
+            <div class="quiz-feedback-box" id="quizFeedbackBox"></div>
+
+            <div style="text-align: right;">
+              <button class="btn-primary-lg" id="btnNextQuiz" style="display: none; padding: 10px 22px; font-size: 0.9rem;" onclick="App.loadNextQuiz()">
+                <span>Next Question</span> <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Certificate -->
+        <div id="studioTab-certificate" class="dash-tab-content" style="display: none;">
+          <div class="cert-grid">
+            <div class="cert-form-box">
+              <h3 style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; margin-bottom: 18px;">
+                🎓 Personalize Diploma
+              </h3>
+              <div class="form-group">
+                <label class="form-label" for="studentNameInput">Student Name</label>
+                <input type="text" id="studentNameInput" class="form-input" value="Aarav Sharma" oninput="App.updateCertificate()">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="studentClassInput">Grade / School</label>
+                <input type="text" id="studentClassInput" class="form-input" value="Grade 2 — STEM Innovators" oninput="App.updateCertificate()">
+              </div>
+              <button class="btn-primary-lg" style="width: 100%; justify-content: center;" onclick="window.print()">
+                <span>🖨️ Print / Save PDF Certificate</span>
+              </button>
+            </div>
+
+            <div class="certificate-preview-frame">
+              <div class="cert-gold-border">
+                <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 6px;">
+                  Official Certificate of Achievement
+                </div>
+                <h2 class="cert-headline">AlphaMat Junior Explorer</h2>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 8px;">This honor is proudly awarded to</p>
+                <div class="cert-recipient" id="certRecipient">Aarav Sharma</div>
+                <p class="cert-statement" id="certStatement" style="font-size: 0.85rem; max-width: 480px; margin: 0 auto 20px; line-height: 1.6;">
+                  Has successfully mastered the interactive AlphaMat 3D alphabet discovery modules, completed wildlife and botanical curriculum exploration from Grade 2 — STEM Innovators, and demonstrated stellar curiosity!
+                </p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 14px;">
+                  <div style="text-align: left;">
+                    <div style="font-weight: 800; font-size: 0.85rem;">AlphaMat System</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Interactive Learning Mat</div>
+                  </div>
+                  <div style="font-size: 2rem;">🏅</div>
+                  <div style="text-align: right;">
+                    <div style="font-weight: 800; font-size: 0.85rem;">STEM Credential</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">3D & IoT Certified</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

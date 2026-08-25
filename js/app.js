@@ -1,0 +1,739 @@
+/**
+ * AlphaMat — Step-by-Step Pathway Application Controller (SPA Router)
+ * Landing -> Login -> Dashboard -> Category -> Letter -> Specimen Selection -> 3D Studio
+ */
+
+window.App = (function () {
+  'use strict';
+
+  // Application State
+  const state = {
+    currentView: 'landing', // 'landing' | 'login' | 'dashboard' | 'category' | 'letter' | 'selection' | 'viewer'
+    mode: 'Animal', // 'Animal' | 'Fruit'
+    selectedLetter: 'A',
+    activeSpecimen: null,
+    isSpeaking: false,
+    quiz: {
+      currentIndex: 0,
+      score: 0,
+      streak: 0,
+      totalQuestions: 5,
+      currentQuestion: null,
+      answered: false
+    }
+  };
+
+  // Web Audio Synth
+  const AudioEngine = {
+    ctx: null,
+    init() {
+      if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioCtx();
+      }
+    },
+    playTone(freq = 440, type = 'sine', duration = 0.1, volume = 0.15) {
+      try {
+        this.init();
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      } catch (e) {}
+    },
+    playSuccess() {
+      this.playTone(523.25, 'triangle', 0.1, 0.15);
+      setTimeout(() => this.playTone(659.25, 'triangle', 0.15, 0.2), 100);
+      setTimeout(() => this.playTone(783.99, 'triangle', 0.25, 0.25), 200);
+    },
+    playError() {
+      this.playTone(280, 'sawtooth', 0.15, 0.2);
+      setTimeout(() => this.playTone(220, 'sawtooth', 0.25, 0.2), 120);
+    },
+    playMatStep() {
+      this.playTone(380, 'sine', 0.08, 0.25);
+      setTimeout(() => this.playTone(580, 'sine', 0.12, 0.2), 60);
+    }
+  };
+
+  // Helper to fetch dataset items
+  function getItemsByMode(mode) {
+    if (typeof ALPHAMAT_DATA === 'undefined') return [];
+    return mode === 'Animal' ? ALPHAMAT_DATA.animals : ALPHAMAT_DATA.fruits;
+  }
+
+  function getItemsByModeAndLetter(mode, letter) {
+    const list = getItemsByMode(mode);
+    return list.filter(item => item.alphabet === letter);
+  }
+
+  function getAllItems() {
+    if (typeof ALPHAMAT_DATA === 'undefined') return [];
+    return [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
+  }
+
+  // Navigation Controller (Switching between Views/Slides with URL routing)
+  function navigateTo(viewName, pushHash = true) {
+    if (!viewName) return;
+    if (viewName === 'start') viewName = 'category';
+
+    state.currentView = viewName;
+    const allViews = document.querySelectorAll('.app-view');
+    allViews.forEach(v => v.classList.remove('active-view'));
+
+    const target = document.getElementById(`view-${viewName}`);
+    if (target) {
+      target.classList.add('active-view');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (pushHash) {
+      if (window.location.hash !== `#${viewName}`) {
+        history.pushState({ view: viewName }, '', `#${viewName}`);
+      }
+    }
+
+    AudioEngine.playTone(520, 'sine', 0.06);
+  }
+
+  // Login Handler — Authenticate & Switch to Next Page / Start Hub
+  function handleLogin(event) {
+    if (event) {
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+      if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    }
+
+    const emailEl = document.getElementById('loginEmailInput');
+    const pwdEl = document.getElementById('loginPasswordInput');
+    const btnSubmit = document.getElementById('btnLoginSubmit');
+    const email = emailEl ? emailEl.value.trim() : 'admin';
+    const pwd = pwdEl ? pwdEl.value.trim() : 'admin123';
+
+    if (!email || !pwd) {
+      AudioEngine.playError();
+      return false;
+    }
+
+    // Button visual state
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<span>⏳ Signing In...</span>`;
+    }
+
+    // Successful login transition & chime
+    AudioEngine.playSuccess();
+
+    setTimeout(() => {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<span>Login to Explorer Hub</span> <span>→</span>`;
+      }
+      // Switch directly to Page 2: Category Selection (Start Adventure)
+      navigateTo('category');
+    }, 280);
+
+    return false;
+  }
+
+  function handleLogout() {
+    AudioEngine.playTone(400, 'sine', 0.08);
+    navigateTo('landing');
+  }
+
+  function fillDemoCredentials() {
+    const emailEl = document.getElementById('loginEmailInput');
+    const pwdEl = document.getElementById('loginPasswordInput');
+    if (emailEl) emailEl.value = 'admin';
+    if (pwdEl) pwdEl.value = 'admin123';
+    AudioEngine.playTone(600, 'sine', 0.06);
+  }
+
+  // Step 1 (Page 2): Select Category (Animal vs Fruit) -> Switches to Step 2 (Page 3: Alphabet Grid)
+  function selectCategory(cat) {
+    state.mode = cat;
+    AudioEngine.playTone(580, 'sine', 0.06);
+
+    // Update Letter Step Header & Breadcrumb
+    const letterTitle = document.getElementById('letterStepTitle');
+    const crumbCategoryName = document.getElementById('crumbCategoryName');
+    const letterNavSubtitle = document.getElementById('letterNavSubtitle');
+
+    if (letterTitle) letterTitle.textContent = `Choose an Alphabet Letter for ${cat}s`;
+    if (crumbCategoryName) crumbCategoryName.textContent = `${cat}s`;
+    if (letterNavSubtitle) letterNavSubtitle.textContent = `${cat} Alphabet Choice`;
+
+    // Render all 26 letters (A through Z) without auto-selecting any letter
+    renderLetterChoiceGrid();
+
+    // Reset piezo indicator text
+    const piezoStatus = document.getElementById('livePiezoStatusText');
+    if (piezoStatus) piezoStatus.textContent = `Awaiting Step on ${cat} Mat (A–Z)`;
+
+    navigateTo('letter');
+  }
+
+  // Step 2 (Page 3): Render All 26 Alphabet Letters (A - Z)
+  function renderLetterChoiceGrid() {
+    const grid = document.getElementById('letterChoiceGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const items = getItemsByMode(state.mode);
+
+    letters.forEach(char => {
+      const matchCount = items.filter(i => i.alphabet === char).length;
+      const btn = document.createElement('div');
+      btn.className = 'letter-choice-btn';
+      btn.id = `letter-btn-${char}`;
+      btn.setAttribute('data-letter', char);
+      btn.innerHTML = `
+        <div class="letter-char">${char}</div>
+        <div class="letter-count-label">${matchCount > 0 ? `${matchCount} ${state.mode.toLowerCase()}s` : 'Explore'}</div>
+      `;
+      btn.onclick = () => selectLetter(char, false);
+      grid.appendChild(btn);
+    });
+  }
+
+  // Step 2 -> Step 3 (Page 4): Select Letter (Triggered by Mat Piezo Step or Click)
+  function selectLetter(char, isPiezo = false) {
+    if (!char) return;
+    char = char.toUpperCase();
+    state.selectedLetter = char;
+
+    // Tactile piezo audio & visual feedback
+    AudioEngine.playMatStep();
+
+    const targetBtn = document.getElementById(`letter-btn-${char}`);
+    if (targetBtn) {
+      document.querySelectorAll('.letter-choice-btn').forEach(b => b.classList.remove('piezo-active'));
+      targetBtn.classList.add('piezo-active');
+    }
+
+    const piezoStatus = document.getElementById('livePiezoStatusText');
+    if (piezoStatus) {
+      piezoStatus.innerHTML = `⚡ Step Detected: <strong>Letter ${char}</strong> (${state.mode}s)`;
+    }
+
+    // Update Specimen List Step Header & Breadcrumb
+    const selectionTitle = document.getElementById('selectionStepTitle');
+    const crumbSelectionCat = document.getElementById('crumbSelectionCat');
+    const crumbSelectionLetter = document.getElementById('crumbSelectionLetter');
+
+    if (selectionTitle) selectionTitle.textContent = `${state.mode}s Starting With '${char}'`;
+    if (crumbSelectionCat) crumbSelectionCat.textContent = `${state.mode}s`;
+    if (crumbSelectionLetter) crumbSelectionLetter.textContent = `Letter ${char}`;
+
+    renderSpecimenList();
+
+    // Smooth transition to Step 3 (Specimen list) after tactile feedback delay
+    setTimeout(() => {
+      navigateTo('selection');
+    }, 280);
+  }
+
+  // Step 3: Render Specimen List for that letter
+  function renderSpecimenList() {
+    const grid = document.getElementById('specimenChoiceGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    let matching = getItemsByModeAndLetter(state.mode, state.selectedLetter);
+    if (matching.length === 0) {
+      matching = getAllItems().filter(i => i.alphabet === state.selectedLetter);
+    }
+    if (matching.length === 0) {
+      matching = getItemsByMode(state.mode).slice(0, 4);
+    }
+
+    matching.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'specimen-select-card';
+      const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
+
+      card.innerHTML = `
+        <div class="specimen-avatar-box">
+          <img src="${imgSrc}" alt="${item.name}" onerror="this.src='images/alphamat_logo.png'">
+        </div>
+        <div class="specimen-card-info">
+          <div class="specimen-card-name">${item.name}</div>
+          <div class="specimen-card-sci">${item.scientificName || `Letter ${item.alphabet}`}</div>
+          <div class="specimen-card-desc">${item.superpower || item.benefits || item.category}</div>
+        </div>
+        <div style="font-size: 1.2rem; color: var(--coral);">→</div>
+      `;
+
+      card.onclick = () => openSpecimen(item);
+      grid.appendChild(card);
+    });
+  }
+
+  // Step 3 -> Step 4: Open 3D Viewer Studio
+  function openSpecimen(item) {
+    if (!item) return;
+    state.activeSpecimen = item;
+    AudioEngine.playSuccess();
+
+    // Update Viewer Breadcrumbs
+    const crumbViewerCat = document.getElementById('crumbViewerCat');
+    const crumbViewerLetter = document.getElementById('crumbViewerLetter');
+    const crumbViewerItemName = document.getElementById('crumbViewerItemName');
+    const viewerCategoryTag = document.getElementById('viewerCategoryTag');
+    const viewerItemTitle = document.getElementById('viewerItemTitle');
+
+    if (crumbViewerCat) crumbViewerCat.textContent = `${state.mode}s`;
+    if (crumbViewerLetter) crumbViewerLetter.textContent = `Letter ${item.alphabet}`;
+    if (crumbViewerItemName) crumbViewerItemName.textContent = item.name.split(' ')[0];
+    if (viewerCategoryTag) viewerCategoryTag.textContent = `${state.mode} 3D AR Model`;
+    if (viewerItemTitle) viewerItemTitle.textContent = item.name;
+
+    // Fact Dossier
+    const dossierName = document.getElementById('dossierName');
+    const dossierSci = document.getElementById('dossierSci');
+    const dossierSuperpowerCard = document.getElementById('dossierSuperpowerCard');
+    const dossierSuperpowerTitle = document.getElementById('dossierSuperpowerTitle');
+    const dossierSuperpowerText = document.getElementById('dossierSuperpowerText');
+    const dossierCategory = document.getElementById('dossierCategory');
+    const dossierColor = document.getElementById('dossierColor');
+    const dossierDiet = document.getElementById('dossierDiet');
+    const dossierDietLabel = document.getElementById('dossierDietLabel');
+    const dossierLifespan = document.getElementById('dossierLifespan');
+    const dossierLifespanLabel = document.getElementById('dossierLifespanLabel');
+    const dossierFunFact = document.getElementById('dossierFunFact');
+
+    if (dossierName) dossierName.textContent = item.name;
+    if (dossierSci) dossierSci.textContent = item.scientificName || `Alphabet Category: ${item.alphabet}`;
+
+    if (dossierSuperpowerCard) {
+      if (state.mode === 'Animal') {
+        dossierSuperpowerCard.className = 'superpower-card';
+        dossierSuperpowerTitle.innerHTML = '<span>⚡</span> Superpower & Skill';
+        dossierSuperpowerText.textContent = item.superpower || 'Special natural adaptations & sensory perception.';
+      } else {
+        dossierSuperpowerCard.className = 'superpower-card fruit-style';
+        dossierSuperpowerTitle.innerHTML = '<span>✨</span> Health Benefits & Nutrients';
+        dossierSuperpowerText.textContent = item.benefits || item.vitamins || 'Loaded with natural vitamins & antioxidants.';
+      }
+    }
+
+    if (dossierCategory) dossierCategory.textContent = item.category || (state.mode === 'Animal' ? 'Fauna' : 'Flora');
+    if (dossierColor) dossierColor.textContent = item.color || 'Natural vibrant shade';
+
+    if (state.mode === 'Animal') {
+      if (dossierDietLabel) dossierDietLabel.textContent = 'DIET / HABITAT';
+      if (dossierDiet) dossierDiet.textContent = item.diet || item.habitat || 'Forests & Woodlands';
+      if (dossierLifespanLabel) dossierLifespanLabel.textContent = 'LIFESPAN / WEIGHT';
+      if (dossierLifespan) dossierLifespan.textContent = item.lifespan ? `${item.lifespan} (${item.weight || 'Varied'})` : 'Varied';
+    } else {
+      if (dossierDietLabel) dossierDietLabel.textContent = 'TASTE PROFILE';
+      if (dossierDiet) dossierDiet.textContent = item.taste || 'Sweet & refreshing';
+      if (dossierLifespanLabel) dossierLifespanLabel.textContent = 'HARVEST SEASON';
+      if (dossierLifespan) dossierLifespan.textContent = item.season || 'Seasonal summer';
+    }
+
+    if (dossierFunFact) dossierFunFact.textContent = item.funFact || `${item.name} is a key discovery in the AlphaMat curriculum.`;
+
+    // 3D Model Viewer
+    const viewer = document.getElementById('studioViewer');
+    const loader = document.getElementById('viewerStageLoader');
+    const fallback = document.getElementById('viewerImageFallback');
+    const fallbackImg = document.getElementById('viewerFallbackImg');
+
+    if (item.hasRealModel && viewer) {
+      if (loader) loader.classList.add('active');
+      if (fallback) fallback.classList.remove('active');
+      viewer.style.display = 'block';
+      viewer.src = `model/${encodeURIComponent(item.model)}`;
+    } else {
+      if (viewer) viewer.style.display = 'none';
+      if (loader) loader.classList.remove('active');
+      if (fallback) fallback.classList.add('active');
+      const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
+      if (fallbackImg) fallbackImg.src = imgSrc;
+    }
+
+    initStudioMatSimulator();
+    loadNextQuizQuestion();
+
+    navigateTo('viewer');
+  }
+
+  // Direct Start Shortcut from Dashboard
+  function startDirectMode(cat, letter) {
+    selectCategory(cat);
+    selectLetter(letter);
+  }
+
+  // Voice Narration
+  function speakViewerItem() {
+    if (!('speechSynthesis' in window)) {
+      alert('Speech synthesis is not supported in this browser.');
+      return;
+    }
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      const btn = document.getElementById('btnViewerSpeak');
+      if (btn) btn.innerHTML = '<span>🔊 Listen Audio</span>';
+      return;
+    }
+    if (!state.activeSpecimen) return;
+
+    const item = state.activeSpecimen;
+    const text = state.mode === 'Animal'
+      ? `${item.name}. Scientific Name: ${item.scientificName || 'Unknown'}. Superpower: ${item.superpower || 'Special skill'}. Fun fact: ${item.funFact || item.description}`
+      : `${item.name}. Scientific Name: ${item.scientificName || 'Unknown'}. Health Benefits: ${item.benefits || item.vitamins || 'High nutritional value'}. Fun fact: ${item.funFact || item.description}`;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.92;
+    utterance.pitch = 1.05;
+
+    const btn = document.getElementById('btnViewerSpeak');
+    utterance.onstart = () => { if (btn) btn.innerHTML = '<span>⏹️ Stop Audio</span>'; };
+    utterance.onend = () => { if (btn) btn.innerHTML = '<span>🔊 Listen Audio</span>'; };
+    utterance.onerror = () => { if (btn) btn.innerHTML = '<span>🔊 Listen Audio</span>'; };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function resetStudioCamera() {
+    const viewer = document.getElementById('studioViewer');
+    if (viewer) {
+      viewer.cameraOrbit = '0deg 75deg 105%';
+      if (viewer.resetTurntable) viewer.resetTurntable();
+      AudioEngine.playTone(480, 'sine', 0.08);
+    }
+  }
+
+  function takeStudioSnapshot() {
+    const viewer = document.getElementById('studioViewer');
+    if (viewer && viewer.style.display !== 'none' && viewer.toDataURL) {
+      const link = document.createElement('a');
+      link.download = `AlphaMat-${state.activeSpecimen ? state.activeSpecimen.name.replace(/[^a-zA-Z0-9]/g, '_') : '3D'}.png`;
+      link.href = viewer.toDataURL('image/png');
+      link.click();
+      AudioEngine.playSuccess();
+    } else {
+      alert('Snapshot exported!');
+    }
+  }
+
+  // Secondary Tools Subtab Switcher
+  function switchStudioSubtab(tabName, btn) {
+    document.querySelectorAll('.dash-subtab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    document.querySelectorAll('.dash-tab-content').forEach(tab => tab.style.display = 'none');
+    const target = document.getElementById(`studioTab-${tabName}`);
+    if (target) target.style.display = 'block';
+
+    AudioEngine.playTone(500, 'sine', 0.06);
+  }
+
+  // Mat Simulator
+  function initStudioMatSimulator() {
+    const grid = document.getElementById('studioNodesGrid');
+    if (!grid || grid.children.length > 0) return;
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    letters.forEach(char => {
+      const pad = document.createElement('div');
+      pad.className = 'sensor-pad-node';
+      pad.innerHTML = `
+        <div class="pad-letter">${char}</div>
+        <div class="pad-sample">Pad</div>
+      `;
+      pad.onclick = () => triggerMatSensor(char, pad);
+      grid.appendChild(pad);
+    });
+  }
+
+  function triggerMatSensor(letter, element) {
+    AudioEngine.playMatStep();
+    element.classList.add('triggered');
+    setTimeout(() => element.classList.remove('triggered'), 350);
+
+    const voltage = (3.4 + Math.random() * 1.45).toFixed(2);
+    const adcRaw = Math.floor(voltage * 204.8);
+
+    const meterFill = document.getElementById('studioMeterFill');
+    if (meterFill) {
+      const pct = Math.min(100, Math.floor((voltage / 5.0) * 100));
+      meterFill.style.width = `${pct}%`;
+    }
+
+    const consoleLogs = document.getElementById('studioTelemetryLogs');
+    if (consoleLogs) {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+      const logRow = document.createElement('div');
+      logRow.className = 'log-entry';
+      logRow.innerHTML = `
+        <span style="color:#8b9ea3;">[${timeStr}]</span>
+        <span style="color:#eb5e41; font-weight:700;">PAD_${letter}</span>
+        <span style="color:#279668;">PULSE:${voltage}V (ADC:${adcRaw})</span>
+        <span style="color:#c084fc;">FIREBASE:SYNCED</span>
+      `;
+      consoleLogs.insertBefore(logRow, consoleLogs.firstChild);
+      if (consoleLogs.children.length > 25) consoleLogs.removeChild(consoleLogs.lastChild);
+    }
+
+    selectLetter(letter);
+  }
+
+  // Quiz Engine
+  function generateQuizQuestion() {
+    const all = getAllItems();
+    if (all.length < 4) return null;
+
+    const correctItem = all[Math.floor(Math.random() * all.length)];
+    const wrongOptions = [];
+    while (wrongOptions.length < 3) {
+      const candidate = all[Math.floor(Math.random() * all.length)];
+      if (candidate.name !== correctItem.name && !wrongOptions.some(w => w.name === candidate.name)) {
+        wrongOptions.push(candidate);
+      }
+    }
+
+    const questionTypes = ['superpower', 'funfact'];
+    const chosenType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+    let questionText = '';
+    let categoryTag = '🌟 Discovery Trivia';
+
+    if (chosenType === 'superpower' && correctItem.superpower) {
+      categoryTag = '⚡ Superpower & Nutrition';
+      questionText = correctItem.type === 'animal'
+        ? `Which animal has the superpower: "${correctItem.superpower}"?`
+        : `Which fruit is celebrated for: "${correctItem.benefits || correctItem.vitamins}"?`;
+    } else {
+      categoryTag = '💡 Did You Know?';
+      questionText = `Mystery Clue: "${correctItem.funFact || correctItem.description}" — Who is this?`;
+    }
+
+    const options = [...wrongOptions, correctItem].sort(() => Math.random() - 0.5);
+    return { questionText, categoryTag, correctItem, options };
+  }
+
+  function loadNextQuizQuestion() {
+    state.quiz.answered = false;
+    const fb = document.getElementById('quizFeedbackBox');
+    const btnNext = document.getElementById('btnNextQuiz');
+    if (fb) fb.classList.remove('active');
+    if (btnNext) btnNext.style.display = 'none';
+
+    state.quiz.currentQuestion = generateQuizQuestion();
+    if (!state.quiz.currentQuestion) return;
+
+    const q = state.quiz.currentQuestion;
+    document.getElementById('quizQuestionText').textContent = q.questionText;
+    document.getElementById('quizCategoryTag').textContent = q.categoryTag;
+    document.getElementById('quizProgressNum').textContent = `Question ${state.quiz.currentIndex + 1}`;
+
+    const fill = document.getElementById('quizFill');
+    if (fill) {
+      const pct = Math.min(100, ((state.quiz.currentIndex + 1) / state.quiz.totalQuestions) * 100);
+      fill.style.width = `${pct}%`;
+    }
+
+    const grid = document.getElementById('quizOptionsGrid');
+    if (grid) {
+      grid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerHTML = `
+          <div style="width:28px; height:28px; border-radius:6px; background:var(--bg-card); display:grid; place-items:center; font-weight:800;">${letters[idx]}</div>
+          <span>${opt.name}</span>
+        `;
+        btn.onclick = () => handleQuizAnswer(opt, btn);
+        grid.appendChild(btn);
+      });
+    }
+  }
+
+  function handleQuizAnswer(selectedOption, clickedBtn) {
+    if (state.quiz.answered) return;
+    state.quiz.answered = true;
+
+    const q = state.quiz.currentQuestion;
+    const isCorrect = selectedOption.name === q.correctItem.name;
+    const allBtns = document.querySelectorAll('.quiz-option-btn');
+
+    allBtns.forEach(btn => {
+      if (btn.querySelector('span').textContent === q.correctItem.name) {
+        btn.classList.add('correct');
+      }
+    });
+
+    const fb = document.getElementById('quizFeedbackBox');
+    if (isCorrect) {
+      AudioEngine.playSuccess();
+      clickedBtn.classList.add('correct');
+      state.quiz.score += 20;
+      state.quiz.streak += 1;
+      if (fb) {
+        fb.innerHTML = `<div style="color:#279668; font-weight:800;">🎉 Correct Answer! Stellar Discovery!</div><div>${q.correctItem.funFact || ''}</div>`;
+        fb.classList.add('active');
+      }
+    } else {
+      AudioEngine.playError();
+      clickedBtn.classList.add('wrong');
+      state.quiz.streak = 0;
+      if (fb) {
+        fb.innerHTML = `<div style="color:#eb5e41; font-weight:800;">❌ The correct answer was ${q.correctItem.name}.</div>`;
+        fb.classList.add('active');
+      }
+    }
+
+    document.getElementById('quizScoreLive').textContent = `${state.quiz.score} pts`;
+    document.getElementById('quizStreakLive').textContent = `${state.quiz.streak} 🔥`;
+    const btnNext = document.getElementById('btnNextQuiz');
+    if (btnNext) btnNext.style.display = 'inline-flex';
+  }
+
+  function loadNextQuiz() {
+    state.quiz.currentIndex += 1;
+    loadNextQuizQuestion();
+  }
+
+  // Certificate
+  function updateCertificate() {
+    const studentName = document.getElementById('studentNameInput').value.trim() || 'Young Explorer';
+    const studentClass = document.getElementById('studentClassInput').value.trim();
+
+    document.getElementById('certRecipient').textContent = studentName;
+    const classStr = studentClass ? ` from ${studentClass}` : '';
+    document.getElementById('certStatement').textContent = `Has successfully mastered the interactive AlphaMat 3D alphabet discovery modules, completed wildlife and botanical curriculum exploration${classStr}, and demonstrated stellar curiosity!`;
+  }
+
+  // Theme Toggle
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = newTheme === 'dark' ? '🌙' : '☀️');
+    localStorage.setItem('alphamat_theme', newTheme);
+    AudioEngine.playTone(600, 'triangle', 0.08);
+  }
+
+  // Init
+  function init() {
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+
+    // Handle back / forward navigation and hash changes
+    window.addEventListener('popstate', () => {
+      const hash = window.location.hash.replace('#', '') || 'landing';
+      const validViews = ['landing', 'login', 'dashboard', 'category', 'letter', 'selection', 'viewer'];
+      if (validViews.includes(hash)) {
+        navigateTo(hash, false);
+      }
+    });
+
+    // Check initial URL hash
+    const initialHash = window.location.hash.replace('#', '');
+    const validViews = ['landing', 'login', 'dashboard', 'category', 'letter', 'selection', 'viewer'];
+    if (initialHash && validViews.includes(initialHash)) {
+      navigateTo(initialHash, false);
+    }
+
+    // Physical Mat & Keyboard Listener (Emulates Piezo steps A through Z)
+    window.addEventListener('keydown', (e) => {
+      // Ignore if user is currently typing in an input field
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+      const key = e.key.toUpperCase();
+
+      // Number keys 1 & 2 on Category view
+      if (state.currentView === 'category' || state.currentView === 'dashboard') {
+        if (key === '1') selectCategory('Animal');
+        if (key === '2') selectCategory('Fruit');
+      }
+
+      // Alphabet keys A-Z trigger piezo selection on Letter or Category screen
+      if (/^[A-Z]$/.test(key)) {
+        if (state.currentView === 'letter' || state.currentView === 'category') {
+          selectLetter(key, true);
+        }
+      }
+    });
+
+    // 📡 Live Firebase Realtime Database Listener (Polls for ESP32 hardware step triggers)
+    let lastFirebaseLetter = '';
+    const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
+
+    async function pollFirebaseLiveStep() {
+      try {
+        const response = await fetch(FIREBASE_URL, { cache: 'no-store' });
+        if (response.ok) {
+          const letterVal = await response.json();
+          if (letterVal && typeof letterVal === 'string') {
+            const letter = letterVal.trim().toUpperCase();
+            if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
+              lastFirebaseLetter = letter;
+              console.log('[Firebase Live Step Detected]:', letter);
+              if (state.currentView === 'letter' || state.currentView === 'category') {
+                selectLetter(letter, true);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        // Silent catch for network hiccups
+      }
+    }
+    // Poll Firebase every 500ms
+    setInterval(pollFirebaseLiveStep, 500);
+
+    const viewer = document.getElementById('studioViewer');
+    if (viewer) {
+      viewer.addEventListener('load', () => {
+        const loader = document.getElementById('viewerStageLoader');
+        if (loader) loader.classList.remove('active');
+      });
+      viewer.addEventListener('error', () => {
+        const loader = document.getElementById('viewerStageLoader');
+        if (loader) loader.classList.remove('active');
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Public API
+  return {
+    navigateTo,
+    handleLogin,
+    handleLogout,
+    fillDemoCredentials,
+    selectCategory,
+    selectLetter,
+    openSpecimen,
+    startDirectMode,
+    speakViewerItem,
+    resetStudioCamera,
+    takeStudioSnapshot,
+    switchStudioSubtab,
+    loadNextQuiz,
+    updateCertificate,
+    toggleTheme
+  };
+
+})();

@@ -99,6 +99,8 @@ class Selection:
 
                 btn.pack(pady=8, padx=10)
 
+        self.data = data
+
         # Back Button (Remains in alphabet choice)
         back = ctk.CTkButton(
             self.card,
@@ -112,6 +114,10 @@ class Selection:
             command=self.go_back
         )
         back.pack(pady=(18, 10))
+
+        # Deregister listener so user can select 3D options manually
+        from hardware_listener import listener
+        listener.deregister()
 
         self.window.mainloop()
 
