@@ -131,6 +131,17 @@
             camera-orbit="0deg 75deg 105%"
             style="width: 100%; height: 420px;">
           </model-viewer>
+
+          <!-- Company Logo Display when 3D model is not available -->
+          <div id="studioLogoFallback" style="display: none; width: 100%; height: 420px; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(235,94,65,0.06) 0%, rgba(0,0,0,0) 70%); text-align: center; padding: 24px;">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" style="max-height: 210px; max-width: 280px; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.12));" onerror="this.src='images/logo.jpg'">
+            <div style="margin-top: 18px; font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--text-highlight);">
+              Alpha<span class="text-coral">Mat</span> 3D Studio
+            </div>
+            <div class="coming-soon-badge" style="margin-top: 8px; font-size: 0.9rem; font-weight: 700; color: var(--coral); background: var(--bg-sand); padding: 6px 18px; border-radius: 20px; border: 1px solid var(--border-subtle); display: inline-flex; align-items: center; gap: 6px;">
+              ✨ 3D Model in Development for this Specimen
+            </div>
+          </div>
         </div>
 
         <!-- Controls Bar -->
@@ -268,20 +279,39 @@
         document.getElementById('viewerSpecimenImg').src = `images/${encodeURIComponent(activeItem.image)}`;
       }
 
-      // Load 3D Model (from model/ or letter model/)
+      // 3D Model or Company Logo Fallback
       const viewer = document.getElementById('studioViewer');
+      const logoFallback = document.getElementById('studioLogoFallback');
       const loader = document.getElementById('viewerStageLoader');
-      if (viewer && activeItem.model) {
-        if (loader) loader.classList.add('active');
-        viewer.src = `model/${encodeURIComponent(activeItem.model)}`;
-        viewer.addEventListener('load', () => {
-          if (loader) loader.classList.remove('active');
-        });
-        viewer.addEventListener('error', () => {
-          // Fallback to letter model folder if needed
-          viewer.src = `letter_model/${encodeURIComponent(activeItem.model)}`;
-          if (loader) loader.classList.remove('active');
-        });
+
+      if (activeItem.hasRealModel && activeItem.model) {
+        if (viewer) {
+          viewer.style.display = 'block';
+          if (logoFallback) logoFallback.style.display = 'none';
+          if (loader) loader.classList.add('active');
+          viewer.src = `model/${encodeURIComponent(activeItem.model)}`;
+          viewer.addEventListener('load', () => {
+            if (loader) loader.classList.remove('active');
+          });
+          viewer.addEventListener('error', () => {
+            // Fallback to letter model folder if available or logo
+            viewer.src = `letter_model/${encodeURIComponent(activeItem.model)}`;
+            viewer.addEventListener('error', () => {
+              viewer.style.display = 'none';
+              if (logoFallback) logoFallback.style.display = 'flex';
+              if (loader) loader.classList.remove('active');
+            });
+          });
+        }
+      } else {
+        // No custom 3D model: Display AlphaMat Company Logo!
+        if (viewer) viewer.style.display = 'none';
+        if (loader) loader.classList.remove('active');
+        if (logoFallback) {
+          logoFallback.style.display = 'flex';
+          const badge = logoFallback.querySelector('.coming-soon-badge');
+          if (badge) badge.textContent = `✨ 3D Model in Development for ${activeItem.name}`;
+        }
       }
     }
 

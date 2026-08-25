@@ -71,7 +71,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Indian elephants love bathing in rivers and spraying water!",
       "description": "Asiatic Elephants are wise, gentle giants found across Indian forests.",
       "image": "logo.jpg",
-      "model": "elephant.glb",
+      "model": "ant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -131,8 +131,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Every tiger has a completely unique stripe pattern!",
       "description": "The Royal Bengal Tiger is a majestic orange cat with black stripes.",
       "image": "logo.jpg",
-      "model": "tiger.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -191,8 +191,8 @@ const ALPHAMAT_DATA = {
       "funFact": "A cheetah can accelerate faster than a sports car!",
       "description": "The Cheetah is a spotted big cat known for incredible sprinting speed.",
       "image": "logo.jpg",
-      "model": "cheetah.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -206,8 +206,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Dolphins sleep with one eye open and half their brain awake!",
       "description": "Dolphins are playful, intelligent marine mammals that love leaping through ocean waves.",
       "image": "logo.jpg",
-      "model": "Alligator.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -221,8 +221,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Deer can jump up to 10 feet high in a single leap!",
       "description": "Deer are graceful forest herbivores with slender legs and keen senses.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -236,7 +236,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Elephants hug with their trunks and have super long memories!",
       "description": "Elephants are gentle giant mammals with big flapping ears and long trunks.",
       "image": "logo.jpg",
-      "model": "elephant.glb",
+      "model": "ant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -251,8 +251,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Eagles can spot a small rabbit from 2 miles high in the sky!",
       "description": "Eagles are majestic birds of prey with huge wingspans and curved talons.",
       "image": "logo.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -266,8 +266,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Foxes use their bushy tail like a cozy blanket in winter!",
       "description": "Foxes are intelligent woodland mammals with rusty red fur and sharp pointy ears.",
       "image": "logo.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -281,8 +281,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Flamingos get their vibrant pink color from eating algae and shrimp!",
       "description": "Flamingos are elegant wading birds famous for their pink feathers.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -296,8 +296,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Giraffes sleep standing up for just 30 minutes a day!",
       "description": "Giraffes are the tallest land animals on Earth with beautiful spotted coats.",
       "image": "logo.jpg",
-      "model": "Camel.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -311,7 +311,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Pandas spend up to 12 hours every day munching on fresh bamboo!",
       "description": "Giant Pandas are lovable black-and-white bears that love rolling and relaxing.",
       "image": "Bear.jpg",
-      "model": "Bear.glb",
+      "model": "ant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -326,8 +326,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Hippos can hold breath underwater for 5 minutes while walking on riverbeds!",
       "description": "Hippos are large, round mammals that stay cool submerged in fresh rivers.",
       "image": "Buffalo.jpg",
-      "model": "Buffalo.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -341,8 +341,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Horses can run within hours after they are born!",
       "description": "Horses are majestic, strong animals known for their flowing manes.",
       "image": "Cow.jpg",
-      "model": "Cow.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -356,8 +356,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Iguanas have a special 'third eye' on their head to detect birds flying above!",
       "description": "Iguanas are large green lizards with spiky dorsal crests.",
       "image": "Alligator.jpg",
-      "model": "Alligator.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -371,8 +371,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Ibex hooves act like suction cups on mountain walls!",
       "description": "The Ibex is a wild mountain goat with magnificent backwards-curving horns.",
       "image": "alpaca.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -386,8 +386,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Jaguars have rosette spots with small black dots inside them!",
       "description": "Jaguars are the largest cats in the Americas with golden-yellow spotted coats.",
       "image": "logo.jpg",
-      "model": "lion.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -401,8 +401,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Jellyfish are older than dinosaurs!",
       "description": "Jellyfish are mesmerizing translucent creatures that pulse peacefully.",
       "image": "logo.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -416,8 +416,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Baby kangaroos are called 'joeys' and live in their mother's pouch!",
       "description": "Kangaroos are famous bouncing marsupials with powerful back legs.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -431,8 +431,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Koalas sleep up to 20 hours a day in tree branches!",
       "description": "Koalas are adorable fluffy marsupials with round ears.",
       "image": "Bear.jpg",
-      "model": "Bear.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -461,8 +461,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Leopards can climb down trees headfirst!",
       "description": "Leopards are graceful big cats with golden fur covered in rosettes.",
       "image": "Cat.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -476,8 +476,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Monkeys express affection by grooming each other's fur!",
       "description": "Monkeys are energetic, playful animals that chatter and swing through trees.",
       "image": "logo.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -491,8 +491,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Meerkats have natural dark 'sunglasses' around their eyes!",
       "description": "Meerkats are small, social animals that stand tall to watch the horizon.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -506,8 +506,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Numbats have distinct white stripes across their back!",
       "description": "Numbats are colorful, harmless marsupials with fluffy tails and banded stripes.",
       "image": "logo.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -521,8 +521,8 @@ const ALPHAMAT_DATA = {
       "funFact": "The narwhal's horn is a giant sensory tooth with 10 million nerve endings!",
       "description": "Known as the Unicorn of the Sea, narwhals are Arctic whales with a long spiral tusk.",
       "image": "Alligator.jpg",
-      "model": "Alligator.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -536,8 +536,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Owls have specialized fringe feathers that make flight silent!",
       "description": "Owls are wise nocturnal birds with large glowing eyes.",
       "image": "Bee.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -551,8 +551,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Sea otters hold hands while sleeping so they don't drift away!",
       "description": "Otters are adorable river and sea mammals with thick waterproof fur.",
       "image": "Cat.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -566,8 +566,8 @@ const ALPHAMAT_DATA = {
       "funFact": "India's National Bird fans out shimmering feathers during rain!",
       "description": "The Peacock displays a glorious turquoise and emerald fan of feathers.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -581,8 +581,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Emperor penguins huddle in huge circles to stay warm!",
       "description": "Penguins are tuxedo-wearing flightless birds that excel at swimming.",
       "image": "logo.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -596,8 +596,8 @@ const ALPHAMAT_DATA = {
       "funFact": "The Quokka is known worldwide as the 'Happiest Animal on Earth'!",
       "description": "Quokkas are small, friendly marsupials famous for their cheerful smiling expressions.",
       "image": "logo.jpg",
-      "model": "Bear.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -611,8 +611,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Quails lay beautifully speckled eggs that blend in with dried leaves!",
       "description": "Quails are small, plump game birds that forage peacefully on the ground.",
       "image": "Bee.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -626,7 +626,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Red ants can build floating rafts with their bodies during floods!",
       "description": "Red Ants are tireless, hardworking insects known for underground architecture.",
       "image": "ant.jpg",
-      "model": "redant.glb",
+      "model": "ant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -641,8 +641,8 @@ const ALPHAMAT_DATA = {
       "funFact": "When rabbits are super happy, they do a joyful twisting jump called a 'binky'!",
       "description": "Rabbits are soft, gentle animals with long twitchy ears and fluffy cotton-ball tails.",
       "image": "alpaca.jpg",
-      "model": "alpaca.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -656,8 +656,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Snow leopards can leap up to 50 feet across deep mountain ravines!",
       "description": "Known as the Ghost of the Mountains, the Snow Leopard has smokey-gray spotted fur.",
       "image": "Cat.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -671,8 +671,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Squirrels plant millions of trees by forgetting where they buried nuts!",
       "description": "Squirrels are energetic, bushy-tailed rodents that scamper up trees.",
       "image": "logo.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -686,8 +686,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Tigers love swimming in cool forest rivers!",
       "description": "Tigers are powerful striped apex predators with glowing amber eyes.",
       "image": "logo.jpg",
-      "model": "lion.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -701,8 +701,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Some giant tortoises can live for over 150 years!",
       "description": "Tortoises are wise, slow-moving reptiles protected by an unbreakable domed shell.",
       "image": "Alligator.jpg",
-      "model": "Alligator.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -716,8 +716,8 @@ const ALPHAMAT_DATA = {
       "funFact": "The male umbrellabird has a parasol-like crest of feathers on its head!",
       "description": "Umbrellabirds are distinctive rainforest birds with a hood of feathers like an open umbrella.",
       "image": "Bee.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -731,8 +731,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Urials have large curling horns that can grow over 3 feet long!",
       "description": "The Urial is a majestic wild mountain sheep native to central and southern Asia.",
       "image": "Buffalo.jpg",
-      "model": "Buffalo.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -746,8 +746,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Vultures have strong stomach acid that destroys bacteria and keeps ecosystems clean!",
       "description": "Vultures are important soaring birds that keep wild ecosystems healthy and clean.",
       "image": "Bee.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -761,8 +761,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Vervet monkeys have distinct vocal warning words for eagles, leopards, and snakes!",
       "description": "Vervet Monkeys are intelligent, greenish-grey primates with black faces.",
       "image": "Cat.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -791,8 +791,8 @@ const ALPHAMAT_DATA = {
       "funFact": "A wolf's howl can be heard by pack members over 10 miles away!",
       "description": "Wolves are intelligent, loyal pack mammals with thick gray coats and sharp senses.",
       "image": "Cat.jpg",
-      "model": "Cat.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -806,8 +806,8 @@ const ALPHAMAT_DATA = {
       "funFact": "The Xerus holds its bushy tail over its head like an umbrella to stay cool in the hot sun!",
       "description": "The Xerus is an African ground squirrel known for using its tail as a personal sun parasol.",
       "image": "ant.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -821,8 +821,8 @@ const ALPHAMAT_DATA = {
       "funFact": "You can see right through an X-Ray Tetra's clear scales to see its backbone!",
       "description": "The X-Ray Tetra is a small, sparkling freshwater fish with transparent, glass-like skin.",
       "image": "ant.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -836,8 +836,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Yaks have extra-large lungs and hearts adapted to breathing thin mountain air!",
       "description": "Yaks are gentle, long-haired mountain oxen that thrive across Himalayan peaks.",
       "image": "Cow.jpg",
-      "model": "Cow.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -851,8 +851,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Canaries can learn and remember complex musical songs with dozens of notes!",
       "description": "The Yellow Canary is a cheerful songbird with bright sunshine-yellow feathers.",
       "image": "Bee.jpg",
-      "model": "Bee.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -866,8 +866,8 @@ const ALPHAMAT_DATA = {
       "funFact": "When zebras stand in a herd, predators see a giant confusing wall of stripes!",
       "description": "Zebras are iconic African animals with striking black and white striped coats.",
       "image": "Cow.jpg",
-      "model": "Cow.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -881,8 +881,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Zebus have a distinctive fatty hump on their shoulders and loose dewy skin!",
       "description": "The Zebu is the beloved humped cattle of India, known for calmness and strength.",
       "image": "Cow.jpg",
-      "model": "Cow.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     }
   ],
@@ -931,8 +931,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Apricots have smooth velvety skin and a sunny golden interior!",
       "description": "Apricots are sweet golden orchard stone fruits filled with natural sunshine flavor.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1027,8 +1027,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Dragon fruit flowers only bloom for one single night under the moonlight!",
       "description": "Dragon Fruit (Pitahaya) is a vibrant magenta cactus fruit with speckled white pulp.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1043,8 +1043,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Date palm trees can survive in extreme desert heat for over 100 years!",
       "description": "Dates are naturally sweet golden-brown fruits prized for energy.",
       "image": "Blackberries.jpg",
-      "model": "blackberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1075,8 +1075,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Eggplants are botanically classified as berries because they develop from flowers with seeds!",
       "description": "Eggplants are glossy purple garden fruits celebrated in tasty dishes worldwide.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1091,8 +1091,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Figs have more natural bone-building calcium than almost any other fruit!",
       "description": "Figs are teardrop-shaped fruits with soft purple skins and sweet centers.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1107,8 +1107,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Strawberries are the only fruit that wear all their seeds on the outside skin!",
       "description": "Strawberries are heart-shaped ruby berries famous for sweetness.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1123,8 +1123,8 @@ const ALPHAMAT_DATA = {
       "funFact": "A single guava has four times more Vitamin C than an orange!",
       "description": "Guavas are tropical fruits with bright green skins and aromatic centers.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1139,8 +1139,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Grapes come in clusters of up to 100 sweet juicy berries!",
       "description": "Green grapes are juicy bite-sized fruits that grow in bountiful vineyard bunches.",
       "image": "Blueberries.jpg",
-      "model": "blueberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1155,8 +1155,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Honeydew melons are 90% water and make the ultimate summer refreshment!",
       "description": "Honeydew melons have pale green smooth rinds and sweet, emerald juicy flesh.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1171,8 +1171,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Honeyberries can survive winter frost down to -40\u00b0C on bushes!",
       "description": "Honeyberries are oblong blue berries known for delicious sweet-and-sour taste.",
       "image": "Blueberries.jpg",
-      "model": "blueberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1187,8 +1187,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Drinking water after eating fresh Amla makes the water taste sweet!",
       "description": "Amla is a sacred green super-berry famous for boosting immunity.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1203,7 +1203,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Ice Apples look just like translucent ice cubes!",
       "description": "Ice Apple is a refreshing jelly-like palm fruit harvested in coastal regions.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
+      "model": "Apple.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -1219,8 +1219,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Eating ripe Jamun turns your whole tongue a fun purple color!",
       "description": "Jamun is a beloved monsoon berry in India with deep purple skins.",
       "image": "Blackberries.jpg",
-      "model": "blackberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1235,8 +1235,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Jackfruit is the largest tree-borne fruit in the world, growing up to 35 kg!",
       "description": "Jackfruit is a giant bumpy green fruit filled with golden sweet bulbs.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1251,8 +1251,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Kiwi fruits have more Vitamin C per bite than an orange!",
       "description": "Kiwi is a fuzzy brown fruit with an emerald green, sunburst pattern inside.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1267,8 +1267,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Kumquats are the only citrus fruit where you eat the sweet peel whole!",
       "description": "Kumquats are bite-sized miniature orange fruits you eat whole.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1283,8 +1283,8 @@ const ALPHAMAT_DATA = {
       "funFact": "A squeeze of fresh lemon juice prevents fruit slices from turning brown!",
       "description": "Lemons are bright sunshine-yellow citrus fruits famous for lemonade.",
       "image": "Banana.jpg",
-      "model": "banana.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1299,8 +1299,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Lychee was the favored fruit of ancient royalty for its floral perfume!",
       "description": "Lychees have bumpy red shells that peel away to reveal sweet white fruit.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1315,8 +1315,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Mango is the National Fruit of India, where over 1,000 varieties grow!",
       "description": "Known as the King of Fruits, golden mangoes are celebrated for aroma and sweetness.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1331,8 +1331,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Mulberry leaves are the exclusive food of silkworms!",
       "description": "Mulberries are long ruby and dark-purple berries that hang from tree branches.",
       "image": "Blackberries.jpg",
-      "model": "blackberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1347,8 +1347,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Nectarines are peaches that have smooth skin without any fuzz!",
       "description": "Nectarines are glossy red-and-gold stone fruits with sweet aroma.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1363,8 +1363,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Navel oranges get their name because the small bottom bump looks like a belly button!",
       "description": "Navel oranges are sweet, seedless citrus fruits that make great snacks.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1379,8 +1379,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Nagpur in Maharashtra is world-famous as the 'Orange City'!",
       "description": "Oranges are bright golden citrus globes packed with Vitamin C.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1395,8 +1395,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Olive trees can live and bear fruit for over 2,000 years!",
       "description": "Olives are oval stone fruits that grow in sunny orchards.",
       "image": "Blackberries.jpg",
-      "model": "blackberry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1411,7 +1411,7 @@ const ALPHAMAT_DATA = {
       "funFact": "A pineapple takes almost two full years to grow a single fruit!",
       "description": "Pineapples are tropical fruits with crown leaves and sunny yellow flesh.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
+      "model": "Apple.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -1427,8 +1427,8 @@ const ALPHAMAT_DATA = {
       "funFact": "A single pomegranate holds up to 600 ruby jewel seeds inside!",
       "description": "Pomegranates are round crimson fruits filled with glowing ruby seeds.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1443,8 +1443,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Quince fruits have such a floral aroma they were used as room perfume!",
       "description": "Quince is a golden pear-like fruit that turns rosy-pink when simmered into jams.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1459,8 +1459,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Quandong is also called the 'Native Desert Peach'!",
       "description": "Quandongs are glossy bright-red desert fruits famous for tart peach flavor.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1475,8 +1475,8 @@ const ALPHAMAT_DATA = {
       "funFact": "When picked, raspberries leave their core behind on the bush like a cute little thimble!",
       "description": "Raspberries are soft, velvety red berries with a delicate hollow dome shape.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1491,8 +1491,8 @@ const ALPHAMAT_DATA = {
       "funFact": "The name Rambutan comes from 'rambut' meaning 'hair' for its soft spikes!",
       "description": "Rambutans are fun tropical fruits covered in soft red hairs.",
       "image": "Cherry.jpg",
-      "model": "Cherry.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1507,8 +1507,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Mosambi juice is India's favorite gentle refreshing drink!",
       "description": "Sweet Lime (Mosambi) is a smooth green citrus fruit filled with soothing juice.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1523,8 +1523,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Maharashtra's coastal Dahanu region is world-famous for sweet Chikoo!",
       "description": "Chikoo is a soft brown fruit with a mouth-watering brown sugar caramel flavor.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1539,8 +1539,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Tangerines are smaller and sweeter than regular oranges, and peel in seconds!",
       "description": "Tangerines are bright orange pocket-sized citrus fruits.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1555,8 +1555,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Tamarind trees can live for over 300 years producing pods!",
       "description": "Tamarind (Imli) is a brown pod fruit celebrated for its delicious tangy kick.",
       "image": "Banana.jpg",
-      "model": "banana.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1571,8 +1571,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Despite its funny wrinkled name 'Ugli', inside it is one of the sweetest citrus fruits!",
       "description": "Ugli fruit is a wrinkled yellow-green citrus fruit with sweet juicy sections.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1587,8 +1587,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Also called June Plum, children love eating slices with a dash of salt!",
       "description": "Umbrella Fruit is a golden-green tropical fruit with a crunchy sweet-sour bite.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1603,8 +1603,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Valencia oranges stay fresh and juicy on the tree for months until picked!",
       "description": "Valencia oranges are prized globally as the gold standard for fresh morning juice.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1635,8 +1635,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Every single part of a watermelon is edible, including the sweet red center and green rind!",
       "description": "Watermelons are giant striped green fruits with ruby-red centers that quench summer thirst.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1651,7 +1651,7 @@ const ALPHAMAT_DATA = {
       "funFact": "Bel fruit sherbet is India's sacred summer cooling elixir!",
       "description": "Wood Apple (Bel) is a hard-shelled sacred Indian fruit famous for cooling sherbets.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
+      "model": "Apple.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -1667,8 +1667,8 @@ const ALPHAMAT_DATA = {
       "funFact": "'Xigua' is the classic name for watermelon, cultivated for thousands of years!",
       "description": "Xigua is the sweet, refreshing striped melon enjoyed everywhere on sunny days.",
       "image": "Coconut.jpg",
-      "model": "Coconut.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1683,8 +1683,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Xoconostle grows on prickly pear cactus paddles and makes delicious tangy jams!",
       "description": "Xoconostle is a pale green and pink cactus fruit known for its pleasantly sour kick.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1699,8 +1699,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Passion fruit vines have some of the most intricate, beautiful flowers in nature!",
       "description": "Yellow Passion Fruit is a tropical golden globe filled with intensely aromatic sweet jelly seeds.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1715,8 +1715,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Yuzu citrus is so fragrant that floating whole yuzu in a warm bath is a winter festival tradition!",
       "description": "Yuzu is an aromatic golden citrus fruit prized for its heavenly sweet-tart perfume.",
       "image": "Apple.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1731,8 +1731,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Even though eaten like a vegetable, zucchini is botanically a fruit because it grows from a flower!",
       "description": "Zucchini is a sleek green garden fruit packed with water and healthy vitamins.",
       "image": "Avocado.jpg",
-      "model": "Avocado.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -1747,8 +1747,8 @@ const ALPHAMAT_DATA = {
       "funFact": "Zill mangoes have a glowing red and yellow skin and melt smoothly on your tongue!",
       "description": "Zill Mango is a sweet tropical mango variety celebrated for its rich aroma and lack of fiber.",
       "image": "Apricot.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     }
   ],

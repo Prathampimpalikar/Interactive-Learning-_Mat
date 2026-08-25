@@ -436,7 +436,7 @@ window.App = (function () {
       if (viewer) viewer.style.display = 'none';
       if (loader) loader.classList.remove('active');
       if (fallback) fallback.classList.add('active');
-      const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
+      const imgSrc = 'images/alphamat_logo.png';
       if (fallbackImg) fallbackImg.src = imgSrc;
     }
 
