@@ -511,12 +511,75 @@
   </div>
 
   <!-- ========================================================================
-       SLIDE 4: STEP 1 - CHOOSE CATEGORY (#view-category)
+       SLIDE 4: STEP 1 - 3-IN-1 MAT BLOCKS TABLE PANEL (#view-mat)
+       ======================================================================== -->
+  <div id="view-mat" class="app-view dash-view-wrapper">
+    <header class="dash-nav-header">
+      <div class="dash-nav-container">
+        <div class="brand-group" onclick="App.navigateTo('landing')">
+          <div class="brand-logo-container">
+            <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">
+              Alpha<span class="text-coral">Mat</span>
+            </div>
+            <span class="brand-subtitle">3-in-1 Mat Table Panel</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-logout" onclick="App.handleLogout()">
+            🔒 Sign Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-body">
+      <div class="pathway-step-card">
+        <div class="pathway-breadcrumb">
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('landing')">Home</span>
+          <span>/</span>
+          <span>Step 1: 3-in-1 Mat Alphabet Blocks (A/N/0, B/O/1...)</span>
+        </div>
+
+        <div class="pathway-step-header">
+          <p class="pathway-step-tag">Step 1 of 3</p>
+          <h1 class="pathway-step-title">Step on a Mat Block or Choose a Letter</h1>
+          <p class="pathway-step-sub">
+            Each physical mat block contains <strong>3 multi-function options</strong> (e.g. <code>[ A | N | 0 ]</code> on <strong>GPIO 32</strong>). 
+            Step on your tactile mat or click any option to choose curriculum (Animals or Fruits).
+          </p>
+        </div>
+
+        <!-- Live Piezo Sensor Status Banner -->
+        <div class="piezo-live-banner">
+          <div class="piezo-live-indicator">
+            <div class="piezo-indicator-dot"></div>
+            <div>
+              <div class="piezo-live-text">⚡ Physical Mat Sensor Listener Active</div>
+              <div class="piezo-live-sub">Stepping on <strong>GPIO 32</strong> selects <strong>Letter A</strong>. Press keys <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">A</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">Z</kbd> or <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">0</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">9</kbd> on your keyboard.</div>
+            </div>
+          </div>
+          <div class="piezo-live-badge">
+            <span>🖲️</span> <span id="spaLivePiezoStatusText">Awaiting Step on Mat Block</span>
+          </div>
+        </div>
+
+        <!-- 3-in-1 Mat Blocks Table Grid -->
+        <div class="mat-blocks-grid" id="spaMatBlocksGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SLIDE 5: STEP 2 - CHOOSE CATEGORY FOR SELECTED LETTER (#view-category)
        ======================================================================== -->
   <div id="view-category" class="app-view dash-view-wrapper">
     <header class="dash-nav-header">
       <div class="dash-nav-container">
-        <div class="brand-group" onclick="App.navigateTo('dashboard')">
+        <div class="brand-group" onclick="App.navigateTo('mat')">
           <div class="brand-logo-container">
             <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
           </div>
@@ -529,8 +592,8 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 12px;">
-          <button class="btn-logout" onclick="App.navigateTo('dashboard')">
-            ← Back to Dashboard
+          <button class="btn-logout" onclick="App.navigateTo('mat')">
+            ← Back to Mat Table
           </button>
         </div>
       </div>
@@ -539,15 +602,26 @@
     <div class="dash-body">
       <div class="pathway-step-card">
         <div class="pathway-breadcrumb">
-          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('dashboard')">Dashboard</span>
+          <span class="pathway-breadcrumb-item" onclick="App.navigateTo('mat')">Step 1: Mat Blocks</span>
           <span>/</span>
-          <span>Step 1: Choose Category</span>
+          <span id="spaCrumbSelectedLetter" style="color: var(--coral); font-weight: 800;">Letter A</span>
+          <span>/</span>
+          <span>Step 2: Choose Category</span>
+        </div>
+
+        <!-- Selected Letter Pill -->
+        <div class="selected-letter-badge-hero">
+          <div class="hero-char" id="spaBadgeHeroChar">A</div>
+          <div class="hero-info">
+            <span class="hero-label">Tactile Mat Block Selected</span>
+            <span class="hero-desc" id="spaBadgeHeroDesc">Block 1 • GPIO 32 • Options [ A | N | 0 ]</span>
+          </div>
         </div>
 
         <div class="pathway-step-header">
-          <p class="pathway-step-tag">Step 1 of 3</p>
-          <h1 class="pathway-step-title">What would you like to explore today?</h1>
-          <p class="pathway-step-sub">Select Animals or Fruits to begin your interactive alphabet journey.</p>
+          <p class="pathway-step-tag">Step 2 of 3</p>
+          <h1 class="pathway-step-title" id="spaCategoryStepTitle">What would you like to explore for Letter A?</h1>
+          <p class="pathway-step-sub">Select Animals or Fruits below to open matching specimens.</p>
         </div>
 
         <div class="category-choice-grid">
@@ -555,11 +629,11 @@
           <div class="category-select-card animal-card" onclick="App.selectCategory('Animal')">
             <div class="category-card-icon">🐯</div>
             <h3 class="category-card-title">Animals Curriculum</h3>
-            <p class="category-card-desc">
-              Explore 30+ wildlife species, predators, reptiles, birds & mammals with scientific superpowers and lifespans.
+            <p class="category-card-desc" id="spaAnimalCardDesc">
+              Explore wildlife species starting with Letter <strong class="text-coral" id="spaAnimalLetterChar">A</strong> (e.g. Ant, Alligator) with 3D models, lifespans, and superpowers.
             </p>
             <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center;">
-              <span>Select Animals (A - Z)</span> <span>→</span>
+              <span id="spaBtnAnimalLabel">Select Animals for Letter A</span> <span>→</span>
             </button>
           </div>
 
@@ -567,11 +641,11 @@
           <div class="category-select-card fruit-card" onclick="App.selectCategory('Fruit')">
             <div class="category-card-icon">🍎</div>
             <h3 class="category-card-title">Fruits Curriculum</h3>
-            <p class="category-card-desc">
-              Discover 30+ tropical fruits, berries, citrus & health benefits with vitamin profiles and harvest seasons.
+            <p class="category-card-desc" id="spaFruitCardDesc">
+              Discover tropical fruits and berries starting with Letter <strong class="text-coral" id="spaFruitLetterChar">A</strong> (e.g. Apple, Avocado) with vitamin profiles and harvest seasons.
             </p>
             <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center; background: var(--mint-strong); box-shadow: none;">
-              <span>Select Fruits (A - Z)</span> <span>→</span>
+              <span id="spaBtnFruitLabel">Select Fruits for Letter A</span> <span>→</span>
             </button>
           </div>
         </div>

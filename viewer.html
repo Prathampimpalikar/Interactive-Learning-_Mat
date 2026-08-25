@@ -221,27 +221,46 @@
     document.getElementById('crumbLetterLink').textContent = `Letter ${letter}`;
     document.getElementById('crumbSelectionLink').href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
 
-    // Find Item in Dataset
+    // Find Item in Dataset (Animals, Fruits, Numbers)
     let activeItem = null;
     if (typeof ALPHAMAT_DATA !== 'undefined') {
-      const all = [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
-      activeItem = all.find(item => item.id === id) || all.find(item => item.alphabet === letter) || all[0];
+      const all = [
+        ...(ALPHAMAT_DATA.animals || []),
+        ...(ALPHAMAT_DATA.fruits || []),
+        ...(ALPHAMAT_DATA.numbers || [])
+      ];
+
+      // Match by exact ID or number/alphabet
+      activeItem = all.find(item => item.id === id) ||
+                   all.find(item => item.number === letter || item.alphabet === letter) ||
+                   all[0];
     }
 
     if (activeItem) {
+      const isNumber = activeItem.type === 'number' || (activeItem.id && activeItem.id.startsWith('number_'));
+
       document.title = `${activeItem.name} — AlphaMat 3D Studio`;
-      document.getElementById('viewerCategoryTag').textContent = `${mode} 3D AR Model`;
+      document.getElementById('viewerCategoryTag').textContent = isNumber ? '3D Number & Mathematics Studio' : `${mode} 3D AR Model`;
       document.getElementById('viewerItemTitle').textContent = activeItem.name;
-      document.getElementById('crumbItemName').textContent = activeItem.name.split(' ')[0];
+      document.getElementById('crumbItemName').textContent = activeItem.name.split(' ')[0] || 'Studio';
+
+      if (isNumber) {
+        document.getElementById('btnBackToSelection').href = 'mat.html';
+        document.getElementById('btnBackToSelection').textContent = '← Back to Mat Table';
+        document.getElementById('crumbSelectionLink').href = 'mat.html';
+        document.getElementById('crumbSelectionLink').textContent = 'Mat Blocks';
+        document.getElementById('dossierDietLabel').textContent = 'INVENTOR / ORIGIN';
+        document.getElementById('dossierLifespanLabel').textContent = 'MATHEMATICAL CONCEPT';
+      }
 
       document.getElementById('dossierName').textContent = activeItem.name;
-      document.getElementById('dossierSci').textContent = activeItem.scientificName || `Alphabet Category: ${activeItem.alphabet}`;
-      document.getElementById('dossierSuperpowerText').textContent = activeItem.superpower || activeItem.benefits || 'Special natural adaptations & features.';
-      document.getElementById('dossierCategory').textContent = activeItem.category || (mode === 'Animal' ? 'Fauna' : 'Flora');
-      document.getElementById('dossierColor').textContent = activeItem.color || 'Natural vibrant shade';
-      document.getElementById('dossierDiet').textContent = activeItem.diet || activeItem.habitat || activeItem.taste || 'Varied';
-      document.getElementById('dossierLifespan').textContent = activeItem.lifespan ? `${activeItem.lifespan} (${activeItem.weight || ''})` : (activeItem.season || 'Seasonal');
-      document.getElementById('dossierFunFact').textContent = activeItem.funFact || `${activeItem.name} is a key discovery in the AlphaMat curriculum.`;
+      document.getElementById('dossierSci').textContent = activeItem.scientificName || `Category: ${activeItem.alphabet}`;
+      document.getElementById('dossierSuperpowerText').textContent = activeItem.superpower || activeItem.benefits || 'Special foundational features.';
+      document.getElementById('dossierCategory').textContent = activeItem.category || (isNumber ? 'Mathematics' : (mode === 'Animal' ? 'Fauna' : 'Flora'));
+      document.getElementById('dossierColor').textContent = activeItem.color || 'Vibrant Golden & Blue';
+      document.getElementById('dossierDiet').textContent = activeItem.inventor || activeItem.diet || activeItem.habitat || activeItem.taste || 'Universal Mathematics';
+      document.getElementById('dossierLifespan').textContent = activeItem.scientificName || activeItem.lifespan || activeItem.season || 'Fundamental Mathematics';
+      document.getElementById('dossierFunFact').textContent = activeItem.funFact || `${activeItem.name} is a key discovery in mathematics.`;
       document.getElementById('dossierDescription').textContent = activeItem.description || '';
 
       // Load Real Image
@@ -249,7 +268,7 @@
         document.getElementById('viewerSpecimenImg').src = `images/${encodeURIComponent(activeItem.image)}`;
       }
 
-      // Load 3D Model
+      // Load 3D Model (from model/ or letter model/)
       const viewer = document.getElementById('studioViewer');
       const loader = document.getElementById('viewerStageLoader');
       if (viewer && activeItem.model) {
@@ -259,6 +278,8 @@
           if (loader) loader.classList.remove('active');
         });
         viewer.addEventListener('error', () => {
+          // Fallback to letter model folder if needed
+          viewer.src = `letter_model/${encodeURIComponent(activeItem.model)}`;
           if (loader) loader.classList.remove('active');
         });
       }

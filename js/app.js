@@ -80,10 +80,27 @@ window.App = (function () {
     return [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
   }
 
+  // 13 Multi-Option Mat Blocks (Numbers 0 to 10 on Blocks 1-11, then Alphabet only for 12, 13)
+  const MAT_BLOCKS = [
+    { id: 1,  gpio: 32, primary: 'A', secondary: 'N', tertiary: '0',  title: 'Block 1' },
+    { id: 2,  gpio: 33, primary: 'B', secondary: 'O', tertiary: '1',  title: 'Block 2' },
+    { id: 3,  gpio: 25, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
+    { id: 4,  gpio: 26, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
+    { id: 5,  gpio: 27, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5' },
+    { id: 6,  gpio: 14, primary: 'F', secondary: 'S', tertiary: '5',  title: 'Block 6' },
+    { id: 7,  gpio: 12, primary: 'G', secondary: 'T', tertiary: '6',  title: 'Block 7' },
+    { id: 8,  gpio: 13, primary: 'H', secondary: 'U', tertiary: '7',  title: 'Block 8' },
+    { id: 9,  gpio: 15, primary: 'I', secondary: 'V', tertiary: '8',  title: 'Block 9' },
+    { id: 10, gpio: 2,  primary: 'J', secondary: 'W', tertiary: '9',  title: 'Block 10' },
+    { id: 11, gpio: 4,  primary: 'K', secondary: 'X', tertiary: '10', title: 'Block 11' },
+    { id: 12, gpio: 16, primary: 'L', secondary: 'Y', tertiary: null, title: 'Block 12' },
+    { id: 13, gpio: 17, primary: 'M', secondary: 'Z', tertiary: null, title: 'Block 13' }
+  ];
+
   // Navigation Controller (Switching between Views/Slides with URL routing)
   function navigateTo(viewName, pushHash = true) {
     if (!viewName) return;
-    if (viewName === 'start') viewName = 'category';
+    if (viewName === 'start') viewName = 'mat';
 
     state.currentView = viewName;
     const allViews = document.querySelectorAll('.app-view');
@@ -95,6 +112,10 @@ window.App = (function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    if (viewName === 'mat') {
+      renderSpaMatBlocks();
+    }
+
     if (pushHash) {
       if (window.location.hash !== `#${viewName}`) {
         history.pushState({ view: viewName }, '', `#${viewName}`);
@@ -104,7 +125,128 @@ window.App = (function () {
     AudioEngine.playTone(520, 'sine', 0.06);
   }
 
-  // Login Handler — Authenticate & Switch to Next Page / Start Hub
+  // Render Mat Table Blocks in SPA (3-in-1 for 1-10, 2-letter for 11-13)
+  function renderSpaMatBlocks() {
+    const grid = document.getElementById('spaMatBlocksGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    MAT_BLOCKS.forEach(b => {
+      const card = document.createElement('div');
+      card.className = 'mat-3in1-card';
+      card.id = `spa-mat-block-${b.id}`;
+      card.setAttribute('data-gpio', b.gpio);
+      const isDual = !b.tertiary;
+
+      card.innerHTML = `
+        <div class="mat-card-topbar">
+          <span class="mat-block-num">${b.title}</span>
+          <span class="mat-gpio-badge">⚡ GPIO ${b.gpio}</span>
+        </div>
+
+        <div class="mat-options-row" style="${isDual ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr 1fr 1fr;'}">
+          <div class="mat-option-btn primary-option" onclick="event.stopPropagation(); App.selectMatLetter('${b.primary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.primary}">
+            <span class="mat-option-char">${b.primary}</span>
+            <span class="mat-option-type">Letter</span>
+          </div>
+          <div class="mat-option-btn secondary-option" onclick="event.stopPropagation(); App.selectMatLetter('${b.secondary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.secondary}">
+            <span class="mat-option-char">${b.secondary}</span>
+            <span class="mat-option-type">Letter</span>
+          </div>
+          ${b.tertiary ? `
+          <div class="mat-option-btn tertiary-option" onclick="event.stopPropagation(); App.selectNumber('${b.tertiary}');" title="Open 3D Model of Number ${b.tertiary}">
+            <span class="mat-option-char">${b.tertiary}</span>
+            <span class="mat-option-type">3D Model</span>
+          </div>` : ''}
+        </div>
+
+        <div class="mat-card-footer">
+          <span>${isDual ? 'Alphabet Only' : 'Touch or Step Pad'}</span>
+          <span class="mat-card-action-hint">Choose ${b.primary} →</span>
+        </div>
+      `;
+
+      card.onclick = () => selectMatLetter(b.primary, b.id, b.gpio);
+      grid.appendChild(card);
+    });
+  }
+
+  // Select Number -> Directly Opens 3D Model Studio
+  function selectNumber(num) {
+    if (!num) return;
+    AudioEngine.playTone(660, 'sine', 0.1);
+
+    const numItem = (ALPHAMAT_DATA.numbers || []).find(n => n.number === String(num) || n.alphabet === String(num));
+    if (numItem) {
+      openSpecimen(numItem);
+    } else {
+      window.location.href = `viewer.html?id=number_${encodeURIComponent(num)}&mode=Number&letter=${encodeURIComponent(num)}`;
+    }
+  }
+
+  // Select Letter from 3-in-1 Mat Block -> Updates Category screen and transitions
+  function selectMatLetter(char, blockId = 1, gpio = 32) {
+    if (!char) return;
+    char = char.toUpperCase();
+    state.selectedLetter = char;
+
+    AudioEngine.playMatStep();
+
+    const block = MAT_BLOCKS.find(b => b.primary === char || b.secondary === char) || MAT_BLOCKS[0];
+    const cardEl = document.getElementById(`spa-mat-block-${block.id}`);
+
+    if (cardEl) {
+      document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
+      cardEl.classList.add('piezo-triggered');
+    }
+
+    const badge = document.getElementById('spaLivePiezoStatusText');
+    if (badge) {
+      badge.innerHTML = `⚡ Step Detected: <strong>${block.title} (GPIO ${block.gpio})</strong> → Selected <strong>Letter ${char}</strong>!`;
+    }
+
+    // Dynamically update Step 2: Category view labels
+    const crumbLetter = document.getElementById('spaCrumbSelectedLetter');
+    const heroChar = document.getElementById('spaBadgeHeroChar');
+    const heroDesc = document.getElementById('spaBadgeHeroDesc');
+    const catTitle = document.getElementById('spaCategoryStepTitle');
+    const animalLetter = document.getElementById('spaAnimalLetterChar');
+    const fruitLetter = document.getElementById('spaFruitLetterChar');
+    const btnAnimal = document.getElementById('spaBtnAnimalLabel');
+    const btnFruit = document.getElementById('spaBtnFruitLabel');
+    const animalDesc = document.getElementById('spaAnimalCardDesc');
+    const fruitDesc = document.getElementById('spaFruitCardDesc');
+
+    if (crumbLetter) crumbLetter.textContent = `Letter ${char}`;
+    if (heroChar) heroChar.textContent = char;
+    if (heroDesc) heroDesc.textContent = `Block ${block.id} • GPIO ${block.gpio} • Letter '${char}' Selected`;
+    if (catTitle) catTitle.textContent = `What would you like to explore for Letter ${char}?`;
+    if (animalLetter) animalLetter.textContent = char;
+    if (fruitLetter) fruitLetter.textContent = char;
+    if (btnAnimal) btnAnimal.textContent = `Select Animals for Letter ${char}`;
+    if (btnFruit) btnFruit.textContent = `Select Fruits for Letter ${char}`;
+
+    if (typeof ALPHAMAT_DATA !== 'undefined') {
+      const animalMatches = (ALPHAMAT_DATA.animals || []).filter(a => a.alphabet === char).map(a => a.name);
+      const fruitMatches = (ALPHAMAT_DATA.fruits || []).filter(f => f.alphabet === char).map(f => f.name);
+
+      const animalEx = animalMatches.length > 0 ? ` (e.g. ${animalMatches.slice(0, 2).join(', ')})` : '';
+      const fruitEx = fruitMatches.length > 0 ? ` (e.g. ${fruitMatches.slice(0, 2).join(', ')})` : '';
+
+      if (animalDesc) {
+        animalDesc.innerHTML = `Explore wildlife species starting with Letter <strong class="text-coral">${char}</strong>${animalEx} with 3D models, lifespans, and superpowers.`;
+      }
+      if (fruitDesc) {
+        fruitDesc.innerHTML = `Discover tropical fruits and berries starting with Letter <strong class="text-coral">${char}</strong>${fruitEx} with vitamin profiles and harvest seasons.`;
+      }
+    }
+
+    setTimeout(() => {
+      navigateTo('category');
+    }, 450);
+  }
+
+  // Login Handler — Authenticate & Switch to Step 1: 3-in-1 Mat Blocks Table
   function handleLogin(event) {
     if (event) {
       if (typeof event.preventDefault === 'function') event.preventDefault();
@@ -122,13 +264,11 @@ window.App = (function () {
       return false;
     }
 
-    // Button visual state
     if (btnSubmit) {
       btnSubmit.disabled = true;
       btnSubmit.innerHTML = `<span>⏳ Signing In...</span>`;
     }
 
-    // Successful login transition & chime
     AudioEngine.playSuccess();
 
     setTimeout(() => {
@@ -136,8 +276,8 @@ window.App = (function () {
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = `<span>Login to Explorer Hub</span> <span>→</span>`;
       }
-      // Switch directly to Page 2: Category Selection (Start Adventure)
-      navigateTo('category');
+      // Switch directly to Step 1: 3-in-1 Mat Blocks Table Panel
+      navigateTo('mat');
     }, 280);
 
     return false;
@@ -156,89 +296,28 @@ window.App = (function () {
     AudioEngine.playTone(600, 'sine', 0.06);
   }
 
-  // Step 1 (Page 2): Select Category (Animal vs Fruit) -> Switches to Step 2 (Page 3: Alphabet Grid)
+  // Step 2: Select Category (Animal vs Fruit) -> Switches to Step 3: Specimen Selection
   function selectCategory(cat) {
     state.mode = cat;
     AudioEngine.playTone(580, 'sine', 0.06);
-
-    // Update Letter Step Header & Breadcrumb
-    const letterTitle = document.getElementById('letterStepTitle');
-    const crumbCategoryName = document.getElementById('crumbCategoryName');
-    const letterNavSubtitle = document.getElementById('letterNavSubtitle');
-
-    if (letterTitle) letterTitle.textContent = `Choose an Alphabet Letter for ${cat}s`;
-    if (crumbCategoryName) crumbCategoryName.textContent = `${cat}s`;
-    if (letterNavSubtitle) letterNavSubtitle.textContent = `${cat} Alphabet Choice`;
-
-    // Render all 26 letters (A through Z) without auto-selecting any letter
-    renderLetterChoiceGrid();
-
-    // Reset piezo indicator text
-    const piezoStatus = document.getElementById('livePiezoStatusText');
-    if (piezoStatus) piezoStatus.textContent = `Awaiting Step on ${cat} Mat (A–Z)`;
-
-    navigateTo('letter');
-  }
-
-  // Step 2 (Page 3): Render All 26 Alphabet Letters (A - Z)
-  function renderLetterChoiceGrid() {
-    const grid = document.getElementById('letterChoiceGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    const items = getItemsByMode(state.mode);
-
-    letters.forEach(char => {
-      const matchCount = items.filter(i => i.alphabet === char).length;
-      const btn = document.createElement('div');
-      btn.className = 'letter-choice-btn';
-      btn.id = `letter-btn-${char}`;
-      btn.setAttribute('data-letter', char);
-      btn.innerHTML = `
-        <div class="letter-char">${char}</div>
-        <div class="letter-count-label">${matchCount > 0 ? `${matchCount} ${state.mode.toLowerCase()}s` : 'Explore'}</div>
-      `;
-      btn.onclick = () => selectLetter(char, false);
-      grid.appendChild(btn);
-    });
-  }
-
-  // Step 2 -> Step 3 (Page 4): Select Letter (Triggered by Mat Piezo Step or Click)
-  function selectLetter(char, isPiezo = false) {
-    if (!char) return;
-    char = char.toUpperCase();
-    state.selectedLetter = char;
-
-    // Tactile piezo audio & visual feedback
-    AudioEngine.playMatStep();
-
-    const targetBtn = document.getElementById(`letter-btn-${char}`);
-    if (targetBtn) {
-      document.querySelectorAll('.letter-choice-btn').forEach(b => b.classList.remove('piezo-active'));
-      targetBtn.classList.add('piezo-active');
-    }
-
-    const piezoStatus = document.getElementById('livePiezoStatusText');
-    if (piezoStatus) {
-      piezoStatus.innerHTML = `⚡ Step Detected: <strong>Letter ${char}</strong> (${state.mode}s)`;
-    }
 
     // Update Specimen List Step Header & Breadcrumb
     const selectionTitle = document.getElementById('selectionStepTitle');
     const crumbSelectionCat = document.getElementById('crumbSelectionCat');
     const crumbSelectionLetter = document.getElementById('crumbSelectionLetter');
 
-    if (selectionTitle) selectionTitle.textContent = `${state.mode}s Starting With '${char}'`;
-    if (crumbSelectionCat) crumbSelectionCat.textContent = `${state.mode}s`;
-    if (crumbSelectionLetter) crumbSelectionLetter.textContent = `Letter ${char}`;
+    if (selectionTitle) selectionTitle.textContent = `${cat}s Starting With '${state.selectedLetter}'`;
+    if (crumbSelectionCat) crumbSelectionCat.textContent = `${cat}s`;
+    if (crumbSelectionLetter) crumbSelectionLetter.textContent = `Letter ${state.selectedLetter}`;
 
     renderSpecimenList();
 
-    // Smooth transition to Step 3 (Specimen list) after tactile feedback delay
-    setTimeout(() => {
-      navigateTo('selection');
-    }, 280);
+    navigateTo('selection');
+  }
+
+  // Step 2 -> Step 3: Select Letter (Triggered by Mat Piezo Step or Click)
+  function selectLetter(char, isPiezo = false) {
+    selectMatLetter(char);
   }
 
   // Step 3: Render Specimen List for that letter
@@ -637,7 +716,7 @@ window.App = (function () {
     // Handle back / forward navigation and hash changes
     window.addEventListener('popstate', () => {
       const hash = window.location.hash.replace('#', '') || 'landing';
-      const validViews = ['landing', 'login', 'dashboard', 'category', 'letter', 'selection', 'viewer'];
+      const validViews = ['landing', 'login', 'dashboard', 'mat', 'category', 'letter', 'selection', 'viewer'];
       if (validViews.includes(hash)) {
         navigateTo(hash, false);
       }
@@ -645,7 +724,7 @@ window.App = (function () {
 
     // Check initial URL hash
     const initialHash = window.location.hash.replace('#', '');
-    const validViews = ['landing', 'login', 'dashboard', 'category', 'letter', 'selection', 'viewer'];
+    const validViews = ['landing', 'login', 'dashboard', 'mat', 'category', 'letter', 'selection', 'viewer'];
     if (initialHash && validViews.includes(initialHash)) {
       navigateTo(initialHash, false);
     }
@@ -658,18 +737,51 @@ window.App = (function () {
       const key = e.key.toUpperCase();
 
       // Number keys 1 & 2 on Category view
-      if (state.currentView === 'category' || state.currentView === 'dashboard') {
+      if (state.currentView === 'category') {
         if (key === '1') selectCategory('Animal');
         if (key === '2') selectCategory('Fruit');
       }
 
-      // Alphabet keys A-Z trigger piezo selection on Letter or Category screen
+      // Alphabet keys A-Z trigger piezo selection on Mat or Letter screen
       if (/^[A-Z]$/.test(key)) {
-        if (state.currentView === 'letter' || state.currentView === 'category') {
+        if (state.currentView === 'mat') {
+          selectMatLetter(key);
+        } else if (state.currentView === 'letter') {
           selectLetter(key, true);
         }
       }
     });
+
+    // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_event.json)
+    let lastHardwareTimestamp = Date.now() / 1000;
+    let initialHardwareCheck = true;
+
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (initialHardwareCheck) {
+              lastHardwareTimestamp = eventData.timestamp;
+              initialHardwareCheck = false;
+              return;
+            }
+
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const letter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || 32;
+              console.log(`[SPA Hardware Step Detected]: Letter ${letter} (GPIO ${gpio})`);
+              if (state.currentView === 'mat') {
+                selectMatLetter(letter, 1, gpio);
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    setInterval(pollHardwareEvent, 300);
 
     // 📡 Live Firebase Realtime Database Listener (Polls for ESP32 hardware step triggers)
     let lastFirebaseLetter = '';
@@ -685,7 +797,9 @@ window.App = (function () {
             if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
               lastFirebaseLetter = letter;
               console.log('[Firebase Live Step Detected]:', letter);
-              if (state.currentView === 'letter' || state.currentView === 'category') {
+              if (state.currentView === 'mat') {
+                selectMatLetter(letter);
+              } else if (state.currentView === 'letter' || state.currentView === 'category') {
                 selectLetter(letter, true);
               }
             }
@@ -725,6 +839,9 @@ window.App = (function () {
     fillDemoCredentials,
     selectCategory,
     selectLetter,
+    selectMatLetter,
+    selectNumber,
+    renderSpaMatBlocks,
     openSpecimen,
     startDirectMode,
     speakViewerItem,

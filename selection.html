@@ -35,8 +35,11 @@
       </a>
 
       <div style="display: flex; align-items: center; gap: 12px;">
-        <a id="btnBackToLetter" href="letter.html" class="btn-logout">
-          ← Back to Alphabet Grid
+        <a id="btnBackToCategory" href="category.html" class="btn-logout">
+          ← Change Category
+        </a>
+        <a id="btnBackToMat" href="mat.html" class="btn-logout">
+          ⚡ Mat Blocks
         </a>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
           🌙
@@ -48,11 +51,13 @@
   <div class="dash-body">
     <div class="pathway-step-card">
       <div class="pathway-breadcrumb">
-        <a href="category.html" class="pathway-breadcrumb-item">Category</a>
+        <a href="mat.html" class="pathway-breadcrumb-item">Step 1: Mat Blocks</a>
         <span>/</span>
-        <a id="crumbLetterLink" href="letter.html" class="pathway-breadcrumb-item">Letter</a>
+        <a id="crumbCategoryLink" href="category.html" class="pathway-breadcrumb-item">Step 2: Category</a>
         <span>/</span>
-        <span>Step 3: Select Specimen</span>
+        <span id="crumbSpecimenMode" style="color: var(--coral); font-weight: 800;">Animals for Letter A</span>
+        <span>/</span>
+        <span>Step 3: Choose Specimen</span>
       </div>
 
       <div class="pathway-step-header">
@@ -72,9 +77,10 @@
     const mode = urlParams.get('mode') === 'Fruit' ? 'Fruit' : 'Animal';
     const letter = (urlParams.get('letter') || 'A').toUpperCase();
 
-    document.getElementById('btnBackToLetter').href = `letter.html?mode=${encodeURIComponent(mode)}`;
-    document.getElementById('crumbLetterLink').href = `letter.html?mode=${encodeURIComponent(mode)}`;
-    document.getElementById('crumbLetterLink').textContent = `Letter ${letter} (${mode}s)`;
+    document.getElementById('btnBackToCategory').href = `category.html?letter=${encodeURIComponent(letter)}`;
+    document.getElementById('crumbCategoryLink').href = `category.html?letter=${encodeURIComponent(letter)}`;
+    document.getElementById('crumbCategoryLink').textContent = `Category (${mode}s)`;
+    document.getElementById('crumbSpecimenMode').textContent = `Letter ${letter} (${mode}s)`;
     document.getElementById('selectionStepTitle').textContent = `${mode}s Starting With Letter '${letter}'`;
 
     function renderSpecimens() {
@@ -85,11 +91,17 @@
       let matching = dataset.filter(item => item.alphabet === letter);
 
       if (matching.length === 0 && typeof ALPHAMAT_DATA !== 'undefined') {
-        const all = [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
+        const all = [...(ALPHAMAT_DATA.animals || []), ...(ALPHAMAT_DATA.fruits || [])];
         matching = all.filter(item => item.alphabet === letter);
       }
+
       if (matching.length === 0) {
-        matching = dataset.slice(0, 4);
+        grid.innerHTML = `
+          <div style="padding: 40px; text-align: center; color: var(--text-muted); font-size: 1.1rem; grid-column: 1 / -1;">
+            No specimens found for Letter <strong>${letter}</strong>. Please choose another letter from the mat.
+          </div>
+        `;
+        return;
       }
 
       matching.forEach(item => {

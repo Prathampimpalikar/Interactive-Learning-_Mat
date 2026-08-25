@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Step 1: Choose Category — AlphaMat 3D Learning</title>
+  <title>Step 2: Choose Curriculum Category — AlphaMat 3D Learning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,12 +35,12 @@
       </a>
 
       <div style="display: flex; align-items: center; gap: 14px;">
+        <a href="mat.html" class="btn-logout">
+          ← Back to Mat Table
+        </a>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
           🌙
         </button>
-        <a href="login.html" class="btn-logout">
-          🔒 Log Out
-        </a>
       </div>
     </div>
   </header>
@@ -49,15 +49,28 @@
     <!-- Breadcrumb & Step Header -->
     <div class="pathway-step-card">
       <div class="pathway-breadcrumb">
-        <span class="pathway-breadcrumb-item">AlphaMat Explorer Hub</span>
+        <a href="mat.html" class="pathway-breadcrumb-item">Step 1: Mat Blocks</a>
         <span>/</span>
-        <span>Step 1: Choose Curriculum Category</span>
+        <span id="crumbSelectedLetter" style="color: var(--coral); font-weight: 800;">Letter A</span>
+        <span>/</span>
+        <span>Step 2: Choose Curriculum Category</span>
+      </div>
+
+      <!-- Hero Selected Mat Letter Pill -->
+      <div class="selected-letter-badge-hero">
+        <div class="hero-char" id="badgeHeroChar">A</div>
+        <div class="hero-info">
+          <span class="hero-label">Tactile Mat Block Selected</span>
+          <span class="hero-desc" id="badgeHeroDesc">Block 1 • GPIO 32 • Options [ A | N | 0 ]</span>
+        </div>
       </div>
 
       <div class="pathway-step-header">
-        <p class="pathway-step-tag">Step 1 of 3</p>
-        <h1 class="pathway-step-title">What would you like to explore today?</h1>
-        <p class="pathway-step-sub">Select Animals or Fruits below (or press key <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">1</kbd> for Animals, <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">2</kbd> for Fruits) to open the Alphabet Grid.</p>
+        <p class="pathway-step-tag">Step 2 of 3</p>
+        <h1 class="pathway-step-title" id="categoryTitle">What would you like to explore for Letter A?</h1>
+        <p class="pathway-step-sub">
+          Select <strong>Animals</strong> or <strong>Fruits</strong> below (or press key <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">1</kbd> for Animals, <kbd style="background:var(--bg-sand); padding:2px 8px; border-radius:4px;">2</kbd> for Fruits) to open specimen options for Letter <strong id="subLetterText">A</strong>.
+        </p>
       </div>
 
       <!-- Category Choices Grid -->
@@ -66,11 +79,11 @@
         <div class="category-select-card animal-card" onclick="selectCategory('Animal')">
           <div class="category-card-icon">🐯</div>
           <h2 class="category-card-title">Animals Curriculum</h2>
-          <p class="category-card-desc">
-            Explore 30+ wildlife species, jungle predators, birds, mammals & aquatic creatures with 3D models, lifespans, and superpowers.
+          <p class="category-card-desc" id="animalCardDesc">
+            Explore wildlife species starting with Letter <strong class="text-coral" id="animalLetterChar">A</strong> (e.g. Ant, Alligator) with 3D models, lifespans, and superpowers.
           </p>
           <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center;">
-            <span>Select Animals (A - Z)</span> <span>→</span>
+            <span id="btnAnimalLabel">Open Animals for Letter A</span> <span>→</span>
           </button>
         </div>
 
@@ -78,26 +91,66 @@
         <div class="category-select-card fruit-card" onclick="selectCategory('Fruit')">
           <div class="category-card-icon">🍎</div>
           <h2 class="category-card-title">Fruits Curriculum</h2>
-          <p class="category-card-desc">
-            Discover 30+ tropical fruits, berries, citrus varieties & health benefits with vitamin profiles, harvest seasons, and 3D exploration.
+          <p class="category-card-desc" id="fruitCardDesc">
+            Discover tropical fruits, berries, and citrus starting with Letter <strong class="text-coral" id="fruitLetterChar">A</strong> (e.g. Apple, Avocado) with vitamin profiles and harvest seasons.
           </p>
           <button class="btn-primary-lg" style="margin-top: 24px; width: 100%; justify-content: center; background: var(--mint-strong); box-shadow: none;">
-            <span>Select Fruits (A - Z)</span> <span>→</span>
+            <span id="btnFruitLabel">Open Fruits for Letter A</span> <span>→</span>
           </button>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="js/data.js"></script>
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const letter = (urlParams.get('letter') || 'A').toUpperCase();
+    const gpio = urlParams.get('gpio') || '32';
+    const block = urlParams.get('block') || '1';
+
+    // Populate Dynamic Titles & Badges
+    document.getElementById('crumbSelectedLetter').textContent = `Letter ${letter}`;
+    document.getElementById('badgeHeroChar').textContent = letter;
+    document.getElementById('badgeHeroDesc').textContent = `Block ${block} • GPIO ${gpio} • Letter '${letter}' Selected`;
+    document.getElementById('categoryTitle').textContent = `What would you like to explore for Letter ${letter}?`;
+    document.getElementById('subLetterText').textContent = letter;
+    document.getElementById('animalLetterChar').textContent = letter;
+    document.getElementById('fruitLetterChar').textContent = letter;
+    document.getElementById('btnAnimalLabel').textContent = `Open Animals for Letter ${letter}`;
+    document.getElementById('btnFruitLabel').textContent = `Open Fruits for Letter ${letter}`;
+
+    // Dynamically retrieve specimen names for this letter from dataset
+    if (typeof ALPHAMAT_DATA !== 'undefined') {
+      const animalMatches = (ALPHAMAT_DATA.animals || []).filter(a => a.alphabet === letter).map(a => a.name);
+      const fruitMatches = (ALPHAMAT_DATA.fruits || []).filter(f => f.alphabet === letter).map(f => f.name);
+
+      const animalExamples = animalMatches.length > 0 ? ` (e.g. ${animalMatches.slice(0, 2).join(', ')})` : '';
+      const fruitExamples = fruitMatches.length > 0 ? ` (e.g. ${fruitMatches.slice(0, 2).join(', ')})` : '';
+
+      const animalDesc = document.getElementById('animalCardDesc');
+      const fruitDesc = document.getElementById('fruitCardDesc');
+
+      if (animalDesc) {
+        animalDesc.innerHTML = `Explore wildlife species starting with Letter <strong class="text-coral">${letter}</strong>${animalExamples} with 3D models, lifespans, and superpowers.`;
+      }
+      if (fruitDesc) {
+        fruitDesc.innerHTML = `Discover tropical fruits and berries starting with Letter <strong class="text-coral">${letter}</strong>${fruitExamples} with vitamin profiles and harvest seasons.`;
+      }
+    }
+
     function selectCategory(mode) {
-      window.location.href = `letter.html?mode=${encodeURIComponent(mode)}`;
+      // Direct navigation to Step 3: Specimen options for that specific letter & category
+      window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
     }
 
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
       if (e.key === '1') selectCategory('Animal');
       if (e.key === '2') selectCategory('Fruit');
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        window.location.href = 'mat.html';
+      }
     });
 
     function toggleTheme() {

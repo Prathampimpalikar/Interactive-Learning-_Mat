@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 1: 3-in-1 Sensory Mat Blocks — AlphaMat 3D Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="dash-view-wrapper">
+
+  <!-- Header -->
+  <header class="dash-nav-header">
+    <div class="dash-nav-container">
+      <a href="mat.html" class="brand-group">
+        <div class="brand-logo-container">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title">
+            Alpha<span class="text-coral">Mat</span>
+          </div>
+          <span class="brand-subtitle">Interactive 3-in-1 Mat Panel</span>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          🌙
+        </button>
+        <a href="login.html" class="btn-logout">
+          🔒 Log Out
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <!-- Breadcrumb & Step Header -->
+    <div class="pathway-step-card">
+      <div class="pathway-breadcrumb">
+        <span class="pathway-breadcrumb-item">AlphaMat Explorer Hub</span>
+        <span>/</span>
+        <span>Step 1: 3-in-1 Mat Alphabet Blocks (A/N/0, B/O/1...)</span>
+      </div>
+
+      <div class="pathway-step-header">
+        <p class="pathway-step-tag">Step 1 of 3</p>
+        <h1 class="pathway-step-title">Step on a Mat Block or Choose a Letter</h1>
+        <p class="pathway-step-sub">
+          Each physical mat block contains <strong>3 multi-function options</strong> (e.g. <code>[ A | N | 0 ]</code> on <strong>GPIO 32</strong>). 
+          Step on your physical sensor mat or click any option below to choose your curriculum (Animals or Fruits).
+        </p>
+      </div>
+
+      <!-- Live Piezo Sensor Status Banner -->
+      <div class="piezo-live-banner">
+        <div class="piezo-live-indicator">
+          <div class="piezo-indicator-dot"></div>
+          <div>
+            <div class="piezo-live-text">⚡ Physical Tactile Sensor Mat Listener Active</div>
+            <div class="piezo-live-sub">
+              Stepping on <strong>GPIO 32</strong> automatically selects <strong>Letter A</strong>. Press keys <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">A</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">Z</kbd> or <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">0</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">9</kbd> on your keyboard to emulate steps.
+            </div>
+          </div>
+        </div>
+        <div class="piezo-live-badge">
+          <span>🖲️</span> <span id="livePiezoStatusText">Awaiting Step on Mat Block</span>
+        </div>
+      </div>
+
+      <!-- 3-in-1 Mat Blocks Table Grid -->
+      <div class="mat-blocks-grid" id="matBlocksGrid"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    // Definition of the 13 Mat Blocks (Numbers 0 to 10, then Alphabet only for 12, 13)
+    const MAT_BLOCKS = [
+      { id: 1,  gpio: 32, primary: 'A', secondary: 'N', tertiary: '0',  title: 'Block 1' },
+      { id: 2,  gpio: 33, primary: 'B', secondary: 'O', tertiary: '1',  title: 'Block 2' },
+      { id: 3,  gpio: 25, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
+      { id: 4,  gpio: 26, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
+      { id: 5,  gpio: 27, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5' },
+      { id: 6,  gpio: 14, primary: 'F', secondary: 'S', tertiary: '5',  title: 'Block 6' },
+      { id: 7,  gpio: 12, primary: 'G', secondary: 'T', tertiary: '6',  title: 'Block 7' },
+      { id: 8,  gpio: 13, primary: 'H', secondary: 'U', tertiary: '7',  title: 'Block 8' },
+      { id: 9,  gpio: 15, primary: 'I', secondary: 'V', tertiary: '8',  title: 'Block 9' },
+      { id: 10, gpio: 2,  primary: 'J', secondary: 'W', tertiary: '9',  title: 'Block 10' },
+      { id: 11, gpio: 4,  primary: 'K', secondary: 'X', tertiary: '10', title: 'Block 11' },
+      { id: 12, gpio: 16, primary: 'L', secondary: 'Y', tertiary: null, title: 'Block 12' },
+      { id: 13, gpio: 17, primary: 'M', secondary: 'Z', tertiary: null, title: 'Block 13' }
+    ];
+
+    // Web Audio Chime
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    function playStepTone() {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(740, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    // Render Mat Table Blocks (3-in-1 for 1-10, 2-letter for 11-13)
+    function renderMatBlocks() {
+      const grid = document.getElementById('matBlocksGrid');
+      grid.innerHTML = '';
+
+      MAT_BLOCKS.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'mat-3in1-card';
+        card.id = `mat-block-${b.id}`;
+        card.setAttribute('data-gpio', b.gpio);
+        card.setAttribute('data-primary', b.primary);
+        card.setAttribute('data-secondary', b.secondary);
+
+        const isDual = !b.tertiary;
+
+        card.innerHTML = `
+          <div class="mat-card-topbar">
+            <span class="mat-block-num">${b.title}</span>
+            <span class="mat-gpio-badge">⚡ GPIO ${b.gpio}</span>
+          </div>
+
+          <div class="mat-options-row" style="${isDual ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr 1fr 1fr;'}">
+            <div class="mat-option-btn primary-option" onclick="event.stopPropagation(); selectLetter('${b.primary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.primary}">
+              <span class="mat-option-char">${b.primary}</span>
+              <span class="mat-option-type">Letter</span>
+            </div>
+            <div class="mat-option-btn secondary-option" onclick="event.stopPropagation(); selectLetter('${b.secondary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.secondary}">
+              <span class="mat-option-char">${b.secondary}</span>
+              <span class="mat-option-type">Letter</span>
+            </div>
+            ${b.tertiary ? `
+            <div class="mat-option-btn tertiary-option" onclick="event.stopPropagation(); selectNumber('${b.tertiary}');" title="Open 3D Model of Number ${b.tertiary}">
+              <span class="mat-option-char">${b.tertiary}</span>
+              <span class="mat-option-type">3D Model</span>
+            </div>` : ''}
+          </div>
+
+          <div class="mat-card-footer">
+            <span>${isDual ? 'Alphabet Only' : 'Touch or Step Pad'}</span>
+            <span class="mat-card-action-hint">Choose ${b.primary} →</span>
+          </div>
+        `;
+
+        // Whole block click defaults to primary letter (e.g. A for Block 1)
+        card.onclick = () => selectLetter(b.primary, b.id, b.gpio);
+        grid.appendChild(card);
+      });
+    }
+
+    // Letter Selection & Navigation to Step 2 (Category Selection)
+    let isNavigating = false;
+
+    function selectLetter(letter, blockId = 1, gpio = 32) {
+      if (isNavigating) return;
+      letter = String(letter).toUpperCase();
+      isNavigating = true;
+
+      playStepTone();
+
+      // Find matching block
+      const block = MAT_BLOCKS.find(b => b.primary === letter || b.secondary === letter) || MAT_BLOCKS[0];
+      const cardEl = document.getElementById(`mat-block-${block.id}`);
+
+      if (cardEl) {
+        document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
+        cardEl.classList.add('piezo-triggered');
+      }
+
+      const statusBadge = document.getElementById('livePiezoStatusText');
+      if (statusBadge) {
+        statusBadge.innerHTML = `⚡ Step Detected: <strong>${block.title} (GPIO ${block.gpio})</strong> → Selected <strong>Letter ${letter}</strong>!`;
+      }
+
+      // Visual feedback delay then genuine navigation to Category choice
+      setTimeout(() => {
+        window.location.href = `category.html?letter=${encodeURIComponent(letter)}&gpio=${encodeURIComponent(block.gpio)}&block=${encodeURIComponent(block.id)}`;
+      }, 700);
+    }
+
+    // Direct 3D Number Model Navigation (0 to 10)
+    function selectNumber(num) {
+      if (isNavigating) return;
+      isNavigating = true;
+
+      playStepTone();
+
+      const statusBadge = document.getElementById('livePiezoStatusText');
+      if (statusBadge) {
+        statusBadge.innerHTML = `🔢 Opening <strong>3D Model of Number ${num}</strong>...`;
+      }
+
+      setTimeout(() => {
+        window.location.href = `viewer.html?id=number_${encodeURIComponent(num)}&mode=Number&letter=${encodeURIComponent(num)}`;
+      }, 450);
+    }
+
+    // Keyboard Key Listener for Physical Mat Emulation
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      if (/^[A-Z]$/.test(key)) {
+        selectLetter(key);
+      } else if (key === '0') {
+        selectNumber('0');
+      } else if (/^[1-9]$/.test(key)) {
+        selectNumber(key);
+      }
+    });
+
+    // Theme Toggle
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('alphamat_theme', nxt);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    }
+
+    const saved = localStorage.getItem('alphamat_theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    }
+
+    // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_listener.py)
+    let lastHardwareTimestamp = Date.now() / 1000;
+    let initialHardwareCheck = true;
+
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (initialHardwareCheck) {
+              lastHardwareTimestamp = eventData.timestamp;
+              initialHardwareCheck = false;
+              return;
+            }
+
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const letter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || 32;
+              console.log(`[Hardware Step Detected]: Letter ${letter} on GPIO ${gpio}`);
+              selectLetter(letter, 1, gpio);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    setInterval(pollHardwareEvent, 300);
+
+    // 📡 Live Firebase Realtime Database Listener (Syncs with ESP32 Mat Triggers)
+    let lastFirebaseLetter = '';
+    const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
+
+    async function pollFirebaseLiveStep() {
+      try {
+        const response = await fetch(FIREBASE_URL, { cache: 'no-store' });
+        if (response.ok) {
+          const letterVal = await response.json();
+          if (letterVal && typeof letterVal === 'string') {
+            const letter = letterVal.trim().toUpperCase();
+            if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
+              lastFirebaseLetter = letter;
+              console.log('[Firebase Step Detected]:', letter);
+              selectLetter(letter);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    setInterval(pollFirebaseLiveStep, 400);
+
+    renderMatBlocks();
+  </script>
+</body>
+</html>

@@ -1909,3 +1909,211 @@ model-viewer {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   3-in-1 Sensory Mat Blocks Table Panel (A/N/0, B/O/1, etc.)
+   ========================================================================== */
+.mat-table-panel {
+  width: 100%;
+}
+
+.mat-blocks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .mat-blocks-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+}
+
+.mat-3in1-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-bounce);
+  cursor: pointer;
+  user-select: none;
+}
+
+.mat-3in1-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--coral);
+  box-shadow: 0 12px 28px var(--coral-glow);
+  background: var(--bg-card-hover);
+}
+
+.mat-3in1-card.piezo-triggered {
+  border-color: var(--coral) !important;
+  background: var(--coral-light) !important;
+  box-shadow: 0 0 32px var(--coral-glow) !important;
+  animation: matPulse 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes matPulse {
+  from { transform: scale(0.98); }
+  to { transform: scale(1.03); }
+}
+
+.mat-card-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-block-num {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mat-gpio-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-sand);
+  color: var(--coral);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+
+.mat-3in1-card.piezo-triggered .mat-gpio-badge {
+  background: var(--coral);
+  color: #fff;
+  border-color: var(--coral);
+}
+
+.mat-options-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.mat-option-btn {
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+.mat-option-btn:hover {
+  background: var(--coral-light);
+  border-color: var(--coral);
+  transform: translateY(-2px);
+}
+
+.mat-option-btn.selected-option,
+.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option {
+  background: var(--coral) !important;
+  color: #fff !important;
+  border-color: var(--coral) !important;
+  box-shadow: 0 4px 12px var(--coral-glow);
+}
+
+.mat-option-char {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-highlight);
+}
+
+.mat-option-btn.selected-option .mat-option-char,
+.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option .mat-option-char {
+  color: #ffffff !important;
+}
+
+.mat-option-type {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.mat-option-btn.selected-option .mat-option-type,
+.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option .mat-option-type {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.mat-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+.mat-card-action-hint {
+  color: var(--coral);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.selected-letter-badge-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--coral-light);
+  border: 2px solid var(--coral);
+  border-radius: var(--radius-lg);
+  padding: 10px 20px;
+  margin-bottom: 20px;
+}
+
+.selected-letter-badge-hero .hero-char {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--coral);
+  line-height: 1;
+}
+
+.selected-letter-badge-hero .hero-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-letter-badge-hero .hero-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--coral);
+  font-weight: 800;
+}
+
+.selected-letter-badge-hero .hero-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
