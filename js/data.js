@@ -520,7 +520,7 @@ const ALPHAMAT_DATA = {
       "superpower": "Arctic ocean diving & spiraled unicorn tusk",
       "funFact": "The narwhal's horn is a giant sensory tooth with 10 million nerve endings!",
       "description": "Known as the Unicorn of the Sea, narwhals are Arctic whales with a long spiral tusk.",
-      "image": "Alligator.jpg",
+      "image": "Narwhal.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true

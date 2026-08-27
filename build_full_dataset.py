@@ -64,7 +64,7 @@ animals_data = [
 
     # N
     {"id": "animal_N1", "type": "animal", "alphabet": "N", "name": "Numbat", "scientificName": "Myrmecobius fasciatus", "category": "Mammal", "superpower": "Sticky tongue catching 20,000 termites daily", "funFact": "Numbats have distinct white stripes across their back!", "description": "Numbats are colorful, harmless marsupials with fluffy tails and banded stripes.", "image": "logo.jpg", "model": "ant.glb"},
-    {"id": "animal_N2", "type": "animal", "alphabet": "N", "name": "Narwhal", "scientificName": "Monodon monoceros", "category": "Mammal", "superpower": "Arctic ocean diving & spiraled unicorn tusk", "funFact": "The narwhal's horn is a giant sensory tooth with 10 million nerve endings!", "description": "Known as the Unicorn of the Sea, narwhals are Arctic whales with a long spiral tusk.", "image": "Alligator.jpg", "model": "Alligator.glb"},
+    {"id": "animal_N2", "type": "animal", "alphabet": "N", "name": "Narwhal", "scientificName": "Monodon monoceros", "category": "Mammal", "superpower": "Arctic ocean diving & spiraled unicorn tusk", "funFact": "The narwhal's horn is a giant sensory tooth with 10 million nerve endings!", "description": "Known as the Unicorn of the Sea, narwhals are Arctic whales with a long spiral tusk.", "image": "Narwhal.jpg", "model": "Alligator.glb"},
 
     # O
     {"id": "animal_O1", "type": "animal", "alphabet": "O", "name": "Owl", "scientificName": "Strigiformes", "category": "Bird", "superpower": "Silent wing flight & 270° head rotation", "funFact": "Owls have specialized fringe feathers that make flight silent!", "description": "Owls are wise nocturnal birds with large glowing eyes.", "image": "Bee.jpg", "model": "Bee.glb"},
