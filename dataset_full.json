@@ -71,7 +71,7 @@
       "funFact": "Indian elephants love bathing in rivers and spraying water!",
       "description": "Asiatic Elephants are wise, gentle giants found across Indian forests.",
       "image": "logo.jpg",
-      "model": "ant.glb",
+      "model": "elephant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -236,7 +236,7 @@
       "funFact": "Elephants hug with their trunks and have super long memories!",
       "description": "Elephants are gentle giant mammals with big flapping ears and long trunks.",
       "image": "logo.jpg",
-      "model": "ant.glb",
+      "model": "elephant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -311,8 +311,8 @@
       "funFact": "Pandas spend up to 12 hours every day munching on fresh bamboo!",
       "description": "Giant Pandas are lovable black-and-white bears that love rolling and relaxing.",
       "image": "Bear.jpg",
-      "model": "ant.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
@@ -626,7 +626,7 @@
       "funFact": "Red ants can build floating rafts with their bodies during floods!",
       "description": "Red Ants are tireless, hardworking insects known for underground architecture.",
       "image": "ant.jpg",
-      "model": "ant.glb",
+      "model": "redant.glb",
       "hasRealModel": true,
       "hasRealImage": true
     },
@@ -1411,8 +1411,8 @@
       "funFact": "A pineapple takes almost two full years to grow a single fruit!",
       "description": "Pineapples are tropical fruits with crown leaves and sunny yellow flesh.",
       "image": "Avocado.jpg",
-      "model": "Apple.glb",
-      "hasRealModel": true,
+      "model": null,
+      "hasRealModel": false,
       "hasRealImage": true
     },
     {
