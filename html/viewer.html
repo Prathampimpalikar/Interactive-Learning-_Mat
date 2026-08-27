@@ -1,74 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
-<title>3D Viewer</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlphaMat 3D AR Studio</title>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-
-body{
-
-margin:0;
-background:#202124;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-height:100vh;
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #172338 0%, #0b111e 100%);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Outfit', sans-serif;
+  color: #fff;
 }
-
-model-viewer{
-
-width:100%;
-height:100%;
-
+.header-bar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(18, 26, 43, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 20px;
+  border-radius: 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 }
-
+.header-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.header-title span { color: #EB5E41; }
+model-viewer {
+  width: 100%;
+  height: 100%;
+}
+.controls-dock {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+}
+.btn {
+  padding: 9px 18px;
+  border-radius: 25px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+.btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+.btn-primary {
+  background: linear-gradient(135deg, #EB5E41, #F59E0B);
+  border: none;
+}
 </style>
-
 </head>
-
 <body>
 
+<div class="header-bar">
+  <div class="header-title">Alpha<span>Mat</span> — <span id="modelTitleText">3D Studio</span></div>
+</div>
+
 <model-viewer
-
-id="viewer"
-
-camera-controls
-
-auto-rotate
-
-shadow-intensity="1"
-
-ar
-
->
-
+  id="viewer"
+  camera-controls
+  auto-rotate
+  auto-rotate-delay="0"
+  shadow-intensity="1.5"
+  shadow-softness="0.75"
+  exposure="1.1"
+  ar
+  ar-modes="webxr scene-viewer quick-look"
+  camera-orbit="0deg 75deg 105%">
 </model-viewer>
 
+<div class="controls-dock">
+  <button class="btn" onclick="document.getElementById('viewer').cameraOrbit='0deg 75deg 105%'">🔄 Reset View</button>
+  <button class="btn btn-primary" onclick="openDedicatedFullscreen()">🖥️ Open Fullscreen Tab</button>
+</div>
+
 <script>
-
 const params = new URLSearchParams(window.location.search);
-
-const model = params.get("model");
-
+let model = params.get("model");
 const viewer = document.getElementById("viewer");
 
 if (!model || model === "nan") {
-    document.body.innerHTML = '<div style="color:#ffffff;font-family:Arial,sans-serif;font-size:22px;text-align:center;padding:20px;">⚠️ No 3D Model Specified for this Item</div>';
+    document.body.innerHTML = '<div style="color:#ffffff;font-family:Outfit,sans-serif;font-size:22px;text-align:center;padding:40px;margin:auto;">⚠️ No 3D Model Specified for this Item</div>';
 } else {
-    viewer.src = "../model/" + model;
-    viewer.addEventListener('error', (event) => {
-        document.body.innerHTML = '<div style="color:#ff6b6b;font-family:Arial,sans-serif;font-size:22px;text-align:center;padding:20px;">⚠️ 3D Model File (' + model + ') Not Found on Local Server.<br><span style="font-size:16px;color:#cccccc;">Please add ' + model + ' to the model/ directory.</span></div>';
+    // Decode model if needed
+    const cleanModel = decodeURIComponent(model).trim();
+    const displayName = cleanModel.replace(/\.glb$/i, '').replace(/_/g, ' ');
+    document.getElementById('modelTitleText').textContent = displayName;
+    document.title = `${displayName} — 3D Viewer | AlphaMat`;
+
+    viewer.src = "../model/" + encodeURIComponent(cleanModel);
+    viewer.addEventListener('error', () => {
+        viewer.src = "../letter_model/" + encodeURIComponent(cleanModel);
+        viewer.addEventListener('error', () => {
+            document.body.innerHTML = '<div style="color:#ff6b6b;font-family:Outfit,sans-serif;font-size:20px;text-align:center;padding:40px;margin:auto;">⚠️ 3D Model File (' + cleanModel + ') Not Found on Local Server.<br><span style="font-size:15px;color:#cccccc;margin-top:8px;display:block;">Please check the model/ directory.</span></div>';
+        });
     });
 }
 
+function openDedicatedFullscreen() {
+  if (!model) return;
+  const cleanModel = decodeURIComponent(model).trim();
+  const displayName = cleanModel.replace(/\.glb$/i, '').replace(/_/g, ' ');
+  window.open(`../fullscreen.html?model=${encodeURIComponent(cleanModel)}&title=${encodeURIComponent(displayName)}`, '_blank');
+}
 </script>
 
 </body>

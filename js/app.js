@@ -427,15 +427,19 @@ window.App = (function () {
     const fallback = document.getElementById('viewerImageFallback');
     const fallbackImg = document.getElementById('viewerFallbackImg');
 
+    const btnSpaFs = document.getElementById('btnSpaFullscreen3D');
+
     if (item.hasRealModel && viewer) {
       if (loader) loader.classList.add('active');
       if (fallback) fallback.classList.remove('active');
+      if (btnSpaFs) btnSpaFs.style.display = 'inline-flex';
       viewer.style.display = 'block';
       viewer.src = `model/${encodeURIComponent(item.model)}`;
     } else {
       if (viewer) viewer.style.display = 'none';
       if (loader) loader.classList.remove('active');
       if (fallback) fallback.classList.add('active');
+      if (btnSpaFs) btnSpaFs.style.display = 'none';
       const imgSrc = 'images/alphamat_logo.png';
       if (fallbackImg) fallbackImg.src = imgSrc;
     }
@@ -503,6 +507,13 @@ window.App = (function () {
     } else {
       alert('Snapshot exported!');
     }
+  }
+
+  function openFullscreen3D() {
+    if (!state.activeSpecimen || !state.activeSpecimen.model) return;
+    const item = state.activeSpecimen;
+    const url = `fullscreen.html?model=${encodeURIComponent(item.model)}&title=${encodeURIComponent(item.name)}&category=${encodeURIComponent(state.mode || '3D Studio')}`;
+    window.open(url, '_blank');
   }
 
   // Secondary Tools Subtab Switcher
@@ -847,6 +858,7 @@ window.App = (function () {
     speakViewerItem,
     resetStudioCamera,
     takeStudioSnapshot,
+    openFullscreen3D,
     switchStudioSubtab,
     loadNextQuiz,
     updateCertificate,
