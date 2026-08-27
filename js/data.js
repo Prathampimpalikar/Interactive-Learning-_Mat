@@ -61,21 +61,6 @@ const ALPHAMAT_DATA = {
       "hasRealImage": true
     },
     {
-      "id": "animal_A5",
-      "type": "animal",
-      "alphabet": "A",
-      "name": "Asiatic Elephant",
-      "scientificName": "Elephas maximus",
-      "category": "Mammal",
-      "superpower": "Dexterous trunk & gentle memory",
-      "funFact": "Indian elephants love bathing in rivers and spraying water!",
-      "description": "Asiatic Elephants are wise, gentle giants found across Indian forests.",
-      "image": "logo.jpg",
-      "model": "elephant.glb",
-      "hasRealModel": true,
-      "hasRealImage": true
-    },
-    {
       "id": "animal_B1",
       "type": "animal",
       "alphabet": "B",

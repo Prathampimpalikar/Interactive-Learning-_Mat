@@ -15,6 +15,40 @@
       display: flex;
       flex-direction: column;
     }
+    .specimen-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-card-fullscreen {
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #EB5E41, #F59E0B);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(235, 94, 65, 0.28);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-card-fullscreen:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 16px rgba(235, 94, 65, 0.45);
+    }
+    .badge-no-3d {
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 12px;
+      background: var(--bg-sand);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
   </style>
 </head>
 <body class="dash-view-wrapper">
@@ -63,7 +97,7 @@
       <div class="pathway-step-header">
         <p class="pathway-step-tag">Step 3 of 3</p>
         <h1 class="pathway-step-title" id="selectionStepTitle">Specimens for Letter A</h1>
-        <p class="pathway-step-sub">Select an item below to launch the 360° Interactive 3D Model Studio & Fact Dossier.</p>
+        <p class="pathway-step-sub">Select an item below to launch the 360° Interactive 3D Model Studio, or click "🖥️ 3D Fullscreen" to open directly in a new tab.</p>
       </div>
 
       <!-- Specimen Grid List -->
@@ -82,6 +116,11 @@
     document.getElementById('crumbCategoryLink').textContent = `Category (${mode}s)`;
     document.getElementById('crumbSpecimenMode').textContent = `Letter ${letter} (${mode}s)`;
     document.getElementById('selectionStepTitle').textContent = `${mode}s Starting With Letter '${letter}'`;
+
+    function openModelFullscreen(model, name, category) {
+      const url = `fullscreen.html?model=${encodeURIComponent(model)}&title=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}`;
+      window.open(url, '_blank');
+    }
 
     function renderSpecimens() {
       const grid = document.getElementById('specimenChoiceGrid');
@@ -108,6 +147,7 @@
         const card = document.createElement('div');
         card.className = 'specimen-select-card';
         const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
+        const has3D = item.hasRealModel && item.model;
 
         card.innerHTML = `
           <div class="specimen-avatar-box">
@@ -118,7 +158,14 @@
             <div class="specimen-card-sci">${item.scientificName || `Letter ${item.alphabet}`}</div>
             <div class="specimen-card-desc">${item.superpower || item.benefits || item.category}</div>
           </div>
-          <div style="font-size: 1.3rem; color: var(--coral); font-weight: 800;">→</div>
+          <div class="specimen-card-actions">
+            ${has3D ? `
+              <button class="btn-card-fullscreen" onclick="event.stopPropagation(); openModelFullscreen('${encodeURIComponent(item.model)}', '${encodeURIComponent(item.name)}', '${encodeURIComponent(item.category || mode)}');" title="Open 3D Model in Fullscreen New Tab">
+                🖥️ 3D Fullscreen
+              </button>
+            ` : `<span class="badge-no-3d">Photo Only</span>`}
+            <div style="font-size: 1.3rem; color: var(--coral); font-weight: 800; margin-left: 4px;">→</div>
+          </div>
         `;
 
         card.onclick = () => {

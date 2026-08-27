@@ -4,7 +4,6 @@ import re
 
 # Exact verified real models that exist in model/
 REAL_ANIMAL_MODELS = {
-    "Asiatic Elephant": "elephant.glb",
     "Elephant": "elephant.glb",
     "Asiatic Lion": "lion.glb",
     "Lion": "lion.glb",
