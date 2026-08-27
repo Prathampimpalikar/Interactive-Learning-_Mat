@@ -117,8 +117,8 @@
     document.getElementById('crumbSpecimenMode').textContent = `Letter ${letter} (${mode}s)`;
     document.getElementById('selectionStepTitle').textContent = `${mode}s Starting With Letter '${letter}'`;
 
-    function openModelFullscreen(model, name, category) {
-      const url = `fullscreen.html?model=${encodeURIComponent(model)}&title=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}`;
+    function openModelFullscreen(model, name, category, image) {
+      const url = `fullscreen.html?model=${encodeURIComponent(model || '')}&title=${encodeURIComponent(name)}&category=${encodeURIComponent(category || mode)}&image=${encodeURIComponent(image || '')}`;
       window.open(url, '_blank');
     }
 
@@ -147,7 +147,7 @@
         const card = document.createElement('div');
         card.className = 'specimen-select-card';
         const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
-        const has3D = item.hasRealModel && item.model;
+        const modelParam = item.model || '';
 
         card.innerHTML = `
           <div class="specimen-avatar-box">
@@ -159,11 +159,9 @@
             <div class="specimen-card-desc">${item.superpower || item.benefits || item.category}</div>
           </div>
           <div class="specimen-card-actions">
-            ${has3D ? `
-              <button class="btn-card-fullscreen" onclick="event.stopPropagation(); openModelFullscreen('${encodeURIComponent(item.model)}', '${encodeURIComponent(item.name)}', '${encodeURIComponent(item.category || mode)}');" title="Open 3D Model in Fullscreen New Tab">
-                🖥️ 3D Fullscreen
-              </button>
-            ` : `<span class="badge-no-3d">Photo Only</span>`}
+            <button class="btn-card-fullscreen" onclick="event.stopPropagation(); openModelFullscreen('${encodeURIComponent(modelParam)}', '${encodeURIComponent(item.name)}', '${encodeURIComponent(item.category || mode)}', '${encodeURIComponent(item.image || '')}');" title="Open 3D Studio in Fullscreen New Tab">
+              🖥️ 3D Fullscreen
+            </button>
             <div style="font-size: 1.3rem; color: var(--coral); font-weight: 800; margin-left: 4px;">→</div>
           </div>
         `;

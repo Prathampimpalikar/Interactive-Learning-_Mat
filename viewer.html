@@ -285,15 +285,15 @@
       const logoFallback = document.getElementById('studioLogoFallback');
       const loader = document.getElementById('viewerStageLoader');
 
-      // Show/hide fullscreen button
+      // Always show Fullscreen 3D Studio button for every item!
       const btnFs = document.getElementById('btnFullscreen3D');
+      if (btnFs) btnFs.style.display = 'inline-flex';
 
       if (activeItem.hasRealModel && activeItem.model) {
         if (viewer) {
           viewer.style.display = 'block';
           if (logoFallback) logoFallback.style.display = 'none';
           if (loader) loader.classList.add('active');
-          if (btnFs) btnFs.style.display = 'inline-flex';
           viewer.src = `model/${encodeURIComponent(activeItem.model)}`;
           viewer.addEventListener('load', () => {
             if (loader) loader.classList.remove('active');
@@ -301,11 +301,13 @@
           viewer.addEventListener('error', () => {
             // Fallback to letter model folder if available or logo
             viewer.src = `letter_model/${encodeURIComponent(activeItem.model)}`;
+            viewer.addEventListener('load', () => {
+              if (loader) loader.classList.remove('active');
+            });
             viewer.addEventListener('error', () => {
               viewer.style.display = 'none';
               if (logoFallback) logoFallback.style.display = 'flex';
               if (loader) loader.classList.remove('active');
-              if (btnFs) btnFs.style.display = 'none';
             });
           });
         }
@@ -313,7 +315,6 @@
         // No custom 3D model: Display AlphaMat Company Logo!
         if (viewer) viewer.style.display = 'none';
         if (loader) loader.classList.remove('active');
-        if (btnFs) btnFs.style.display = 'none';
         if (logoFallback) {
           logoFallback.style.display = 'flex';
           const badge = logoFallback.querySelector('.coming-soon-badge');
@@ -331,8 +332,12 @@
     }
 
     function openFullscreen3D() {
-      if (!activeItem || !activeItem.model) return;
-      const url = `fullscreen.html?model=${encodeURIComponent(activeItem.model)}&title=${encodeURIComponent(activeItem.name)}&category=${encodeURIComponent(activeItem.category || (isNumber ? 'Number' : mode))}`;
+      if (!activeItem) return;
+      const modelParam = activeItem.model || '';
+      const imgParam = activeItem.image || 'logo.jpg';
+      const isNum = activeItem.type === 'number' || (activeItem.id && activeItem.id.startsWith('number_'));
+      const catParam = activeItem.category || (isNum ? 'Number' : mode);
+      const url = `fullscreen.html?model=${encodeURIComponent(modelParam)}&title=${encodeURIComponent(activeItem.name)}&category=${encodeURIComponent(catParam)}&image=${encodeURIComponent(imgParam)}`;
       window.open(url, '_blank');
     }
 

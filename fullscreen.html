@@ -271,6 +271,7 @@
     const modelName = params.get('model') || '';
     const titleName = params.get('title') || '3D Specimen';
     const category = params.get('category') || '3D Studio';
+    const imageName = params.get('image') || '';
 
     document.getElementById('fsTitle').textContent = titleName;
     document.getElementById('fsLoaderName').textContent = titleName;
@@ -280,8 +281,35 @@
     const viewer = document.getElementById('fsModelViewer');
     const loader = document.getElementById('fsLoader');
 
-    if (modelName) {
-      // Determine correct model path
+    function showSpecimenStudioCard() {
+      loader.classList.add('hidden');
+      viewer.style.display = 'none';
+      const hint = document.querySelector('.fs-gesture-hint');
+      if (hint) hint.style.display = 'none';
+      const btnRot = document.getElementById('btnAutoRotate');
+      if (btnRot) btnRot.style.display = 'none';
+
+      let stageEl = document.getElementById('fsCustomStage');
+      if (!stageEl) {
+        stageEl = document.createElement('div');
+        stageEl.id = 'fsCustomStage';
+        stageEl.style.cssText = 'position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;background:radial-gradient(circle at center, #1e293b 0%, #0b111e 100%);z-index:50;';
+        document.body.appendChild(stageEl);
+      }
+      const imgSrc = imageName ? `images/${encodeURIComponent(imageName)}` : 'images/alphamat_logo.png';
+      stageEl.innerHTML = `
+        <div style="background: rgba(18,26,43,0.8); backdrop-filter: blur(16px); padding: 36px 48px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.15); max-width: 580px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+          <img src="${imgSrc}" alt="${titleName}" style="max-height: 260px; max-width: 380px; object-fit: contain; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); margin-bottom: 20px;" onerror="this.src='images/alphamat_logo.png'">
+          <h2 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 6px;">${titleName}</h2>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #EB5E41; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">${category} • AlphaMat 3D Studio</div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(235,94,65,0.15); border: 1px solid rgba(235,94,65,0.35); color: #FF8A65; padding: 8px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;">
+            ✨ 3D AR Model in Active Development
+          </div>
+        </div>
+      `;
+    }
+
+    if (modelName && modelName !== 'null' && modelName !== 'undefined') {
       let modelPath = `model/${encodeURIComponent(modelName)}`;
       viewer.src = modelPath;
 
@@ -290,25 +318,16 @@
       });
 
       viewer.addEventListener('error', () => {
-        // Try fallback to letter_model folder
         viewer.src = `letter_model/${encodeURIComponent(modelName)}`;
         viewer.addEventListener('load', () => {
           loader.classList.add('hidden');
         });
         viewer.addEventListener('error', () => {
-          loader.innerHTML = `
-            <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
-            <p style="font-weight: 700; color: #F87171; font-size: 1.1rem;">Model "${modelName}" could not be loaded.</p>
-            <button class="fs-btn" onclick="closeOrBack()" style="margin-top: 18px;">← Go Back</button>
-          `;
+          showSpecimenStudioCard();
         });
       });
     } else {
-      loader.innerHTML = `
-        <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
-        <p style="font-weight: 700; color: #F87171; font-size: 1.1rem;">No 3D Model specified in URL.</p>
-        <button class="fs-btn" onclick="closeOrBack()" style="margin-top: 18px;">← Go Back</button>
-      `;
+      showSpecimenStudioCard();
     }
 
     let isRotating = true;
