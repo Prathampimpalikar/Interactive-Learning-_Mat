@@ -6,8 +6,9 @@ import os
 DEFAULT_PORT = 8001
 
 
-class ReusableTCPServer(socketserver.TCPServer):
+class ReusableTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
+    daemon_threads = True
 
 
 def start_server(port=DEFAULT_PORT):

@@ -1,130 +1,1830 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — AlphaMat Interactive 3D Learning Mat</title>
+  <title>AlphaMat — Smart Interactive Learning System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark-1: #0B061A;
+      --bg-dark-2: #160B30;
+      --bg-dark-3: #241147;
+      --purple-primary: #8B5CF6;
+      --purple-dark: #6D28D9;
+      --purple-glow: rgba(139, 92, 246, 0.45);
+      --violet-accent: #A855F7;
+      --violet-light: #C084FC;
+      --coral-accent: #F43F5E;
+      --amber-accent: #F59E0B;
+      --text-white: #FFFFFF;
+      --text-subtle: #CBD5E1;
+      --text-muted: #94A3B8;
+      --glass-bg: rgba(30, 18, 58, 0.65);
+      --glass-border: rgba(168, 85, 247, 0.28);
+      --glass-shadow: 0 25px 60px -15px rgba(10, 4, 25, 0.75), 0 0 40px rgba(139, 92, 246, 0.15);
+      --radius-xl: 28px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       min-height: 100vh;
-      background: var(--bg-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 20% 15%, #2D1254 0%, #160B30 45%, #0B061A 100%);
+      color: var(--text-white);
+      overflow-x: hidden;
+      position: relative;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Ambient Animated Background Glows */
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+      animation: floatGlow 12s ease-in-out infinite alternate;
+    }
+    .glow-1 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, #7C3AED 0%, rgba(124, 58, 237, 0) 70%);
+      top: -120px;
+      left: -80px;
+    }
+    .glow-2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #9333EA 0%, rgba(147, 51, 234, 0) 70%);
+      bottom: -150px;
+      right: -100px;
+      animation-duration: 15s;
+    }
+    .glow-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #C084FC 0%, rgba(192, 132, 252, 0) 70%);
+      top: 40%;
+      left: 45%;
+      opacity: 0.25;
+      animation-duration: 9s;
+    }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, 30px) scale(1.15); }
+    }
+
+    /* 3D Floating Canvas for Background Educational Elements */
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Top Navigation Header */
+    .top-nav {
+      position: relative;
+      z-index: 10;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .brand-logo-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #7C3AED, #A855F7);
+      padding: 2px;
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+    }
+    .brand-title span {
+      background: linear-gradient(135deg, #C084FC, #F43F5E);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-tagline {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--violet-light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-site-link {
+      color: var(--text-subtle);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-site-link:hover {
+      background: rgba(168, 85, 247, 0.18);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    /* Main Login Container (Split 3D Character + Glass Card) */
+    .main-login-stage {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 10px 24px 30px;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      align-items: center;
+      gap: 40px;
+      flex: 1;
+    }
+
+    /* 3D Animated Boy Character Showcase */
+    .boy-character-showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+    }
+
+    /* Character Interactive Stage */
+    .character-stage {
+      position: relative;
+      width: 440px;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    /* Soft Floor Shadow */
+    .character-floor-shadow {
+      position: absolute;
+      bottom: 12px;
+      width: 280px;
+      height: 36px;
+      background: radial-gradient(ellipse at center, rgba(10, 4, 25, 0.8) 0%, rgba(139, 92, 246, 0.2) 40%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      filter: blur(6px);
+      z-index: 1;
+      animation: shadowPulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes shadowPulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.08); opacity: 0.6; }
+    }
+
+    /* Multi-Pose Character Images with Smooth Transition */
+    .boy-pose-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 30px rgba(10, 4, 25, 0.6)) drop-shadow(0 0 45px rgba(139, 92, 246, 0.35));
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.94) translateY(10px);
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .boy-pose-img.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      animation: boyBreathing 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes boyBreathing {
+      0% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.012) translateY(-6px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    /* Interactive Speech / Mood Bubble */
+    .character-mood-bubble {
+      margin-top: 10px;
+      background: rgba(30, 18, 58, 0.85);
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(12px);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #EDE9FE;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mood-bubble-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 10px #10B981;
+      flex-shrink: 0;
+    }
+
+    /* Small Background Educational Badges (A - Ant, B - Ball, C - Cat, D - Dog, E - Elephant) */
+    .edu-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .edu-badge-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--violet-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
+    }
+    .edu-badge-pill:hover {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: var(--violet-light);
+      transform: translateY(-2px);
+      color: #FFFFFF;
+    }
+
+    /* Glassmorphism Login Card */
+    .login-card-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .login-glass-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 42px 38px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(28px);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .login-glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(115deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(192, 132, 252, 0.08) 50%, rgba(255, 255, 255, 0) 60%);
+      pointer-events: none;
+      transform: rotate(25deg);
+    }
+
+    /* Card Header */
+    .login-card-header {
+      margin-bottom: 28px;
+    }
+    .login-welcome-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--violet-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .login-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .login-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-subtle);
+      line-height: 1.5;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #E2E8F0;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-icon-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .field-icon {
+      position: absolute;
+      left: 16px;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: color 0.25s ease;
+    }
+    .login-input {
+      width: 100%;
+      height: 52px;
+      padding: 0 46px 0 48px;
+      background: rgba(15, 8, 35, 0.7);
+      border: 1.5px solid rgba(168, 85, 247, 0.25);
+      border-radius: var(--radius-lg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: #FFFFFF;
+      outline: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .login-input::placeholder {
+      color: #64748B;
+      font-weight: 400;
+    }
+    .login-input:focus {
+      background: rgba(22, 11, 48, 0.9);
+      border-color: #A855F7;
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.22), 0 0 20px rgba(139, 92, 246, 0.25);
+    }
+    .input-icon-wrap:focus-within .field-icon {
+      color: #C084FC;
+    }
+
+    /* Toggle Password Visibility Button */
+    .btn-toggle-pwd {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    .btn-toggle-pwd:hover {
+      color: #FFFFFF;
+      transform: scale(1.1);
+    }
+
+    /* Extra Controls (Remember Me & Forgot Password) */
+    .form-options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      font-size: 0.88rem;
+    }
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-subtle);
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    .remember-checkbox {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid rgba(168, 85, 247, 0.4);
+      border-radius: 6px;
+      background: rgba(15, 8, 35, 0.6);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .remember-checkbox:checked {
+      background: #8B5CF6;
+      border-color: #8B5CF6;
+    }
+    .remember-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 11px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+    .forgot-link {
+      color: var(--violet-light);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+    .forgot-link:hover {
+      color: #FFFFFF;
+      text-decoration: underline;
+    }
+
+    /* Primary Login Button */
+    .btn-login-submit {
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #7C3AED 0%, #9333EA 50%, #C026D3 100%);
+      color: #FFFFFF;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.45), 0 0 25px rgba(192, 132, 252, 0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-login-submit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-login-submit:hover {
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 14px 36px rgba(124, 58, 237, 0.6), 0 0 35px rgba(192, 132, 252, 0.45);
+    }
+    .btn-login-submit:hover::before {
+      left: 100%;
+    }
+    .btn-login-submit:active {
+      transform: translateY(1px) scale(0.99);
+    }
+    .btn-login-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Demo Helper Badge */
+    .demo-creds-box {
+      margin-top: 18px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px dashed rgba(245, 158, 11, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      color: #FCD34D;
+    }
+    .btn-auto-fill {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #FBBF24;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.76rem;
+      transition: all 0.2s ease;
+    }
+    .btn-auto-fill:hover {
+      background: #F59E0B;
+      color: #1E1B4B;
+    }
+
+    /* Error Message Alert */
+    .login-error-alert {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+      font-size: 0.88rem;
+      font-weight: 600;
+      align-items: center;
+      gap: 10px;
+      animation: shakeCard 0.4s ease-in-out;
+    }
+    .login-error-alert.show {
+      display: flex;
+    }
+
+    @keyframes shakeCard {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Bottom Subtext */
+    .card-bottom-text {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* Spinner */
+    .btn-spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast Notification */
+    .toast-popup {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: rgba(30, 18, 58, 0.95);
+      border: 1px solid var(--violet-light);
+      padding: 14px 22px;
+      border-radius: 14px;
+      color: #FFFFFF;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toast-popup.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1024px) {
+      .main-login-stage {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding-top: 10px;
+      }
+      .character-stage {
+        width: 320px;
+        height: 350px;
+      }
+      .character-floor-shadow {
+        width: 220px;
+      }
+    }
+    @media (max-width: 640px) {
+      .top-nav {
+        padding: 16px 20px;
+      }
+      .brand-title {
+        font-size: 1.35rem;
+      }
+      .login-glass-card {
+        padding: 30px 22px;
+      }
+      .character-stage {
+        width: 260px;
+        height: 290px;
+      }
+      .login-title {
+        font-size: 1.85rem;
+      }
+      .edu-badges-row {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* ==========================================================================
+       INTERACTIVE HANGING LAMP & CONICAL SPOTLIGHT RIG
+       ========================================================================== */
+    .ceiling-lamp-rig {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      transition: all 0.4s ease;
+    }
+
+    .lamp-mount {
+      width: 64px;
+      height: 12px;
+      background: linear-gradient(180deg, #1C0F38, #361C68);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .lamp-cord-wire {
+      width: 3px;
+      height: 60px;
+      background: linear-gradient(180deg, #361C68, #6D28D9);
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .lamp-fixture {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .lamp-socket {
+      width: 22px;
+      height: 14px;
+      background: linear-gradient(180deg, #B45309, #D97706);
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .lamp-shade {
+      width: 130px;
+      height: 68px;
+      background: linear-gradient(145deg, #7C3AED 0%, #9333EA 60%, #581C87 100%);
+      clip-path: polygon(24% 0%, 76% 0%, 100% 100%, 0% 100%);
+      border-radius: 3px;
+      position: relative;
+      filter: drop-shadow(0 10px 22px rgba(10, 4, 25, 0.8));
+      transition: background 0.4s ease;
+    }
+
+    .lamp-shade-rim {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #F59E0B, #FEF08A, #F59E0B);
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+
+    .lamp-bulb {
+      position: absolute;
+      bottom: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #FEF08A 45%, #F59E0B 100%);
+      box-shadow: 0 0 25px #F59E0B, 0 0 60px rgba(245, 158, 11, 0.85), 0 0 100px rgba(254, 240, 138, 0.65);
+      border: 1px solid rgba(254, 240, 138, 0.8);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 2;
+    }
+
+    /* Hanging Pull-Cord Assembly */
+    .pull-string-assembly {
+      position: absolute;
+      top: 130px;
+      left: calc(50% + 42px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      pointer-events: all;
+      user-select: none;
+      z-index: 30;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .pull-string-assembly:hover {
+      transform: translateY(4px);
+    }
+
+    .pull-string-assembly.pulled {
+      animation: cordPullBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes cordPullBounce {
+      0% { transform: translateY(0) scaleY(1); }
+      40% { transform: translateY(28px) scaleY(1.3); }
+      70% { transform: translateY(-8px) scaleY(0.9); }
+      100% { transform: translateY(0) scaleY(1); }
+    }
+
+    .pull-chain {
+      width: 3px;
+      height: 105px;
+      background: repeating-linear-gradient(to bottom, #FBBF24 0px, #FBBF24 4px, #78350F 5px, #78350F 7px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
+    }
+
+    .pull-tassel {
+      width: 20px;
+      height: 32px;
+      background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 65%, #92400E 100%);
+      border-radius: 8px 8px 14px 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 16px #F59E0B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .pull-string-assembly:hover .pull-tassel {
+      transform: scale(1.18);
+      box-shadow: 0 6px 22px rgba(245, 158, 11, 0.9), 0 0 25px #FEF08A;
+    }
+
+    .pull-glow-ring {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(254, 240, 138, 0.6);
+      animation: pullRingPulse 2s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes pullRingPulse {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .pull-cord-hint {
+      position: absolute;
+      left: 26px;
+      top: 96px;
+      white-space: nowrap;
+      background: rgba(22, 11, 48, 0.94);
+      border: 1px solid rgba(245, 158, 11, 0.6);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #FEF08A;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 158, 11, 0.35);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: floatHint 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatHint {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(4px); }
+    }
+
+    /* Dramatic Conical Spotlight Beam */
+    .spotlight-cone {
+      position: fixed;
+      top: 135px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1250px;
+      height: 900px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(254, 240, 138, 0.36) 0%, rgba(192, 132, 252, 0.2) 35%, rgba(124, 58, 237, 0.08) 65%, transparent 80%);
+      clip-path: polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%);
+      mix-blend-mode: screen;
+      filter: blur(22px);
+      pointer-events: none;
+      z-index: 4;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Nav Lamp Toggle Button */
+    .btn-lamp-nav {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(124, 58, 237, 0.25));
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #FEF08A;
+      font-size: 0.88rem;
+      font-weight: 800;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+    }
+
+    .btn-lamp-nav:hover {
+      background: linear-gradient(135deg, #F59E0B, #7C3AED);
+      color: #FFFFFF;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Sleep Card for when Lamp is Switched OFF */
+    .lamp-off-card {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 36px;
+      background: rgba(14, 7, 28, 0.85);
+      border: 1px dashed rgba(168, 85, 247, 0.4);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(24px);
+      min-height: 480px;
+      opacity: 0;
+      transform: scale(0.92) translateY(20px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sleep-moon-icon {
+      font-size: 3.8rem;
+      filter: drop-shadow(0 0 24px rgba(168, 85, 247, 0.8));
+      margin-bottom: 16px;
+      animation: floatMoon 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatMoon {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-8px) rotate(-6deg); }
+    }
+
+    .sleep-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #EDE9FE;
+      margin-bottom: 12px;
+    }
+
+    .sleep-card-desc {
+      font-size: 0.95rem;
+      color: #94A3B8;
+      line-height: 1.6;
+      max-width: 360px;
+      margin-bottom: 28px;
+    }
+
+    .btn-turn-lamp-on {
+      padding: 14px 32px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #7C3AED 100%);
+      color: #FFFFFF;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5), 0 0 30px rgba(245, 158, 11, 0.35);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-turn-lamp-on:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 35px rgba(245, 158, 11, 0.7), 0 0 45px rgba(245, 158, 11, 0.55);
+    }
+
+    .sleep-hint-pill {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: #C084FC;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Floating Zzz Animation Above Boy Character When Lamp is OFF */
+    .sleep-zzz-container {
+      position: absolute;
+      top: 15px;
+      right: 40px;
+      pointer-events: none;
+      display: none;
+      z-index: 10;
+    }
+
+    .zzz-letter {
+      position: absolute;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      color: #C084FC;
+      text-shadow: 0 0 10px rgba(192, 132, 252, 0.8);
+      opacity: 0;
+      animation: riseZzz 3.2s infinite ease-in;
+    }
+
+    .z1 { font-size: 1.4rem; animation-delay: 0s; right: 10px; }
+    .z2 { font-size: 1.8rem; animation-delay: 1.1s; right: 28px; }
+    .z3 { font-size: 2.3rem; animation-delay: 2.2s; right: 48px; }
+
+    @keyframes riseZzz {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      30% { opacity: 0.9; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-70px) scale(1.3); opacity: 0; }
+    }
+
+    /* ==========================================================================
+       LAMP OFF & FLICKER GLOBAL STATE RULES
+       ========================================================================== */
+    body.lamp-off {
+      background: radial-gradient(circle at 50% 20%, #0F051C 0%, #05020B 60%, #020006 100%) !important;
+    }
+
+    body.lamp-off .ambient-glow {
+      opacity: 0.08 !important;
+    }
+
+    body.lamp-off .lamp-bulb {
+      background: #251238 !important;
+      box-shadow: none !important;
+      border: 1px solid #4A2372 !important;
+    }
+
+    body.lamp-off .spotlight-cone {
+      opacity: 0 !important;
+      transform: translateX(-50%) scaleY(0.5) !important;
+    }
+
+    body.lamp-off .pull-tassel {
+      background: radial-gradient(circle at 35% 35%, #7C3AED, #3B1B68) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    body.lamp-off .pull-cord-hint {
+      background: rgba(14, 7, 28, 0.96) !important;
+      border-color: rgba(168, 85, 247, 0.45) !important;
+      color: #EDE9FE !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    body.lamp-off .login-glass-card {
+      display: none !important;
+    }
+
+    body.lamp-off .lamp-off-card {
+      display: flex !important;
+      opacity: 1 !important;
+      transform: scale(1) translateY(0) !important;
+    }
+
+    body.lamp-off .sleep-zzz-container {
+      display: block !important;
+    }
+
+    body.lamp-off .boy-pose-img {
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.9)) brightness(0.68) saturate(0.8) !important;
+    }
+
+    body.lamp-off .btn-lamp-nav {
+      background: rgba(124, 58, 237, 0.15) !important;
+      border-color: rgba(124, 58, 237, 0.35) !important;
+      color: #C084FC !important;
+      box-shadow: none !important;
+    }
+
+    /* Realistic Incandescent Lamp Flicker When Turning On */
+    body.lamp-flicker .lamp-bulb {
+      animation: bulbFlickerOn 0.4s ease forwards !important;
+    }
+
+    body.lamp-flicker .spotlight-cone {
+      animation: coneFlickerOn 0.4s ease forwards !important;
+    }
+
+    @keyframes bulbFlickerOn {
+      0% { opacity: 0.1; transform: translateX(-50%) scale(0.7); }
+      20% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+      35% { opacity: 0.2; transform: translateX(-50%) scale(0.85); }
+      55% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+      70% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+
+    @keyframes coneFlickerOn {
+      0% { opacity: 0; }
+      20% { opacity: 0.85; }
+      35% { opacity: 0.15; }
+      55% { opacity: 1; }
+      70% { opacity: 0.35; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
-<body class="login-view-wrapper">
+<body>
 
-  <header class="login-nav-header">
-    <a href="index.html" class="brand-group">
-      <div class="brand-logo-container">
+  <!-- Ambient Violet Glow Orbs -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Three.js Canvas for Floating 3D Educational Particles (A, B, C, D, E, Books, Pencils, Stars) -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <a href="index.html" class="brand-group" title="AlphaMat Home">
+      <div class="brand-logo-wrap">
         <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
       </div>
-      <div class="brand-text-block">
-        <div class="brand-title">
-          Alpha<span class="text-coral">Mat</span>
-        </div>
-        <span class="brand-subtitle">Interactive 3D Learning Studio</span>
+      <div>
+        <div class="brand-title">Alpha<span>Mat</span></div>
+        <span class="brand-tagline">Touch. Explore. Learn.</span>
       </div>
     </a>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="index.html" class="btn-back-home">
-        ← Back to Website
-      </a>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-        🌙
+    <div class="nav-actions">
+      <button type="button" class="btn-lamp-nav" id="btnNavLamp" onclick="toggleLamp()" title="Toggle Room Lamp ON/OFF">
+        <span id="navLampIcon">💡</span>
+        <span id="navLampText">Lamp: ON</span>
       </button>
+      <a href="index.html" class="btn-site-link">
+        <span>←</span> <span>Back to Website</span>
+      </a>
+      <a href="mat.html" class="btn-site-link" style="background: rgba(139, 92, 246, 0.25); border-color: rgba(168, 85, 247, 0.5); color: #EDE9FE;">
+        <span>⚡</span> <span>Mat Explorer</span>
+      </a>
     </div>
   </header>
 
-  <div class="login-center-container">
-    <section class="login-split-card">
-      <!-- Left Banner -->
-      <div class="login-left-banner">
-        <div>
-          <p class="login-banner-tag">The AlphaMat Studio</p>
-          <h1 class="login-banner-title">A new way to see learning.</h1>
-          <p class="login-banner-desc">Step into a calmer, more curious world of letters, touch, and 3D discovery.</p>
-        </div>
-
-        <div class="login-giant-badge">
-          A
-        </div>
+  <!-- Interactive Hanging Ceiling Lamp Rig & Conical Spotlight -->
+  <div class="ceiling-lamp-rig" id="lampRig">
+    <div class="lamp-mount"></div>
+    <div class="lamp-cord-wire"></div>
+    
+    <div class="lamp-fixture">
+      <div class="lamp-socket"></div>
+      <div class="lamp-shade">
+        <div class="lamp-shade-rim"></div>
+        <div class="lamp-bulb" id="lampBulb" title="Interactive Room Lamp"></div>
       </div>
+    </div>
 
-      <!-- Right Form -->
-      <div class="login-form-side">
-        <p class="login-form-tag">Welcome Back</p>
-        <h2 class="login-form-title">Sign in to AlphaMat</h2>
-        <p class="login-form-sub">Continue your child or student's learning journey.</p>
-
-        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
-          <div class="form-group">
-            <label class="form-label" for="loginEmail">Username / Email</label>
-            <input type="text" id="loginEmail" class="form-input" placeholder="admin" value="admin" required autofocus>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" class="form-input" placeholder="admin123" value="admin123" required>
-          </div>
-
-          <div class="demo-hint-box">
-            <span>💡 Demo: <strong style="color: var(--coral);">admin / admin123</strong></span>
-            <button type="button" onclick="fillDemo()" style="color: var(--coral); font-weight: 700; background: none; cursor: pointer;">Auto-Fill</button>
-          </div>
-
-          <button type="submit" id="btnSubmit" class="btn-primary-lg" style="width: 100%; justify-content: center;">
-            <span>Login to Explorer Hub</span> <span>→</span>
-          </button>
-        </form>
+    <!-- Hanging Pull-Cord with Golden Handle -->
+    <div class="pull-string-assembly" id="pullCord" onclick="toggleLamp()" title="Pull cord to switch lamp ON/OFF">
+      <div class="pull-chain"></div>
+      <div class="pull-tassel">
+        <span class="pull-glow-ring"></span>
       </div>
-    </section>
+      <div class="pull-cord-hint" id="pullCordHint">
+        <span>💡</span>
+        <span id="pullCordHintText">Pull cord to switch lamp OFF</span>
+      </div>
+    </div>
+
+    <!-- Conical Spotlight Beam -->
+    <div class="spotlight-cone" id="spotlightCone"></div>
   </div>
 
+  <!-- Main Login Stage: 3D Animated Boy on Left + Glassmorphism Form on Right -->
+  <main class="main-login-stage">
+
+    <!-- 3D Character Interactive Showcase (Left Column on Desktop, Top on Mobile) -->
+    <section class="boy-character-showcase">
+      <div class="character-stage" id="characterStage">
+        <!-- Floor Ambient Shadow -->
+        <div class="character-floor-shadow"></div>
+
+        <!-- Character Pose 1: Welcome & Hand Wave (Default Idle) -->
+        <img src="images/boy_character.png" alt="3D Boy Waving" class="boy-pose-img active" id="poseIdle">
+
+        <!-- Character Pose 2: Looking at Input Field / Eyes Following Form -->
+        <img src="images/boy_looking_side.png" alt="3D Boy Looking at Email Field" class="boy-pose-img" id="poseEmail">
+
+        <!-- Character Pose 3: Covering Eyes with Both Hands (Peek-a-boo Password Mode) -->
+        <img src="images/boy_covering_eyes.png" alt="3D Boy Covering Eyes" class="boy-pose-img" id="posePassword">
+
+        <!-- Character Pose 4: Celebrating Joyfully with Confetti (Successful Login) -->
+        <img src="images/boy_celebrating.png" alt="3D Boy Celebrating" class="boy-pose-img" id="poseCelebration">
+
+        <!-- Character Pose 5: Puzzled / Disappointed Shrug (Failed Login) -->
+        <img src="images/boy_disappointed.png" alt="3D Boy Puzzled" class="boy-pose-img" id="poseError">
+
+        <!-- Floating Zzz Sleep Animation when Lamp is OFF -->
+        <div class="sleep-zzz-container" id="sleepZzz">
+          <span class="zzz-letter z1">Z</span>
+          <span class="zzz-letter z2">z</span>
+          <span class="zzz-letter z3">z</span>
+        </div>
+      </div>
+
+      <!-- Live Dynamic Mood Bubble -->
+      <div class="character-mood-bubble" id="moodBubble">
+        <div class="mood-bubble-dot" id="moodDot"></div>
+        <span id="moodText">Hi there! Step into AlphaMat learning! 👋</span>
+      </div>
+
+      <!-- Small Project Inspired Alphabet Badges (A-Ant, B-Ball, C-Cat, D-Dog, E-Elephant) -->
+      <div class="edu-badges-row">
+        <div class="edu-badge-pill" title="A - Ant">🐜 A – Ant</div>
+        <div class="edu-badge-pill" title="B - Bear / Bee">🐝 B – Bee</div>
+        <div class="edu-badge-pill" title="C - Cat / Camel">🐱 C – Cat</div>
+        <div class="edu-badge-pill" title="D - Dolphin / Deer">🐬 D – Dolphin</div>
+        <div class="edu-badge-pill" title="E - Elephant">🐘 E – Elephant</div>
+      </div>
+    </section>
+
+    <!-- Glassmorphic Login Card (Right Column on Desktop) -->
+    <section class="login-card-wrap">
+      <div class="login-glass-card" id="loginCard">
+        <div class="login-card-header">
+          <p class="login-welcome-tag">
+            <span>✨</span> <span>STUDENT & MENTOR PORTAL</span>
+          </p>
+          <h1 class="login-title">Welcome Back!</h1>
+          <p class="login-subtitle">Let's continue your learning journey with AlphaMat.</p>
+        </div>
+
+        <!-- Login Form: Strictly Two Inputs (Username/Email & Password) -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" autocomplete="off">
+          
+          <!-- Field 1: Email / Username -->
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">
+              <span>👤</span> <span>Email / Username</span>
+            </label>
+            <div class="input-icon-wrap">
+              <span class="field-icon">✉️</span>
+              <input 
+                type="text" 
+                id="loginEmail" 
+                class="login-input" 
+                placeholder="Enter username (e.g. admin)" 
+                value="admin" 
+                required 
+                autofocus
+                onfocus="onEmailFocus()"
+                onblur="onFieldBlur()"
+              >
+            </div>
+          </div>
+
+          <!-- Field 2: Password -->
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">
+              <span>🔒</span> <span>Password</span>
+            </label>
+            <div class="input-icon-wrap">
+              <span class="field-icon">🔑</span>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                class="login-input" 
+                placeholder="Enter password (e.g. admin123)" 
+                value="admin123" 
+                required
+                onfocus="onPasswordFocus()"
+                oninput="onPasswordInput()"
+                onblur="onFieldBlur()"
+              >
+              <button type="button" class="btn-toggle-pwd" id="btnTogglePwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">
+                👁️
+              </button>
+            </div>
+          </div>
+
+          <!-- Additional Controls: Remember Me & Forgot Password -->
+          <div class="form-options-row">
+            <label class="remember-label">
+              <input type="checkbox" id="rememberMe" class="remember-checkbox" checked>
+              <span>Remember Me</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-link" onclick="handleForgotPassword()">
+              Forgot Password?
+            </a>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" id="btnLoginSubmit" class="btn-login-submit">
+            <div class="btn-spinner" id="btnSpinner"></div>
+            <span id="btnSubmitText">Login to AlphaMat →</span>
+          </button>
+
+          <!-- Clean Error Alert Box -->
+          <div class="login-error-alert" id="loginErrorAlert">
+            <span>⚠️</span>
+            <span id="errorMessageText">Invalid username or password. Please try again!</span>
+          </div>
+
+          <!-- Demo Hint with 1-Click Auto Fill -->
+          <div class="demo-creds-box">
+            <span>💡 Demo Login: <strong>admin</strong> / <strong>admin123</strong></span>
+            <button type="button" class="btn-auto-fill" onclick="autoFillCredentials()">Auto-Fill</button>
+          </div>
+
+          <!-- Bottom Branding Subtext -->
+          <p class="card-bottom-text">
+            Smart Interactive Learning System
+          </p>
+        </form>
+      </div>
+
+      <!-- Sleep Card for when Lamp is Switched OFF (Dark / Night Mode) -->
+      <div class="lamp-off-card" id="lampOffCard">
+        <div class="sleep-moon-icon">🌙</div>
+        <h2 class="sleep-card-title">Study Room Is Dark</h2>
+        <p class="sleep-card-desc">
+          The ceiling lamp is switched OFF and the login portal is sleeping. Pull the golden cord hanging above or click below to illuminate the room!
+        </p>
+        <button type="button" class="btn-turn-lamp-on" onclick="toggleLamp()">
+          <span>💡</span> <span>Turn Lamp ON</span> <span>✨</span>
+        </button>
+        <div class="sleep-hint-pill">
+          <span>👆 Or pull the golden hanging cord above</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast-popup" id="toastPopup">
+    <span id="toastIcon">💡</span>
+    <span id="toastMessage">Demo Credentials: admin / admin123</span>
+  </div>
+
+  <!-- Three.js (for 3D Floating Educational Objects: A, B, C, D, E, Books, Stars) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <script>
-    function fillDemo() {
+    // ==============================================================================
+    // 1. WEB AUDIO SYNTHESIZER (Playful Chimes & Interactive Feedback)
+    // ==============================================================================
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.12, gainVal = 0.15) {
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundWaveHello() {
+      playTone(523.25, 'sine', 0.1, 0.15); // C5
+      setTimeout(() => playTone(659.25, 'sine', 0.12, 0.15), 90); // E5
+      setTimeout(() => playTone(783.99, 'sine', 0.2, 0.18), 180); // G5
+    }
+
+    function soundCoverEyes() {
+      playTone(440, 'triangle', 0.08, 0.12);
+      setTimeout(() => playTone(349.23, 'triangle', 0.12, 0.12), 70);
+    }
+
+    function soundSuccess() {
+      playTone(523.25, 'triangle', 0.1, 0.2);
+      setTimeout(() => playTone(659.25, 'triangle', 0.12, 0.22), 100);
+      setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.25), 200);
+      setTimeout(() => playTone(1046.50, 'triangle', 0.35, 0.3), 320); // C6
+    }
+
+    function soundError() {
+      playTone(320, 'sawtooth', 0.15, 0.18);
+      setTimeout(() => playTone(240, 'sawtooth', 0.22, 0.18), 120);
+    }
+
+    // Interactive Lamp Click & Tone
+    function soundLampClick(isTurningOn) {
+      try {
+        initAudio();
+        // Authentic mechanical switch click
+        playTone(160, 'triangle', 0.04, 0.28);
+        setTimeout(() => playTone(95, 'sawtooth', 0.05, 0.22), 26);
+        if (isTurningOn) {
+          setTimeout(() => playTone(659.25, 'sine', 0.12, 0.14), 70);
+          setTimeout(() => playTone(880, 'sine', 0.22, 0.18), 140);
+        } else {
+          setTimeout(() => playTone(330, 'sine', 0.15, 0.1), 60);
+          setTimeout(() => playTone(220, 'sine', 0.2, 0.08), 120);
+        }
+      } catch (e) {}
+    }
+
+    let isLampOn = true;
+
+    function toggleLamp() {
+      isLampOn = !isLampOn;
+      const cord = document.getElementById('pullCord');
+      if (cord) {
+        cord.classList.remove('pulled');
+        void cord.offsetWidth; // Force CSS reflow
+        cord.classList.add('pulled');
+        setTimeout(() => cord.classList.remove('pulled'), 500);
+      }
+
+      soundLampClick(isLampOn);
+
+      const navBtnText = document.getElementById('navLampText');
+      const hintText = document.getElementById('pullCordHintText');
+      const bulb = document.getElementById('lampBulb');
+
+      if (isLampOn) {
+        document.body.classList.remove('lamp-off');
+        document.body.classList.add('lamp-flicker');
+        setTimeout(() => document.body.classList.remove('lamp-flicker'), 450);
+
+        if (navBtnText) navBtnText.textContent = 'Lamp: ON';
+        if (hintText) hintText.textContent = 'Pull cord to switch lamp OFF';
+        if (bulb) bulb.title = 'Ceiling Lamp: ON (Click cord to turn off)';
+
+        setCharacterPose('idle', 'The lamp is shining! Welcome to AlphaMat! ✨', '#10B981');
+        soundWaveHello();
+        showToast('💡 Lamp Turned ON! Login Portal Illuminated.');
+      } else {
+        document.body.classList.add('lamp-off');
+
+        if (navBtnText) navBtnText.textContent = 'Lamp: OFF';
+        if (hintText) hintText.textContent = 'Pull cord to switch lamp ON';
+        if (bulb) bulb.title = 'Ceiling Lamp: OFF (Click cord to turn on)';
+
+        setCharacterPose('idle', 'Zzz... The room is dark. Pull the golden cord to turn on the lamp! 😴', '#6B7280');
+        showToast('🌙 Lamp Switched OFF! Room entered Sleep Mode.');
+      }
+    }
+
+    // ==============================================================================
+    // 2. 3D BOY INTERACTIVE CHARACTER CONTROLLER
+    // ==============================================================================
+    const poses = {
+      idle: document.getElementById('poseIdle'),
+      email: document.getElementById('poseEmail'),
+      password: document.getElementById('posePassword'),
+      celebration: document.getElementById('poseCelebration'),
+      error: document.getElementById('poseError')
+    };
+
+    const moodText = document.getElementById('moodText');
+    const moodDot = document.getElementById('moodDot');
+    let currentPose = 'idle';
+    let isPasswordCovering = false;
+
+    function setCharacterPose(poseName, text, dotColor = '#10B981') {
+      if (currentPose === poseName) return;
+      currentPose = poseName;
+
+      Object.keys(poses).forEach(k => {
+        if (poses[k]) poses[k].classList.remove('active');
+      });
+
+      if (poses[poseName]) {
+        poses[poseName].classList.add('active');
+      }
+
+      if (moodText && text) {
+        moodText.textContent = text;
+      }
+      if (moodDot && dotColor) {
+        moodDot.style.background = dotColor;
+        moodDot.style.boxShadow = `0 0 10px ${dotColor}`;
+      }
+    }
+
+    // Animation 2: Focus on Email/Username -> Boy looks towards input field
+    function onEmailFocus() {
+      if (isPasswordCovering) return;
+      setCharacterPose('email', 'Looking at your email/username... 👀', '#8B5CF6');
+      playTone(580, 'sine', 0.08, 0.1);
+    }
+
+    // Animation 3: Focus on Password -> Boy covers eyes with both hands!
+    function onPasswordFocus() {
+      isPasswordCovering = true;
+      setCharacterPose('password', 'No peeking! I promise my eyes are covered! 🙈', '#EC4899');
+      soundCoverEyes();
+    }
+
+    function onPasswordInput() {
+      if (!isPasswordCovering) {
+        onPasswordFocus();
+      }
+    }
+
+    // Leaving input fields -> Boy returns to gentle idle/welcoming smile
+    function onFieldBlur() {
+      setTimeout(() => {
+        const active = document.activeElement;
+        const emailInput = document.getElementById('loginEmail');
+        const pwdInput = document.getElementById('loginPassword');
+
+        if (active === pwdInput) {
+          onPasswordFocus();
+        } else if (active === emailInput) {
+          onEmailFocus();
+        } else {
+          isPasswordCovering = false;
+          setCharacterPose('idle', 'Ready when you are! Touch & learn! ✨', '#10B981');
+        }
+      }, 120);
+    }
+
+    // Toggle Show/Hide Password
+    function togglePasswordVisibility() {
+      const pwd = document.getElementById('loginPassword');
+      const btn = document.getElementById('btnTogglePwd');
+      if (!pwd || !btn) return;
+
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        btn.textContent = '🔒';
+        btn.title = 'Hide Password';
+        // Peek pose
+        if (currentPose === 'password') {
+          moodText.textContent = 'Oops, password revealed! 🫣';
+        }
+      } else {
+        pwd.type = 'password';
+        btn.textContent = '👁️';
+        btn.title = 'Show Password';
+        if (currentPose === 'password') {
+          moodText.textContent = 'Eyes covered again! 🙈';
+        }
+      }
+    }
+
+    // 1-Click Auto Fill Demo Credentials
+    function autoFillCredentials() {
       document.getElementById('loginEmail').value = 'admin';
       document.getElementById('loginPassword').value = 'admin123';
+      showToast('Demo Credentials Auto-Filled: admin / admin123');
+      playTone(660, 'triangle', 0.1, 0.15);
+      onFieldBlur();
     }
+
+    // Forgot Password Link Handler
+    function handleForgotPassword() {
+      showToast('💡 Demo Login: admin | Password: admin123');
+      playTone(550, 'sine', 0.12, 0.15);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastPopup');
+      const text = document.getElementById('toastMessage');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3500);
+    }
+
+    // ==============================================================================
+    // 3. AUTHENTICATION & SUBMISSION HANDLER
+    // ==============================================================================
+    let isSubmitting = false;
 
     function handleLoginSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pwd = document.getElementById('loginPassword').value.trim();
-      const btn = document.getElementById('btnSubmit');
+      if (isSubmitting) return false;
 
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Signing In...</span>';
-      }
+      const user = document.getElementById('loginEmail').value.trim();
+      const pwd = document.getElementById('loginPassword').value.trim();
+      const btn = document.getElementById('btnLoginSubmit');
+      const btnText = document.getElementById('btnSubmitText');
+      const spinner = document.getElementById('btnSpinner');
+      const errBox = document.getElementById('loginErrorAlert');
+
+      errBox.classList.remove('show');
+      isSubmitting = true;
+      btn.disabled = true;
+      spinner.style.display = 'inline-block';
+      btnText.textContent = 'Verifying credentials...';
+
+      // Animation 4: Waiting expression
+      setCharacterPose('idle', 'Checking your learning account... ⏳', '#F59E0B');
 
       setTimeout(() => {
-        // Genuine page navigation to Step 1: 3-in-1 Mat Alphabet Blocks Table Panel
-        window.location.href = 'mat.html';
-      }, 300);
+        // Authenticate against existing credentials (admin / admin123 or admin@gmail.com)
+        const isValid = (user.toLowerCase() === 'admin' || user.toLowerCase() === 'admin@gmail.com') && pwd === 'admin123';
+
+        if (isValid) {
+          // Animation 5: Successful Login -> Boy celebrates joyfully with confetti!
+          setCharacterPose('celebration', 'Hooray! Welcome back to AlphaMat! 🥳🎉', '#10B981');
+          soundSuccess();
+          btnText.textContent = 'Success! Launching Hub... ✨';
+          btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+
+          // Smooth navigation to existing Mat Blocks table
+          setTimeout(() => {
+            window.location.href = 'mat.html';
+          }, 1100);
+
+        } else {
+          // Animation 6: Failed Login -> Boy looks disappointed/puzzled
+          isSubmitting = false;
+          btn.disabled = false;
+          spinner.style.display = 'none';
+          btnText.textContent = 'Login to AlphaMat →';
+          btn.style.background = '';
+
+          soundError();
+          setCharacterPose('error', 'Uh-oh! Incorrect username or password. 😕', '#EF4444');
+          errBox.classList.add('show');
+          document.getElementById('errorMessageText').textContent = 'Invalid credentials. Please use demo: admin / admin123';
+        }
+      }, 650);
 
       return false;
     }
 
-    function toggleTheme() {
-      const cur = document.documentElement.getAttribute('data-theme') || 'light';
-      const nxt = cur === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', nxt);
-      localStorage.setItem('alphamat_theme', nxt);
-      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
+    // ==============================================================================
+    // 4. THREE.JS 3D FLOATING EDUCATIONAL PARTICLES (A, B, C, D, E, Books, Stars)
+    // ==============================================================================
+    function initThreeBackground() {
+      const canvas = document.getElementById('bgCanvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 25;
+
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xE9D5FF, 0.8);
+      scene.add(ambientLight);
+
+      const purpleLight = new THREE.PointLight(0xA855F7, 2, 80);
+      purpleLight.position.set(-15, 12, 10);
+      scene.add(purpleLight);
+
+      const coralLight = new THREE.PointLight(0xF43F5E, 1.5, 60);
+      coralLight.position.set(20, -10, 15);
+      scene.add(coralLight);
+
+      // Texture canvas generator for letter cubes (A, B, C, D, E)
+      function createLetterTexture(char, bgCol = '#6D28D9', textCol = '#FFFFFF') {
+        const c = document.createElement('canvas');
+        c.width = 256;
+        c.height = 256;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = bgCol;
+        ctx.fillRect(0, 0, 256, 256);
+        ctx.strokeStyle = '#A855F7';
+        ctx.lineWidth = 14;
+        ctx.strokeRect(7, 7, 242, 242);
+        ctx.fillStyle = textCol;
+        ctx.font = 'bold 130px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(char, 128, 134);
+        return new THREE.CanvasTexture(c);
+      }
+
+      const floaters = [];
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      const colors = ['#7C3AED', '#8B5CF6', '#9333EA', '#A855F7', '#6D28D9'];
+
+      // 1. Floating Educational Alphabet Blocks
+      letters.forEach((char, idx) => {
+        const tex = createLetterTexture(char, colors[idx]);
+        const geom = new THREE.BoxGeometry(2.4, 2.4, 2.4);
+        const mat = new THREE.MeshStandardMaterial({
+          map: tex,
+          roughness: 0.35,
+          metalness: 0.15
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        
+        // Spread around scene perimeter
+        const angle = (idx / letters.length) * Math.PI * 2;
+        mesh.position.x = Math.cos(angle) * (18 + Math.random() * 4);
+        mesh.position.y = Math.sin(angle) * (11 + Math.random() * 3);
+        mesh.position.z = -5 + Math.random() * 8;
+
+        mesh.userData = {
+          rotSpeedX: 0.005 + Math.random() * 0.01,
+          rotSpeedY: 0.008 + Math.random() * 0.01,
+          rotSpeedZ: 0.004 + Math.random() * 0.008,
+          floatY: mesh.position.y,
+          speed: 0.8 + Math.random() * 0.5,
+          offset: Math.random() * Math.PI * 2
+        };
+        scene.add(mesh);
+        floaters.push(mesh);
+      });
+
+      // 2. Floating Golden Sparkle Stars / Octahedrons
+      for (let i = 0; i < 22; i++) {
+        const starGeom = new THREE.OctahedronGeometry(0.5 + Math.random() * 0.45, 0);
+        const starMat = new THREE.MeshStandardMaterial({
+          color: Math.random() > 0.5 ? 0xFBBF24 : 0xC084FC,
+          emissive: Math.random() > 0.5 ? 0xD97706 : 0x7C3AED,
+          emissiveIntensity: 0.6,
+          roughness: 0.2
+        });
+        const star = new THREE.Mesh(starGeom, starMat);
+        star.position.set(
+          (Math.random() - 0.5) * 45,
+          (Math.random() - 0.5) * 30,
+          -10 + Math.random() * 15
+        );
+        star.userData = {
+          rotSpeedX: 0.015,
+          rotSpeedY: 0.02,
+          floatY: star.position.y,
+          speed: 1.2 + Math.random(),
+          offset: Math.random() * Math.PI * 2
+        };
+        scene.add(star);
+        floaters.push(star);
+      }
+
+      // 3. Floating Cute Mini Books
+      for (let b = 0; b < 6; b++) {
+        const bookGeom = new THREE.BoxGeometry(2.2, 0.45, 1.6);
+        const bookMat = new THREE.MeshStandardMaterial({
+          color: b % 2 === 0 ? 0x9333EA : 0xF43F5E,
+          roughness: 0.5
+        });
+        const book = new THREE.Mesh(bookGeom, bookMat);
+        book.position.set(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 25,
+          -8 + Math.random() * 10
+        );
+        book.userData = {
+          rotSpeedX: 0.007,
+          rotSpeedY: 0.006,
+          floatY: book.position.y,
+          speed: 0.7 + Math.random() * 0.4,
+          offset: Math.random() * Math.PI * 2
+        };
+        scene.add(book);
+        floaters.push(book);
+      }
+
+      // Mouse Parallax
+      let mouseX = 0;
+      let mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      // Render Loop
+      let clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsed = clock.getElapsedTime();
+
+        floaters.forEach(obj => {
+          obj.rotation.x += obj.userData.rotSpeedX;
+          obj.rotation.y += obj.userData.rotSpeedY;
+          if (obj.userData.rotSpeedZ) obj.rotation.z += obj.userData.rotSpeedZ;
+          obj.position.y = obj.userData.floatY + Math.sin(elapsed * obj.userData.speed + obj.userData.offset) * 0.75;
+        });
+
+        // 3D Scene Ambient Lighting Responds to Lamp Switch
+        if (ambientLight && purpleLight && coralLight) {
+          const targetAmb = isLampOn ? 0.85 : 0.14;
+          const targetPurp = isLampOn ? 2.0 : 0.35;
+          const targetCor = isLampOn ? 1.5 : 0.2;
+          ambientLight.intensity += (targetAmb - ambientLight.intensity) * 0.08;
+          purpleLight.intensity += (targetPurp - purpleLight.intensity) * 0.08;
+          coralLight.intensity += (targetCor - coralLight.intensity) * 0.08;
+        }
+
+        // Subtle camera response to cursor
+        camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.04;
+        camera.position.y += (-mouseY * 1.5 - camera.position.y) * 0.04;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
     }
 
-    const saved = localStorage.getItem('alphamat_theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
-    }
+    // Initialize when DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeBackground();
+      setTimeout(soundWaveHello, 300);
+    });
   </script>
 </body>
 </html>

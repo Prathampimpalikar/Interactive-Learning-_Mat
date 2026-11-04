@@ -190,9 +190,9 @@ const ALPHAMAT_DATA = {
       "superpower": "Echolocation clicking sonar & ocean acrobatics",
       "funFact": "Dolphins sleep with one eye open and half their brain awake!",
       "description": "Dolphins are playful, intelligent marine mammals that love leaping through ocean waves.",
-      "image": "logo.jpg",
-      "model": null,
-      "hasRealModel": false,
+      "image": "Dolphin.jpg",
+      "model": "Dolphin.glb",
+      "hasRealModel": true,
       "hasRealImage": true
     },
     {
@@ -205,9 +205,9 @@ const ALPHAMAT_DATA = {
       "superpower": "Fast jumping & sensitive ears",
       "funFact": "Deer can jump up to 10 feet high in a single leap!",
       "description": "Deer are graceful forest herbivores with slender legs and keen senses.",
-      "image": "logo.jpg",
-      "model": null,
-      "hasRealModel": false,
+      "image": "Deer.jpg",
+      "model": "Deer.glb",
+      "hasRealModel": true,
       "hasRealImage": true
     },
     {
@@ -1011,7 +1011,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Iron, Vitamin C, Magnesium",
       "funFact": "Dragon fruit flowers only bloom for one single night under the moonlight!",
       "description": "Dragon Fruit (Pitahaya) is a vibrant magenta cactus fruit with speckled white pulp.",
-      "image": "Apple.jpg",
+      "image": "DragonFruit.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1027,7 +1027,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Natural Fruit Sugars, Fiber, Potassium",
       "funFact": "Date palm trees can survive in extreme desert heat for over 100 years!",
       "description": "Dates are naturally sweet golden-brown fruits prized for energy.",
-      "image": "Blackberries.jpg",
+      "image": "DateFruit.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true

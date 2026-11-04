@@ -106,7 +106,7 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const letter = (urlParams.get('letter') || 'A').toUpperCase();
-    const gpio = urlParams.get('gpio') || '32';
+    const gpio = urlParams.get('gpio') || (letter === 'N' ? '32' : '34');
     const block = urlParams.get('block') || '1';
 
     // Populate Dynamic Titles & Badges
@@ -140,12 +140,14 @@
     }
 
     function selectCategory(mode) {
+      localStorage.setItem('alphamat_mode', mode);
       // Direct navigation to Step 3: Specimen options for that specific letter & category
       window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
     }
 
     // Keyboard navigation
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
       if (e.key === '1') selectCategory('Animal');
       if (e.key === '2') selectCategory('Fruit');
       if (e.key === 'Backspace' || e.key === 'Escape') {
@@ -153,19 +155,36 @@
       }
     });
 
-    function toggleTheme() {
-      const cur = document.documentElement.getAttribute('data-theme') || 'light';
-      const nxt = cur === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', nxt);
-      localStorage.setItem('alphamat_theme', nxt);
-      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = nxt === 'dark' ? '🌙' : '☀️');
-    }
+    // 📡 Live Hardware Serial Event Listener (Pins: A:34, B:35, C:32, D:33, E:36)
+    // Protection Rule: Never auto-select or change alphabet in category section!
+    let hardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
 
-    const saved = localStorage.getItem('alphamat_theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-      document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (!hardwareListenerInitialized) {
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            hardwareListenerInitialized = true;
+            return;
+          }
+
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const newLetter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || (newLetter === 'A' ? 32 : (newLetter === 'B' ? 33 : (newLetter === 'C' ? 36 : (newLetter === 'D' ? 34 : (newLetter === 'E' ? 35 : 32)))));
+              if (/^[A-Z]$/.test(newLetter)) {
+                console.log(`[Category Protection]: Step on Letter ${newLetter} (GPIO ${gpio}) received while choosing category. Selection remains protected on Letter '${letter}'.`);
+              }
+            }
+          }
+        }
+      } catch (e) {}
     }
+    setInterval(pollHardwareEvent, 100);
   </script>
 </body>
 </html>

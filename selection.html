@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Step 3: Select Specimen — AlphaMat 3D Learning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,600;1,9..144,700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
     body {
@@ -15,11 +18,13 @@
       display: flex;
       flex-direction: column;
     }
+
     .specimen-card-actions {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .btn-card-fullscreen {
       padding: 6px 14px;
       font-size: 0.78rem;
@@ -36,10 +41,12 @@
       align-items: center;
       gap: 4px;
     }
+
     .btn-card-fullscreen:hover {
       transform: translateY(-2px) scale(1.04);
       box-shadow: 0 6px 16px rgba(235, 94, 65, 0.45);
     }
+
     .badge-no-3d {
       padding: 4px 10px;
       font-size: 0.72rem;
@@ -51,6 +58,7 @@
     }
   </style>
 </head>
+
 <body class="dash-view-wrapper">
 
   <!-- Header -->
@@ -58,7 +66,8 @@
     <div class="dash-nav-container">
       <a href="category.html" class="brand-group">
         <div class="brand-logo-container">
-          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img" onerror="this.src='images/logo.jpg'">
+          <img src="images/alphamat_logo.png" alt="AlphaMat Logo" class="brand-logo-img"
+            onerror="this.src='images/logo.jpg'">
         </div>
         <div class="brand-text-block">
           <div class="brand-title">
@@ -72,8 +81,8 @@
         <a id="btnBackToCategory" href="category.html" class="btn-logout">
           ← Change Category
         </a>
-        <a id="btnBackToMat" href="mat.html" class="btn-logout">
-          ⚡ Mat Blocks
+        <a id="btnBackToMat" href="mat.html" class="btn-logout" title="Return to Mat Blocks Chart to select another alphabet">
+          ⚡ Mat Blocks (Chart Selection)
         </a>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
           🌙
@@ -100,6 +109,18 @@
         <p class="pathway-step-sub">Select an item below to launch the 360° Interactive 3D Model Studio, or click "🖥️ 3D Fullscreen" to open directly in a new tab.</p>
       </div>
 
+      <!-- Live Auto-Select & Hardware Step Indicator -->
+      <div style="margin-bottom: 22px; padding: 12px 18px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.88rem;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span>
+          <span style="color: var(--text-heading); font-weight: 700;">Active Alphabet:</span>
+          <span id="sectionLockLetterBadge" style="color: var(--coral); font-weight: 800;">Letter A (Animals)</span>
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.84rem;">
+          Press Mat Pad to Select (A, B, C, D) • Return to <a href="mat.html" style="color: var(--coral); font-weight: 800; text-decoration: underline;">⚡ Mat Blocks (Chart Selection)</a>
+        </div>
+      </div>
+
       <!-- Specimen Grid List -->
       <div class="specimen-choice-grid" id="specimenChoiceGrid"></div>
     </div>
@@ -116,6 +137,8 @@
     document.getElementById('crumbCategoryLink').textContent = `Category (${mode}s)`;
     document.getElementById('crumbSpecimenMode').textContent = `Letter ${letter} (${mode}s)`;
     document.getElementById('selectionStepTitle').textContent = `${mode}s Starting With Letter '${letter}'`;
+    const lockBadge = document.getElementById('sectionLockLetterBadge');
+    if (lockBadge) lockBadge.textContent = `Letter ${letter} (${mode}s)`;
 
     function openModelFullscreen(model, name, category, image) {
       const url = `fullscreen.html?model=${encodeURIComponent(model || '')}&title=${encodeURIComponent(name)}&category=${encodeURIComponent(category || mode)}&image=${encodeURIComponent(image || '')}`;
@@ -148,6 +171,7 @@
         card.className = 'specimen-select-card';
         const imgSrc = item.hasRealImage && item.image ? `images/${encodeURIComponent(item.image)}` : 'images/alphamat_logo.png';
         const modelParam = item.model || '';
+        const has3D = item.hasRealModel && item.model;
 
         card.innerHTML = `
           <div class="specimen-avatar-box">
@@ -159,9 +183,11 @@
             <div class="specimen-card-desc">${item.superpower || item.benefits || item.category}</div>
           </div>
           <div class="specimen-card-actions">
-            <button class="btn-card-fullscreen" onclick="event.stopPropagation(); openModelFullscreen('${encodeURIComponent(modelParam)}', '${encodeURIComponent(item.name)}', '${encodeURIComponent(item.category || mode)}', '${encodeURIComponent(item.image || '')}');" title="Open 3D Studio in Fullscreen New Tab">
-              🖥️ 3D Fullscreen
-            </button>
+            ${has3D ? `
+              <button class="btn-card-fullscreen" onclick="event.stopPropagation(); openModelFullscreen('${encodeURIComponent(modelParam)}', '${encodeURIComponent(item.name)}', '${encodeURIComponent(item.category || mode)}', '${encodeURIComponent(item.image || '')}');" title="Open 3D Studio in Fullscreen New Tab">
+                🖥️ 3D Fullscreen
+              </button>
+            ` : `<span class="badge-no-3d">Photo Only</span>`}
             <div style="font-size: 1.3rem; color: var(--coral); font-weight: 800; margin-left: 4px;">→</div>
           </div>
         `;
@@ -175,13 +201,15 @@
       });
     }
 
-    // Keyboard back listener
+    // Keyboard listener - Safe navigation without auto-changing current alphabet
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
       if (e.key === 'Backspace' || e.key === 'Escape') {
-        window.location.href = `letter.html?mode=${encodeURIComponent(mode)}`;
+        window.location.href = 'mat.html';
       }
     });
 
+    // Theme Toggle
     function toggleTheme() {
       const cur = document.documentElement.getAttribute('data-theme') || 'light';
       const nxt = cur === 'dark' ? 'light' : 'dark';
@@ -196,7 +224,45 @@
       document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
     }
 
+    // 📡 Live Hardware Serial Event Listener (Integrated with ESP32 Pins: A:34, B:35, C:32, D:33, E:36)
+    // Automatically selects letters when received without manual button pressing!
+    let hardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
+
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (!hardwareListenerInitialized) {
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            hardwareListenerInitialized = true;
+            return;
+          }
+
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const newLetter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || (newLetter === 'A' ? 32 : (newLetter === 'B' ? 33 : (newLetter === 'C' ? 36 : (newLetter === 'D' ? 34 : 35))));
+
+              if (/^[A-E]$/.test(newLetter)) {
+                if (newLetter === letter) {
+                  console.log(`[Specimen Section]: Confirmed on Letter ${letter}`);
+                  return;
+                }
+                console.log(`[Auto-Selection / Hardware Event]: Switching to Letter ${newLetter} (GPIO ${gpio})`);
+                window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(newLetter)}&gpio=${encodeURIComponent(gpio)}`;
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    setInterval(pollHardwareEvent, 20); // High-frequency 20ms polling for instant response
+
     renderSpecimens();
   </script>
 </body>
+
 </html>

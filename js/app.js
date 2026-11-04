@@ -80,13 +80,13 @@ window.App = (function () {
     return [...ALPHAMAT_DATA.animals, ...ALPHAMAT_DATA.fruits];
   }
 
-  // 13 Multi-Option Mat Blocks (Numbers 0 to 10 on Blocks 1-11, then Alphabet only for 12, 13)
+  // 13 Multi-Option Mat Blocks (Pins A-E: 34, 35, 32, 33, 36)
   const MAT_BLOCKS = [
-    { id: 1,  gpio: 32, primary: 'A', secondary: 'N', tertiary: '0',  title: 'Block 1' },
-    { id: 2,  gpio: 33, primary: 'B', secondary: 'O', tertiary: '1',  title: 'Block 2' },
-    { id: 3,  gpio: 25, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
-    { id: 4,  gpio: 26, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
-    { id: 5,  gpio: 27, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5' },
+    { id: 1,  gpio: 34, primary: 'A', secondary: 'N', tertiary: '0',  title: 'Block 1' },
+    { id: 2,  gpio: 35, primary: 'B', secondary: 'O', tertiary: '1',  title: 'Block 2' },
+    { id: 3,  gpio: 32, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
+    { id: 4,  gpio: 33, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
+    { id: 5,  gpio: 36, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5 (VP)' },
     { id: 6,  gpio: 14, primary: 'F', secondary: 'S', tertiary: '5',  title: 'Block 6' },
     { id: 7,  gpio: 12, primary: 'G', secondary: 'T', tertiary: '6',  title: 'Block 7' },
     { id: 8,  gpio: 13, primary: 'H', secondary: 'U', tertiary: '7',  title: 'Block 8' },
@@ -96,6 +96,16 @@ window.App = (function () {
     { id: 12, gpio: 16, primary: 'L', secondary: 'Y', tertiary: null, title: 'Block 12' },
     { id: 13, gpio: 17, primary: 'M', secondary: 'Z', tertiary: null, title: 'Block 13' }
   ];
+
+  function getGpioForLetter(letter) {
+    const u = String(letter).toUpperCase();
+    if (u === 'A') return 34;
+    if (u === 'B') return 35;
+    if (u === 'C') return 32;
+    if (u === 'D') return 33;
+    if (u === 'E') return 36;
+    return 34;
+  }
 
   // Navigation Controller (Switching between Views/Slides with URL routing)
   function navigateTo(viewName, pushHash = true) {
@@ -145,11 +155,11 @@ window.App = (function () {
         </div>
 
         <div class="mat-options-row" style="${isDual ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr 1fr 1fr;'}">
-          <div class="mat-option-btn primary-option" onclick="event.stopPropagation(); App.selectMatLetter('${b.primary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.primary}">
+          <div class="mat-option-btn primary-option" id="spa-mat-btn-${b.primary}" onclick="event.stopPropagation(); App.selectMatLetter('${b.primary}', ${b.id}, getGpioForLetter('${b.primary}'));" title="Select Letter ${b.primary}">
             <span class="mat-option-char">${b.primary}</span>
             <span class="mat-option-type">Letter</span>
           </div>
-          <div class="mat-option-btn secondary-option" onclick="event.stopPropagation(); App.selectMatLetter('${b.secondary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.secondary}">
+          <div class="mat-option-btn secondary-option" id="spa-mat-btn-${b.secondary}" onclick="event.stopPropagation(); App.selectMatLetter('${b.secondary}', ${b.id}, getGpioForLetter('${b.secondary}'));" title="Select Letter ${b.secondary}">
             <span class="mat-option-char">${b.secondary}</span>
             <span class="mat-option-type">Letter</span>
           </div>
@@ -166,7 +176,7 @@ window.App = (function () {
         </div>
       `;
 
-      card.onclick = () => selectMatLetter(b.primary, b.id, b.gpio);
+      card.onclick = () => selectMatLetter(b.primary, b.id, getGpioForLetter(b.primary));
       grid.appendChild(card);
     });
   }
@@ -185,9 +195,12 @@ window.App = (function () {
   }
 
   // Select Letter from 3-in-1 Mat Block -> Updates Category screen and transitions
-  function selectMatLetter(char, blockId = 1, gpio = 32) {
+  function selectMatLetter(char, blockId = 1, gpio = null) {
     if (!char) return;
     char = char.toUpperCase();
+    if (!gpio) {
+      gpio = getGpioForLetter(char);
+    }
     state.selectedLetter = char;
 
     AudioEngine.playMatStep();
@@ -195,14 +208,21 @@ window.App = (function () {
     const block = MAT_BLOCKS.find(b => b.primary === char || b.secondary === char) || MAT_BLOCKS[0];
     const cardEl = document.getElementById(`spa-mat-block-${block.id}`);
 
+    document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
+    document.querySelectorAll('.mat-option-btn').forEach(b => b.classList.remove('selected-option', 'piezo-active'));
+
     if (cardEl) {
-      document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
       cardEl.classList.add('piezo-triggered');
+    }
+
+    const btnEl = document.getElementById(`spa-mat-btn-${char}`);
+    if (btnEl) {
+      btnEl.classList.add('selected-option');
     }
 
     const badge = document.getElementById('spaLivePiezoStatusText');
     if (badge) {
-      badge.innerHTML = `⚡ Step Detected: <strong>${block.title} (GPIO ${block.gpio})</strong> → Selected <strong>Letter ${char}</strong>!`;
+      badge.innerHTML = `⚡ Piezo detected: <strong>${char}</strong> (GPIO ${gpio})`;
     }
 
     // Dynamically update Step 2: Category view labels
@@ -742,8 +762,8 @@ window.App = (function () {
 
     // Physical Mat & Keyboard Listener (Emulates Piezo steps A through Z)
     window.addEventListener('keydown', (e) => {
-      // Ignore if user is currently typing in an input field
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+      // Ignore if user is currently typing in an input field or modifier keys are pressed
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) || e.ctrlKey || e.altKey || e.metaKey) return;
 
       const key = e.key.toUpperCase();
 
@@ -764,38 +784,42 @@ window.App = (function () {
     });
 
     // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_event.json)
-    let lastHardwareTimestamp = Date.now() / 1000;
-    let initialHardwareCheck = true;
+    let spaHardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
 
     async function pollHardwareEvent() {
       try {
         const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
         if (response.ok) {
           const eventData = await response.json();
+          if (!spaHardwareListenerInitialized) {
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            spaHardwareListenerInitialized = true;
+            return;
+          }
           if (eventData && eventData.letter && eventData.timestamp) {
-            if (initialHardwareCheck) {
-              lastHardwareTimestamp = eventData.timestamp;
-              initialHardwareCheck = false;
-              return;
-            }
-
             if (eventData.timestamp > lastHardwareTimestamp) {
               lastHardwareTimestamp = eventData.timestamp;
               const letter = String(eventData.letter).trim().toUpperCase();
-              const gpio = eventData.gpio || 32;
-              console.log(`[SPA Hardware Step Detected]: Letter ${letter} (GPIO ${gpio})`);
-              if (state.currentView === 'mat') {
-                selectMatLetter(letter, 1, gpio);
+              const gpio = eventData.gpio || getGpioForLetter(letter);
+              if (/^[A-Z]$/.test(letter)) {
+                if (state.currentView === 'mat') {
+                  console.log(`[SPA Hardware Step Detected]: Letter ${letter} (GPIO ${gpio})`);
+                  selectMatLetter(letter, 1, gpio);
+                } else {
+                  console.log(`[SPA Protection]: Step on Letter ${letter} (GPIO ${gpio}) ignored to protect current view '${state.currentView}'. Return to Mat Chart to change alphabet.`);
+                }
               }
             }
           }
         }
       } catch (e) {}
     }
-    setInterval(pollHardwareEvent, 300);
+    setInterval(pollHardwareEvent, 50);
 
     // 📡 Live Firebase Realtime Database Listener (Polls for ESP32 hardware step triggers)
     let lastFirebaseLetter = '';
+    let initialFirebaseCheck = true;
     const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
 
     async function pollFirebaseLiveStep() {
@@ -805,6 +829,12 @@ window.App = (function () {
           const letterVal = await response.json();
           if (letterVal && typeof letterVal === 'string') {
             const letter = letterVal.trim().toUpperCase();
+            if (initialFirebaseCheck) {
+              lastFirebaseLetter = letter;
+              initialFirebaseCheck = false;
+              return;
+            }
+
             if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
               lastFirebaseLetter = letter;
               console.log('[Firebase Live Step Detected]:', letter);
@@ -820,8 +850,8 @@ window.App = (function () {
         // Silent catch for network hiccups
       }
     }
-    // Poll Firebase every 500ms
-    setInterval(pollFirebaseLiveStep, 500);
+    // Poll Firebase every 150ms (responsive live sync)
+    setInterval(pollFirebaseLiveStep, 150);
 
     const viewer = document.getElementById('studioViewer');
     if (viewer) {

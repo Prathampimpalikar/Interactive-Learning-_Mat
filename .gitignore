@@ -10,3 +10,5 @@ firebase_key.json
 .env
 .env.*
 !.env.example
+Microsoft/
+.theia/

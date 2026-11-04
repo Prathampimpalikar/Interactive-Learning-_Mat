@@ -37,6 +37,8 @@ def update_admin(letter, mode, item):
 # ======================================================
 
 def update_current_letter(letter):
+    if str(letter).strip().upper() not in ["A", "B", "C", "D", "E"]:
+        return
     try:
         ref = db.reference("admin")
         ref.update({

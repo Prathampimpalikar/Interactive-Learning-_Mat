@@ -11,80 +11,80 @@ class LoginPage:
         ctk.set_default_color_theme("blue")
 
         self.window = ctk.CTk()
-        self.window.title("AlphaMat - Login")
-        self.window.geometry("520x580")
+        self.window.title("AlphaMat — Smart Interactive Learning System")
+        self.window.geometry("560x660")
         self.window.resizable(False, False)
 
         # Center window
-        self.center_window(520, 580)
+        self.center_window(560, 660)
 
-        # Main decorative card frame
+        # Main decorative card frame with purple gradient theme
         self.card = ctk.CTkFrame(
             self.window,
-            width=460,
-            height=520,
-            corner_radius=22,
-            fg_color="#1E232F",
+            width=500,
+            height=610,
+            corner_radius=26,
+            fg_color="#180C34",
             border_width=2,
-            border_color="#3B82F6"
+            border_color="#8B5CF6"
         )
         self.card.pack(pady=25, padx=25, fill="both", expand=True)
         self.card.pack_propagate(False)
 
-        # Logo display
+        # 3D Boy Character Avatar Display
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        logo_path = os.path.join(base_dir, "images", "alphamat_logo.png")
-        if not os.path.exists(logo_path):
-            logo_path = os.path.join(base_dir, "images", "logo.jpg")
+        boy_path = os.path.join(base_dir, "images", "boy_character.png")
+        if not os.path.exists(boy_path):
+            boy_path = os.path.join(base_dir, "images", "alphamat_logo.png")
 
-        if os.path.exists(logo_path):
+        if os.path.exists(boy_path):
             try:
-                pil_img = Image.open(logo_path)
-                self.logo_img = ctk.CTkImage(
+                pil_img = Image.open(boy_path)
+                self.boy_img = ctk.CTkImage(
                     light_image=pil_img,
                     dark_image=pil_img,
-                    size=(75, 75)
+                    size=(120, 120)
                 )
-                self.logo_label = ctk.CTkLabel(self.card, image=self.logo_img, text="")
-                self.logo_label.pack(pady=(18, 4))
+                self.boy_label = ctk.CTkLabel(self.card, image=self.boy_img, text="")
+                self.boy_label.pack(pady=(16, 2))
             except Exception:
                 pass
 
         # Title & Subtitle
         title = ctk.CTkLabel(
             self.card,
-            text="✨ alphaMat ✨",
+            text="Welcome Back!",
             font=("Segoe UI", 24, "bold"),
-            text_color="#60A5FA"
+            text_color="#FFFFFF"
         )
         title.pack(pady=(0, 2))
 
         subtitle = ctk.CTkLabel(
             self.card,
-            text="3D Educational Experience for Kids & Students",
+            text="Let's continue your learning journey with AlphaMat.",
             font=("Segoe UI", 12),
-            text_color="#94A3B8"
+            text_color="#C084FC"
         )
         subtitle.pack(pady=(0, 16))
 
         # Username Field
         username_label = ctk.CTkLabel(
             self.card,
-            text="👤 Username",
+            text="👤 Email / Username",
             font=("Segoe UI", 13, "bold"),
-            text_color="#E2E8F0"
+            text_color="#EDE9FE"
         )
         username_label.pack(anchor="w", padx=65, pady=(0, 3))
 
         self.username = ctk.CTkEntry(
             self.card,
-            width=330,
-            height=40,
+            width=360,
+            height=42,
             placeholder_text="Enter username (e.g. admin)",
             font=("Segoe UI", 13),
-            corner_radius=12,
-            border_color="#475569",
-            fg_color="#0F172A"
+            corner_radius=14,
+            border_color="#A855F7",
+            fg_color="#0F0624"
         )
         self.username.pack(pady=(0, 12))
 
@@ -93,47 +93,55 @@ class LoginPage:
             self.card,
             text="🔒 Password",
             font=("Segoe UI", 13, "bold"),
-            text_color="#E2E8F0"
+            text_color="#EDE9FE"
         )
         password_label.pack(anchor="w", padx=65, pady=(0, 3))
 
         self.password = ctk.CTkEntry(
             self.card,
-            width=330,
-            height=40,
+            width=360,
+            height=42,
             placeholder_text="Enter password (e.g. admin123)",
             show="*",
             font=("Segoe UI", 13),
-            corner_radius=12,
-            border_color="#475569",
-            fg_color="#0F172A"
+            corner_radius=14,
+            border_color="#A855F7",
+            fg_color="#0F0624"
         )
         self.password.pack(pady=(0, 18))
 
         # Login Button
         login_btn = ctk.CTkButton(
             self.card,
-            text="🚀 LOGIN TO EXPLORE",
-            width=330,
-            height=44,
+            text="Login to AlphaMat →",
+            width=360,
+            height=46,
             font=("Segoe UI", 15, "bold"),
             corner_radius=14,
-            fg_color="#3B82F6",
-            hover_color="#2563EB",
+            fg_color="#7C3AED",
+            hover_color="#9333EA",
             command=self.login
         )
         login_btn.pack(pady=(0, 14))
 
-        # Hint Badge
-        hint_frame = ctk.CTkFrame(self.card, fg_color="#0F172A", corner_radius=10)
-        hint_frame.pack(pady=(0, 10))
+        # Hint Badge & Subtext
+        hint_frame = ctk.CTkFrame(self.card, fg_color="#0F0624", corner_radius=10)
+        hint_frame.pack(pady=(0, 8))
         hint_label = ctk.CTkLabel(
             hint_frame,
-            text="💡 Default Login: admin / admin123",
+            text="💡 Demo Login: admin / admin123",
             font=("Segoe UI", 11),
             text_color="#F59E0B"
         )
         hint_label.pack(padx=14, pady=5)
+
+        footer_label = ctk.CTkLabel(
+            self.card,
+            text="Smart Interactive Learning System",
+            font=("Segoe UI", 10),
+            text_color="#8B5CF6"
+        )
+        footer_label.pack(pady=(4, 0))
 
         # Allow pressing Enter key to login
         self.window.bind("<Return>", lambda event: self.login())

@@ -31,22 +31,29 @@ def main():
     # Start Hardware Serial Listener for USB-connected Arduino/ESP32
     try:
         from hardware_listener import listener
-        from firebase import update_current_letter
 
-        def on_serial_received(data):
-            val = str(data).strip().upper()
-            print(f"[Hardware Bridge] Received serial signal: '{val}'")
-            for char in ["A", "B", "C", "D", "E", "F"]:
-                if char in val:
-                    print(f"[Hardware Bridge] >>> Updating Firebase with Letter: '{char}' <<<")
-                    update_current_letter(char)
-                    break
+        try:
+            from firebase import update_current_letter, reset_admin
+            try:
+                reset_admin()
+            except Exception:
+                pass
 
-        listener.callback = on_serial_received
+            def on_serial_received(data):
+                val = str(data).strip().upper()
+                if val in ["A", "B", "C", "D", "E"]:
+                    print(f"[Hardware Bridge] >>> Updating Firebase with Letter: '{val}' <<<")
+                    import threading
+                    threading.Thread(target=update_current_letter, args=(val,), daemon=True).start()
+
+            listener.callback = on_serial_received
+        except Exception as fb_err:
+            print(f"[NOTE] Firebase optional sync: {fb_err}")
+
         listener.start()
-        print("[SUCCESS] Hardware USB Listener active & bridged to Firebase/Web platform!")
+        print("[SUCCESS] Hardware USB Listener active & bridged to Web platform!")
     except Exception as e:
-        print(f"[NOTE] Serial listener setup info: {e}")
+        print(f"[ERROR] Could not start hardware serial listener: {e}")
 
     print("[INFO] Launching AlphaMat in your web browser...")
 

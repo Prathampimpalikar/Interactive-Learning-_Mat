@@ -15,6 +15,30 @@
       display: flex;
       flex-direction: column;
     }
+    .mat-option-btn.selected-option,
+    .mat-option-btn.piezo-active {
+      background: linear-gradient(135deg, #EB5E41, #F59E0B) !important;
+      color: #ffffff !important;
+      border-color: #EB5E41 !important;
+      box-shadow: 0 0 24px rgba(235, 94, 65, 0.9), 0 4px 14px rgba(235, 94, 65, 0.6) !important;
+      transform: scale(1.12) translateY(-4px) !important;
+      z-index: 10 !important;
+      opacity: 1 !important;
+    }
+    .mat-option-btn.selected-option .mat-option-char,
+    .mat-option-btn.piezo-active .mat-option-char {
+      color: #ffffff !important;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.4) !important;
+    }
+    .mat-option-btn.selected-option .mat-option-type,
+    .mat-option-btn.piezo-active .mat-option-type {
+      color: #ffffff !important;
+      font-weight: 900 !important;
+    }
+    .mat-3in1-card.piezo-triggered {
+      border-color: var(--coral) !important;
+      box-shadow: 0 0 30px rgba(235, 94, 65, 0.45) !important;
+    }
   </style>
 </head>
 <body class="dash-view-wrapper">
@@ -51,15 +75,15 @@
       <div class="pathway-breadcrumb">
         <span class="pathway-breadcrumb-item">AlphaMat Explorer Hub</span>
         <span>/</span>
-        <span>Step 1: 3-in-1 Mat Alphabet Blocks (A/N/0, B/O/1...)</span>
+        <span>Step 1: 3-in-1 Mat Blocks (A–Z & Numbers 0–10)</span>
       </div>
 
       <div class="pathway-step-header">
-        <p class="pathway-step-tag">Step 1 of 3</p>
-        <h1 class="pathway-step-title">Step on a Mat Block or Choose a Letter</h1>
+        <p class="pathway-step-tag">Step 1 of 3 (3-in-1 Sensory Mat)</p>
+        <h1 class="pathway-step-title">Step on a Mat Block (A–Z or Numbers 0–10)</h1>
         <p class="pathway-step-sub">
-          Each physical mat block contains <strong>3 multi-function options</strong> (e.g. <code>[ A | N | 0 ]</code> on <strong>GPIO 32</strong>). 
-          Step on your physical sensor mat or click any option below to choose your curriculum (Animals or Fruits).
+          Each physical mat block provides <strong>3-in-1 Multi-Options</strong> (e.g. <code>[ A | N | 0 ]</code> on <strong>GPIO 32</strong>, <code>[ B | O | 1 ]</code> on <strong>GPIO 33</strong>, <code>[ C | P | 2 ]</code> on <strong>VP Pin / GPIO 36</strong>, <code>[ D | Q | 3 ]</code> on <strong>GPIO 34</strong>, <code>[ E | R | 4 ]</code> on <strong>GPIO 35</strong>). 
+          Step on your physical piezo mat or click any letter or number below to launch 3D models or select curriculum.
         </p>
       </div>
 
@@ -68,14 +92,30 @@
         <div class="piezo-live-indicator">
           <div class="piezo-indicator-dot"></div>
           <div>
-            <div class="piezo-live-text">⚡ Physical Tactile Sensor Mat Listener Active</div>
+            <div class="piezo-live-text">⚡ Physical Tactile Sensor Mat Listener Active (Letters A, B, C, D, E Integrated)</div>
             <div class="piezo-live-sub">
-              Stepping on <strong>GPIO 32</strong> automatically selects <strong>Letter A</strong>. Press keys <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">A</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">Z</kbd> or <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">0</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">9</kbd> on your keyboard to emulate steps.
+              Stepping on <strong>GPIO 32</strong> triggers <strong>Block 1 (A)</strong>, <strong>GPIO 33</strong> triggers <strong>Block 2 (B)</strong>, <strong>VP Pin (GPIO 36)</strong> triggers <strong>Block 3 (C)</strong>, <strong>GPIO 34</strong> triggers <strong>Block 4 (D)</strong>, and <strong>GPIO 35</strong> triggers <strong>Block 5 (E)</strong>. Press keys <kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">A</kbd>–<kbd style="background:var(--bg-sand); padding:2px 6px; border-radius:4px;">D</kbd> on your keyboard to emulate steps.
             </div>
           </div>
         </div>
         <div class="piezo-live-badge">
-          <span>🖲️</span> <span id="livePiezoStatusText">Awaiting Step on Mat Block</span>
+          <span>🖲️</span> <span id="livePiezoStatusText">Awaiting Step on Sensor Pad</span>
+        </div>
+      </div>
+
+      <!-- Curriculum Mode Switcher (Animals or Fruits) -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin: 16px 0 20px 0; padding: 12px 18px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 800; font-size: 0.95rem; color: var(--text-heading);">Curriculum Mode:</span>
+          <span id="currentModeLabel" style="font-weight: 700; font-size: 0.88rem; color: var(--coral);">Animals</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" id="btnModeAnimal" class="btn-logout" onclick="setMatMode('Animal')" style="cursor: pointer; font-weight: 800; padding: 6px 14px; border-radius: 20px;">
+            🐯 Animals
+          </button>
+          <button type="button" id="btnModeFruit" class="btn-logout" onclick="setMatMode('Fruit')" style="cursor: pointer; font-weight: 800; padding: 6px 14px; border-radius: 20px;">
+            🍎 Fruits
+          </button>
         </div>
       </div>
 
@@ -86,13 +126,14 @@
 
   <script src="js/data.js"></script>
   <script>
-    // Definition of the 13 Mat Blocks (Numbers 0 to 10, then Alphabet only for 12, 13)
+    // Definition of the 13 Mat Blocks (Alphabet A-Z & Numbers 0-10)
+    // Pins configured: A (Pin 32), B (Pin 33), C (Pin VP / GPIO 36), D (Pin 34), E (Pin 35)
     const MAT_BLOCKS = [
       { id: 1,  gpio: 32, primary: 'A', secondary: 'N', tertiary: '0',  title: 'Block 1' },
       { id: 2,  gpio: 33, primary: 'B', secondary: 'O', tertiary: '1',  title: 'Block 2' },
-      { id: 3,  gpio: 25, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
-      { id: 4,  gpio: 26, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
-      { id: 5,  gpio: 27, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5' },
+      { id: 3,  gpio: 36, primary: 'C', secondary: 'P', tertiary: '2',  title: 'Block 3' },
+      { id: 4,  gpio: 34, primary: 'D', secondary: 'Q', tertiary: '3',  title: 'Block 4' },
+      { id: 5,  gpio: 35, primary: 'E', secondary: 'R', tertiary: '4',  title: 'Block 5' },
       { id: 6,  gpio: 14, primary: 'F', secondary: 'S', tertiary: '5',  title: 'Block 6' },
       { id: 7,  gpio: 12, primary: 'G', secondary: 'T', tertiary: '6',  title: 'Block 7' },
       { id: 8,  gpio: 13, primary: 'H', secondary: 'U', tertiary: '7',  title: 'Block 8' },
@@ -102,6 +143,47 @@
       { id: 12, gpio: 16, primary: 'L', secondary: 'Y', tertiary: null, title: 'Block 12' },
       { id: 13, gpio: 17, primary: 'M', secondary: 'Z', tertiary: null, title: 'Block 13' }
     ];
+
+    function getGpioForLetter(letter) {
+      const u = String(letter).toUpperCase();
+      if (u === 'A') return 32;
+      if (u === 'B') return 33;
+      if (u === 'C') return 36;
+      if (u === 'D') return 34;
+      if (u === 'E') return 35;
+      return 32;
+    }
+
+    function getGpioBadgeLabel(gpio) {
+      if (gpio === 36 || String(gpio).toUpperCase().includes('VP')) return '⚡ VP Pin';
+      return `⚡ GPIO ${gpio}`;
+    }
+
+    function setMatMode(mode) {
+      localStorage.setItem('alphamat_mode', mode);
+      updateModeButtons();
+    }
+
+    function updateModeButtons() {
+      const mode = localStorage.getItem('alphamat_mode') || 'Animal';
+      const label = document.getElementById('currentModeLabel');
+      if (label) label.textContent = mode === 'Fruit' ? '🍎 Fruits' : '🐯 Animals';
+      const btnA = document.getElementById('btnModeAnimal');
+      const btnF = document.getElementById('btnModeFruit');
+      if (btnA && btnF) {
+        if (mode === 'Animal') {
+          btnA.style.background = 'var(--coral)';
+          btnA.style.color = '#fff';
+          btnF.style.background = 'var(--bg-sand)';
+          btnF.style.color = 'var(--text-main)';
+        } else {
+          btnF.style.background = 'var(--mint-strong)';
+          btnF.style.color = '#fff';
+          btnA.style.background = 'var(--bg-sand)';
+          btnA.style.color = 'var(--text-main)';
+        }
+      }
+    }
 
     // Web Audio Chime
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -123,9 +205,10 @@
       } catch(e) {}
     }
 
-    // Render Mat Table Blocks (3-in-1 for 1-10, 2-letter for 11-13)
+    // Render Mat Table Blocks (3-in-1 Grid: 2 Letters + 1 Number per block for Blocks 1-11)
     function renderMatBlocks() {
       const grid = document.getElementById('matBlocksGrid');
+      if (!grid) return;
       grid.innerHTML = '';
 
       MAT_BLOCKS.forEach(b => {
@@ -135,49 +218,53 @@
         card.setAttribute('data-gpio', b.gpio);
         card.setAttribute('data-primary', b.primary);
         card.setAttribute('data-secondary', b.secondary);
+        if (b.tertiary) card.setAttribute('data-tertiary', b.tertiary);
 
         const isDual = !b.tertiary;
 
         card.innerHTML = `
           <div class="mat-card-topbar">
             <span class="mat-block-num">${b.title}</span>
-            <span class="mat-gpio-badge">⚡ GPIO ${b.gpio}</span>
+            <span class="mat-gpio-badge" id="mat-gpio-${b.id}">${getGpioBadgeLabel(b.gpio)}</span>
           </div>
 
           <div class="mat-options-row" style="${isDual ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr 1fr 1fr;'}">
-            <div class="mat-option-btn primary-option" onclick="event.stopPropagation(); selectLetter('${b.primary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.primary}">
+            <div class="mat-option-btn primary-option" id="mat-btn-${b.primary}" onclick="event.stopPropagation(); selectLetter('${b.primary}', ${b.id}, getGpioForLetter('${b.primary}'));" title="Select Letter ${b.primary}">
               <span class="mat-option-char">${b.primary}</span>
               <span class="mat-option-type">Letter</span>
             </div>
-            <div class="mat-option-btn secondary-option" onclick="event.stopPropagation(); selectLetter('${b.secondary}', ${b.id}, ${b.gpio});" title="Select Letter ${b.secondary}">
+            <div class="mat-option-btn secondary-option" id="mat-btn-${b.secondary}" onclick="event.stopPropagation(); selectLetter('${b.secondary}', ${b.id}, getGpioForLetter('${b.secondary}'));" title="Select Letter ${b.secondary}">
               <span class="mat-option-char">${b.secondary}</span>
               <span class="mat-option-type">Letter</span>
             </div>
             ${b.tertiary ? `
-            <div class="mat-option-btn tertiary-option" onclick="event.stopPropagation(); selectNumber('${b.tertiary}');" title="Open 3D Model of Number ${b.tertiary}">
+            <div class="mat-option-btn tertiary-option" id="mat-btn-num-${b.tertiary}" onclick="event.stopPropagation(); selectNumber('${b.tertiary}');" title="Open 3D Model of Number ${b.tertiary}">
               <span class="mat-option-char">${b.tertiary}</span>
-              <span class="mat-option-type">3D Model</span>
+              <span class="mat-option-type">Number</span>
             </div>` : ''}
           </div>
 
           <div class="mat-card-footer">
-            <span>${isDual ? 'Alphabet Only' : 'Touch or Step Pad'}</span>
-            <span class="mat-card-action-hint">Choose ${b.primary} →</span>
+            <span>${isDual ? 'Alphabet Pad' : '3-in-1 Pad'}</span>
+            <span class="mat-card-action-hint" id="mat-hint-${b.id}">Select ${b.primary}${b.tertiary ? ', ' + b.secondary + ' or ' + b.tertiary : ' or ' + b.secondary} →</span>
           </div>
         `;
 
         // Whole block click defaults to primary letter (e.g. A for Block 1)
-        card.onclick = () => selectLetter(b.primary, b.id, b.gpio);
+        card.onclick = () => selectLetter(b.primary, b.id, getGpioForLetter(b.primary));
         grid.appendChild(card);
       });
     }
 
-    // Letter Selection & Navigation to Step 2 (Category Selection)
+    // Letter Selection & Navigation directly to Specimen Selection (Step 3)
     let isNavigating = false;
 
-    function selectLetter(letter, blockId = 1, gpio = 32) {
+    function selectLetter(letter, blockId = 1, gpio = null) {
       if (isNavigating) return;
       letter = String(letter).toUpperCase();
+      if (!gpio) {
+        gpio = getGpioForLetter(letter);
+      }
       isNavigating = true;
 
       playStepTone();
@@ -186,20 +273,39 @@
       const block = MAT_BLOCKS.find(b => b.primary === letter || b.secondary === letter) || MAT_BLOCKS[0];
       const cardEl = document.getElementById(`mat-block-${block.id}`);
 
+      // Clear previous active states
+      document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
+      document.querySelectorAll('.mat-option-btn').forEach(btn => {
+        btn.classList.remove('selected-option', 'piezo-active');
+        btn.style.opacity = '0.45';
+      });
+
       if (cardEl) {
-        document.querySelectorAll('.mat-3in1-card').forEach(c => c.classList.remove('piezo-triggered'));
         cardEl.classList.add('piezo-triggered');
+        const hintEl = document.getElementById(`mat-hint-${block.id}`);
+        if (hintEl) hintEl.innerHTML = `Selected <strong>Letter ${letter}</strong> →`;
+        const gpioEl = document.getElementById(`mat-gpio-${block.id}`);
+        if (gpioEl) {
+          gpioEl.textContent = getGpioBadgeLabel(gpio);
+        }
       }
 
+      const selectedBtn = document.getElementById(`mat-btn-${letter}`);
+      if (selectedBtn) {
+        selectedBtn.classList.add('selected-option', 'piezo-active');
+        selectedBtn.style.opacity = '1';
+      }
+
+      const currentMode = localStorage.getItem('alphamat_mode') || 'Animal';
       const statusBadge = document.getElementById('livePiezoStatusText');
       if (statusBadge) {
-        statusBadge.innerHTML = `⚡ Step Detected: <strong>${block.title} (GPIO ${block.gpio})</strong> → Selected <strong>Letter ${letter}</strong>!`;
+        statusBadge.innerHTML = `⚡ Step Detected: <strong>Letter ${letter} (${getGpioBadgeLabel(gpio)})</strong> — Opening ${currentMode}s automatically...`;
       }
 
-      // Visual feedback delay then genuine navigation to Category choice
+      // Fast visual feedback then directly open specimen selection section!
       setTimeout(() => {
-        window.location.href = `category.html?letter=${encodeURIComponent(letter)}&gpio=${encodeURIComponent(block.gpio)}&block=${encodeURIComponent(block.id)}`;
-      }, 700);
+        window.location.href = `selection.html?mode=${encodeURIComponent(currentMode)}&letter=${encodeURIComponent(letter)}&gpio=${encodeURIComponent(gpio)}`;
+      }, 140);
     }
 
     // Direct 3D Number Model Navigation (0 to 10)
@@ -221,12 +327,14 @@
 
     // Keyboard Key Listener for Physical Mat Emulation
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
       const key = e.key.toUpperCase();
       if (/^[A-Z]$/.test(key)) {
-        selectLetter(key);
+        const g = getGpioForLetter(key);
+        selectLetter(key, 1, g);
       } else if (key === '0') {
         selectNumber('0');
-      } else if (/^[1-9]$/.test(key)) {
+      } else if (/^[1-9]$/.test(key) || key === '10') {
         selectNumber(key);
       }
     });
@@ -247,57 +355,54 @@
     }
 
     // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_listener.py)
-    let lastHardwareTimestamp = Date.now() / 1000;
-    let initialHardwareCheck = true;
+    // Guard: Do not trigger on stale events when opening or returning to this page!
+    let hardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
 
     async function pollHardwareEvent() {
       try {
         const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
         if (response.ok) {
           const eventData = await response.json();
-          if (eventData && eventData.letter && eventData.timestamp) {
-            if (initialHardwareCheck) {
-              lastHardwareTimestamp = eventData.timestamp;
-              initialHardwareCheck = false;
-              return;
-            }
+          if (!hardwareListenerInitialized) {
+            // Baseline capture on first load: ignore previous steps so returning never auto-selects
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            hardwareListenerInitialized = true;
+            return;
+          }
 
+          if (eventData && eventData.letter && eventData.timestamp) {
             if (eventData.timestamp > lastHardwareTimestamp) {
               lastHardwareTimestamp = eventData.timestamp;
               const letter = String(eventData.letter).trim().toUpperCase();
-              const gpio = eventData.gpio || 32;
-              console.log(`[Hardware Step Detected]: Letter ${letter} on GPIO ${gpio}`);
-              selectLetter(letter, 1, gpio);
+              const gpio = eventData.gpio || getGpioForLetter(letter);
+              if (/^[A-Z]$/.test(letter)) {
+                console.log(`[Hardware Step Detected]: Letter ${letter} on GPIO ${gpio}`);
+                selectLetter(letter, 1, gpio);
+              }
             }
           }
         }
       } catch (e) {}
     }
-    setInterval(pollHardwareEvent, 300);
+    setInterval(pollHardwareEvent, 20); // High-frequency 20ms polling for instant response
 
-    // 📡 Live Firebase Realtime Database Listener (Syncs with ESP32 Mat Triggers)
-    let lastFirebaseLetter = '';
-    const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
-
-    async function pollFirebaseLiveStep() {
-      try {
-        const response = await fetch(FIREBASE_URL, { cache: 'no-store' });
-        if (response.ok) {
-          const letterVal = await response.json();
-          if (letterVal && typeof letterVal === 'string') {
-            const letter = letterVal.trim().toUpperCase();
-            if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
-              lastFirebaseLetter = letter;
-              console.log('[Firebase Step Detected]:', letter);
-              selectLetter(letter);
-            }
-          }
-        }
-      } catch (e) {}
-    }
-    setInterval(pollFirebaseLiveStep, 400);
-
+    // Initial Render & autoSelect Check
+    updateModeButtons();
     renderMatBlocks();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoSelectParam = urlParams.get('autoSelect');
+    const autoGpioParam = urlParams.get('gpio');
+    if (autoSelectParam && /^[A-Z]$/.test(autoSelectParam.trim().toUpperCase())) {
+      const char = autoSelectParam.trim().toUpperCase();
+      const g = autoGpioParam || getGpioForLetter(char);
+      // Clean URL so refreshing the browser doesn't re-trigger autoSelect
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      selectLetter(char, 1, g);
+    }
   </script>
 </body>
 </html>

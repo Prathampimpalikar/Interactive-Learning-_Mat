@@ -38,6 +38,335 @@
         box-shadow: none !important;
       }
     }
+
+    /* ==========================================================================
+       HOMEPAGE INTERACTIVE KINETIC SENSOR MAT & 3D HOLOGRAM MATRIX
+       ========================================================================== */
+    .hero-mat-station-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12), 0 0 40px rgba(235, 94, 65, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      width: 100%;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    /* Ambient Hologram Glow */
+    .hologram-stage-wrap {
+      width: 100%;
+      height: 220px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 50% 60%, rgba(56, 189, 248, 0.15) 0%, rgba(124, 58, 237, 0.08) 50%, var(--bg-sand) 100%);
+      border: 2px solid rgba(56, 189, 248, 0.35);
+      box-shadow: inset 0 0 35px rgba(56, 189, 248, 0.15), 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    /* Holographic Projection Scanline */
+    .hologram-stage-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.18) 50%, transparent 100%);
+      animation: holoScan 3.5s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes holoScan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Hologram Specimen Avatar Box */
+    .holo-specimen-box {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .holo-specimen-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 2px solid rgba(56, 189, 248, 0.6);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 20px rgba(56, 189, 248, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    /* Glowing Rotating Hologram Rings */
+    .holo-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(56, 189, 248, 0.45);
+      pointer-events: none;
+      animation: holoRingSpin 12s infinite linear;
+    }
+
+    .ring-1 { width: 150px; height: 150px; animation-duration: 8s; }
+    .ring-2 { width: 190px; height: 190px; animation-direction: reverse; animation-duration: 15s; border-color: rgba(235, 94, 65, 0.35); }
+
+    @keyframes holoRingSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Hologram Meta Information Bar */
+    .holo-meta-bar {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 90%;
+      z-index: 3;
+    }
+
+    .holo-title-group {
+      text-align: left;
+    }
+
+    .holo-specimen-name {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-highlight);
+      line-height: 1.2;
+    }
+
+    .holo-specimen-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .btn-holo-explore {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #0284C7, #0EA5E9);
+      color: #FFFFFF;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-holo-explore:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.55);
+    }
+
+    /* 5-Pad Tactile Sensor Mat Strip */
+    .tactile-mat-simulator {
+      width: 100%;
+      background: var(--bg-sand);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 12px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .tactile-mat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tactile-pads-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      position: relative;
+    }
+
+    .tactile-pad-tile {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tactile-pad-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--coral);
+      box-shadow: 0 8px 18px rgba(235, 94, 65, 0.25);
+    }
+
+    .tactile-pad-tile.active-step {
+      background: linear-gradient(135deg, var(--coral), #F59E0B) !important;
+      color: #FFFFFF !important;
+      border-color: var(--coral) !important;
+      transform: translateY(4px) scale(0.96) !important;
+      box-shadow: 0 0 20px rgba(235, 94, 65, 0.7) !important;
+    }
+
+    .tactile-pad-tile.active-step .pad-letter,
+    .tactile-pad-tile.active-step .pad-gpio {
+      color: #FFFFFF !important;
+    }
+
+    .pad-letter {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--text-highlight);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .pad-emoji {
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+
+    .pad-gpio {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.06);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    /* Expanding Tactile Radar Shockwave Ring */
+    .mat-shockwave-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 140px;
+      height: 140px;
+      border: 3px solid var(--coral);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .mat-shockwave-ring.animate-wave {
+      animation: shockwaveExpand 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes shockwaveExpand {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+    }
+
+    /* Master Tactile Pulse Sequence Button */
+    .btn-mat-pulse-test {
+      width: 100%;
+      padding: 10px 18px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(235, 94, 65, 0.12), rgba(2, 132, 199, 0.12));
+      border: 1px solid var(--coral);
+      color: var(--text-highlight);
+      font-size: 0.84rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-mat-pulse-test:hover {
+      background: linear-gradient(135deg, var(--coral), #0284C7);
+      color: #FFFFFF;
+      box-shadow: 0 6px 18px rgba(235, 94, 65, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* Floating Kinetic Alphabet Orbs around Hero */
+    .kinetic-orbit-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .kinetic-letter-orb {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 900;
+      pointer-events: all;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      animation: floatKinetic 6s ease-in-out infinite alternate;
+    }
+
+    .kinetic-letter-orb:hover {
+      transform: scale(1.3) translateY(-6px) !important;
+      box-shadow: 0 14px 30px rgba(235, 94, 65, 0.4);
+      border-color: var(--coral);
+    }
+
+    .orb-A { top: -20px; left: -25px; color: #EB5E41; animation-duration: 5s; }
+    .orb-B { top: -35px; right: 15px; color: #F59E0B; animation-duration: 7s; }
+    .orb-C { bottom: 120px; left: -45px; color: #10B981; animation-duration: 6s; }
+    .orb-D { bottom: 35px; right: -30px; color: #0284C7; animation-duration: 5.5s; }
+    .orb-E { top: 45%; right: -50px; color: #8B5CF6; animation-duration: 8s; }
+
+    @keyframes floatKinetic {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-16px) rotate(8deg); }
+    }
   </style>
 </head>
 <body>
@@ -121,27 +450,93 @@
           </div>
         </div>
 
-        <!-- Hero Visual Showcase: Official Brand Logo & Presentation -->
+        <!-- Hero Visual Showcase: Interactive Kinetic Sensor Mat & 3D Hologram Station -->
         <div class="hero-visual-wrap">
-          <div class="hero-logo-showcase-card">
-            <div class="hero-logo-display-frame">
-              <img src="images/alphamat_logo.png" alt="AlphaMat Official Brand Logo" class="hero-main-logo-image" onerror="this.src='images/logo.jpg'">
-            </div>
-            <div class="hero-logo-brand-info">
-              <div class="hero-logo-brand-title">
-                Alpha<span class="text-coral">Mat</span>™
+          
+          <!-- Floating Kinetic Alphabet Orbs around the station -->
+          <div class="kinetic-orbit-container">
+            <div class="kinetic-letter-orb orb-A" onclick="stepHeroPad('A')" title="Step on Pad A (GPIO 34)">A</div>
+            <div class="kinetic-letter-orb orb-B" onclick="stepHeroPad('B')" title="Step on Pad B (GPIO 35)">B</div>
+            <div class="kinetic-letter-orb orb-C" onclick="stepHeroPad('C')" title="Step on Pad C (GPIO 32)">C</div>
+            <div class="kinetic-letter-orb orb-D" onclick="stepHeroPad('D')" title="Step on Pad D (GPIO 33)">D</div>
+            <div class="kinetic-letter-orb orb-E" onclick="stepHeroPad('E')" title="Step on Pad E (VP Pin 36)">E</div>
+          </div>
+
+          <div class="hero-mat-station-card" id="heroMatStationCard">
+            
+            <!-- Hologram Projection Stage -->
+            <div class="hologram-stage-wrap">
+              <div class="holo-ring ring-1"></div>
+              <div class="holo-ring ring-2"></div>
+              
+              <!-- Active Specimen Avatar Box -->
+              <div class="holo-specimen-box" id="holoSpecimenBox">
+                <img src="images/Dolphin.jpg" alt="Active 3D Specimen" class="holo-specimen-img" id="holoSpecimenImg" onerror="this.src='images/alphamat_logo.png'">
               </div>
-              <p class="hero-logo-brand-tagline">
-                Smart Tactile Sensor Mat & 3D Interactive Learning Studio
-              </p>
-              <div class="hero-logo-features-pill">
-                <span>⚡ Piezo Sensors</span>
-                <span>•</span>
-                <span>🕶️ 3D AR Models</span>
-                <span>•</span>
-                <span>🔊 Audio Narration</span>
+
+              <!-- Specimen Information & 3D Link -->
+              <div class="holo-meta-bar">
+                <div class="holo-title-group">
+                  <div class="holo-specimen-name" id="holoSpecimenName">Dolphin</div>
+                  <div class="holo-specimen-sub" id="holoSpecimenSub">Pad D • GPIO 34 • 3D Model Active</div>
+                </div>
+                <a href="selection.html?mode=Animal&letter=D" class="btn-holo-explore" id="btnHoloExplore" title="Open 3D Model Explorer">
+                  <span>🕶️ 3D Studio</span> <span>→</span>
+                </a>
               </div>
             </div>
+
+            <!-- 5-Pad Physical Tactile Mat Simulator (Hardware Synced Pins: 34, 35, 32, 33, 36) -->
+            <div class="tactile-mat-simulator" id="tactileMatSimulator">
+              <div class="mat-shockwave-ring" id="matShockwave"></div>
+              
+              <div class="tactile-mat-header">
+                <span>⚡ Interactive Tactile Mat (Pins A–E)</span>
+                <span id="activePadIndicator" style="color: var(--coral);">Tap Any Pad Below</span>
+              </div>
+
+              <div class="tactile-pads-row">
+                <!-- Pad A (GPIO 34) -->
+                <div class="tactile-pad-tile" id="heroPad-A" onclick="stepHeroPad('A')" title="Step on Pad A (GPIO 32)">
+                  <span class="pad-emoji">🐊</span>
+                  <span class="pad-letter">A</span>
+                  <span class="pad-gpio">32</span>
+                </div>
+
+                <!-- Pad B (GPIO 35) -->
+                <div class="tactile-pad-tile" id="heroPad-B" onclick="stepHeroPad('B')" title="Step on Pad B (GPIO 33)">
+                  <span class="pad-emoji">🐻</span>
+                  <span class="pad-letter">B</span>
+                  <span class="pad-gpio">33</span>
+                </div>
+
+                <!-- Pad C (GPIO 32) -->
+                <div class="tactile-pad-tile" id="heroPad-C" onclick="stepHeroPad('C')" title="Step on Pad C (VP Pin 36)">
+                  <span class="pad-emoji">🐫</span>
+                  <span class="pad-letter">C</span>
+                  <span class="pad-gpio">VP</span>
+                </div>
+
+                <!-- Pad D (GPIO 33) -->
+                <div class="tactile-pad-tile active-step" id="heroPad-D" onclick="stepHeroPad('D')" title="Step on Pad D (GPIO 34)">
+                  <span class="pad-emoji">🐬</span>
+                  <span class="pad-letter">D</span>
+                  <span class="pad-gpio">34</span>
+                </div>
+
+                <!-- Pad E (GPIO 36 / VP) -->
+                <div class="tactile-pad-tile" id="heroPad-E" onclick="stepHeroPad('E')" title="Step on Pad E (GPIO 35)">
+                  <span class="pad-emoji">🐘</span>
+                  <span class="pad-letter">E</span>
+                  <span class="pad-gpio">35</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Master Hardware Tactile Pulse Simulator Button -->
+            <button type="button" class="btn-mat-pulse-test" onclick="runSensorMatPulseSequence()">
+              <span>⚡</span> <span>RUN 5-SENSOR PULSE (A → E Hardware Test)</span> <span>✨</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1037,5 +1432,90 @@
   <!-- Scripts -->
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Homepage Interactive Kinetic Sensor Mat & 3D Hologram Controller -->
+  <script>
+    (function() {
+      const HERO_PAD_SPECIMENS = {
+        'A': { name: 'Ant', sub: 'Pad A • GPIO 34 • Lifts 50x its weight!', image: 'images/ant.jpg', link: 'selection.html?mode=Animal&letter=A', freq: 440 },
+        'B': { name: 'Bear', sub: 'Pad B • GPIO 35 • Super sense of smell!', image: 'images/bear.jpg', link: 'selection.html?mode=Animal&letter=B', freq: 493.88 },
+        'C': { name: 'Cat', sub: 'Pad C • GPIO 32 • Night vision & agile jumps!', image: 'images/cat.jpg', link: 'selection.html?mode=Animal&letter=C', freq: 523.25 },
+        'D': { name: 'Dolphin', sub: 'Pad D • GPIO 33 • High-speed swimmer in 3D!', image: 'images/Dolphin.jpg', link: 'selection.html?mode=Animal&letter=D', freq: 587.33 },
+        'E': { name: 'Elephant', sub: 'Pad E • VP Pin 36 • Gentle giant with trunk!', image: 'images/elephant.jpg', link: 'selection.html?mode=Animal&letter=E', freq: 659.25 }
+      };
+
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      let heroAudioCtx = null;
+
+      function playHeroTone(freq) {
+        try {
+          if (!heroAudioCtx && AudioCtx) heroAudioCtx = new AudioCtx();
+          if (heroAudioCtx && heroAudioCtx.state === 'suspended') heroAudioCtx.resume();
+          if (!heroAudioCtx) return;
+
+          const osc = heroAudioCtx.createOscillator();
+          const gain = heroAudioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, heroAudioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.25, heroAudioCtx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.18, heroAudioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, heroAudioCtx.currentTime + 0.25);
+          osc.connect(gain);
+          gain.connect(heroAudioCtx.destination);
+          osc.start();
+          osc.stop(heroAudioCtx.currentTime + 0.25);
+        } catch (e) {}
+      }
+
+      window.stepHeroPad = function(letter) {
+        letter = String(letter).toUpperCase();
+        const data = HERO_PAD_SPECIMENS[letter];
+        if (!data) return;
+
+        // Active Tile Feedback
+        document.querySelectorAll('.tactile-pad-tile').forEach(t => t.classList.remove('active-step'));
+        const padEl = document.getElementById(`heroPad-${letter}`);
+        if (padEl) padEl.classList.add('active-step');
+
+        // Tactile Radar Shockwave
+        const wave = document.getElementById('matShockwave');
+        if (wave) {
+          wave.classList.remove('animate-wave');
+          void wave.offsetWidth; // Trigger reflow
+          wave.classList.add('animate-wave');
+        }
+
+        // Audio synthesizer chime
+        playHeroTone(data.freq);
+
+        // Smooth Holographic Specimen Projection Transition
+        const box = document.getElementById('holoSpecimenBox');
+        if (box) {
+          box.style.transform = 'scale(0.82) rotate(-6deg)';
+          setTimeout(() => {
+            const img = document.getElementById('holoSpecimenImg');
+            if (img) img.src = data.image;
+            const nameEl = document.getElementById('holoSpecimenName');
+            if (nameEl) nameEl.textContent = data.name;
+            const subEl = document.getElementById('holoSpecimenSub');
+            if (subEl) subEl.textContent = data.sub;
+            const linkEl = document.getElementById('btnHoloExplore');
+            if (linkEl) linkEl.href = data.link;
+            const indEl = document.getElementById('activePadIndicator');
+            if (indEl) indEl.innerHTML = `Pad <strong>${letter}</strong> Active!`;
+
+            box.style.transform = 'scale(1) rotate(0deg)';
+          }, 140);
+        }
+      };
+
+      window.runSensorMatPulseSequence = function() {
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        letters.forEach((l, i) => {
+          setTimeout(() => stepHeroPad(l), i * 300);
+        });
+      };
+    })();
+  </script>
 </body>
 </html>

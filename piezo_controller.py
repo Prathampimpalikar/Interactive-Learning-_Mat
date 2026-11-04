@@ -1,60 +1,45 @@
-from machine import Pin
-import urequests
+# ==============================================================================
+# AlphaMat - 5-Piezo MicroPython Controller (Letters A, B, C, D, E)
+# Dynamic baseline calibration to prevent Pin 33 (Letter B) false triggers
+# ==============================================================================
+
+from machine import ADC, Pin
 import time
 
-# ---------------- FIREBASE URL ---------------- #
+pads = [
+    {"letter": "A", "pin": 32, "adc": ADC(Pin(32)), "baseline": 0},
+    {"letter": "B", "pin": 33, "adc": ADC(Pin(33)), "baseline": 0},
+    {"letter": "C", "pin": 36, "adc": ADC(Pin(36)), "baseline": 0},  # VP Pin
+    {"letter": "D", "pin": 34, "adc": ADC(Pin(34)), "baseline": 0},
+    {"letter": "E", "pin": 35, "adc": ADC(Pin(35)), "baseline": 0},
+]
 
-FIREBASE_URL = "https://interactive-learning-mat-default-rtdb.firebaseio.com"
+for p in pads:
+    p["adc"].atten(ADC.ATTN_11DB)
 
-# ---------------- PIEZO CONNECTIONS ---------------- #
+print("========================================")
+print("  AlphaMat 5-Piezo Controller Ready")
+print("  Calibrating baselines...")
 
-piezoA = Pin(5, Pin.IN)      # D1 -> Letter A
-piezoB = Pin(4, Pin.IN)      # D2 -> Letter B
-piezoC = Pin(14, Pin.IN)     # D5 -> Letter C
-piezoD = Pin(12, Pin.IN)     # D6 -> Letter D
+time.sleep_ms(300)
+for p in pads:
+    sum_val = sum(p["adc"].read() for _ in range(30))
+    p["baseline"] = sum_val // 30
+    print(f"  • Letter {p['letter']} (Pin {p['pin']}) Baseline: {p['baseline']}")
 
-# ---------------- SEND LETTER TO FIREBASE ---------------- #
+print("  Calibration complete! System ready.")
+print("========================================")
 
-def send_letter(letter):
-
-    try:
-
-        url = FIREBASE_URL + "/admin/currentLetter.json"
-
-        response = urequests.put(url, json=letter)
-
-        print("Letter Sent :", letter)
-
-        response.close()
-
-    except Exception as e:
-
-        print("Firebase Error :", e)
-
-# ---------------- MAIN LOOP ---------------- #
-
-print("Piezo Controller Started...")
+SPIKE_THRESHOLD = 350
 
 while True:
+    for p in pads:
+        val = p["adc"].read()
+        spike = val - p["baseline"]
+        if spike >= SPIKE_THRESHOLD:
+            print("STEP DETECTED -> Letter:", p["letter"], f"(Pin {p['pin']}) | Spike:", spike)
+            print(p["letter"])
+            time.sleep_ms(400)
+            break
 
-    if piezoA.value():
-
-        send_letter("A")
-        time.sleep(1)
-
-    elif piezoB.value():
-
-        send_letter("B")
-        time.sleep(1)
-
-    elif piezoC.value():
-
-        send_letter("C")
-        time.sleep(1)
-
-    elif piezoD.value():
-
-        send_letter("D")
-        time.sleep(1)
-
-    time.sleep(0.1)
+    time.sleep_ms(10)

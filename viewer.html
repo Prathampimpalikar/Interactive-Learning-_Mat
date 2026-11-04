@@ -381,6 +381,49 @@
       document.documentElement.setAttribute('data-theme', saved);
       document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
     }
+
+    // Keyboard key listener - Back navigation without accidental alphabet jumps
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.key === 'Backspace' || e.key === 'Escape') {
+        window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(letter)}`;
+      }
+    });
+
+    // 📡 Live Hardware Serial Event Listener (Integrated with ESP32 Pins: A:34, B:35, C:32, D:33, E:36)
+    // Rule: While actively viewing a 3D model, DO NOT interrupt the student by switching the alphabet.
+    // Automatic letter selection takes place on the Chart Selection screen (mat.html).
+    let hardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
+
+    async function pollHardwareEvent() {
+      try {
+        const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (response.ok) {
+          const eventData = await response.json();
+          if (!hardwareListenerInitialized) {
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            hardwareListenerInitialized = true;
+            return;
+          }
+
+          if (eventData && eventData.letter && eventData.timestamp) {
+            if (eventData.timestamp > lastHardwareTimestamp) {
+              lastHardwareTimestamp = eventData.timestamp;
+              const newLetter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || (newLetter === 'A' ? 32 : (newLetter === 'B' ? 33 : (newLetter === 'C' ? 36 : (newLetter === 'D' ? 34 : (newLetter === 'E' ? 35 : 32)))));
+              if (/^[A-Z]$/.test(newLetter)) {
+                if (newLetter === letter) {
+                  return;
+                }
+                console.log(`[Viewer Protection]: Hardware step on Letter ${newLetter} (GPIO ${gpio}) received, but keeping current 3D specimen active. Return to Mat Blocks to select a new letter.`);
+              }
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    setInterval(pollHardwareEvent, 100);
   </script>
 </body>
 </html>

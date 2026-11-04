@@ -2028,7 +2028,7 @@ model-viewer {
 }
 
 .mat-option-btn.selected-option,
-.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option {
+.mat-option-btn.piezo-active {
   background: var(--coral) !important;
   color: #fff !important;
   border-color: var(--coral) !important;
@@ -2044,7 +2044,7 @@ model-viewer {
 }
 
 .mat-option-btn.selected-option .mat-option-char,
-.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option .mat-option-char {
+.mat-option-btn.piezo-active .mat-option-char {
   color: #ffffff !important;
 }
 
@@ -2058,7 +2058,7 @@ model-viewer {
 }
 
 .mat-option-btn.selected-option .mat-option-type,
-.mat-3in1-card.piezo-triggered .mat-option-btn.primary-option .mat-option-type {
+.mat-option-btn.piezo-active .mat-option-type {
   color: rgba(255, 255, 255, 0.85) !important;
 }
 

@@ -154,14 +154,15 @@
         badge.innerHTML = `⚡ Step Detected: <strong>Letter ${char}</strong> — Opening ${mode}s...`;
       }
 
-      // 800ms delay so user clearly sees Letter A selected before opening options
+      // Instant 10ms visual feedback before navigating
       setTimeout(() => {
         window.location.href = `selection.html?mode=${encodeURIComponent(mode)}&letter=${encodeURIComponent(char)}`;
-      }, 800);
+      }, 10);
     }
 
     // Global Key Listener for Physical Mat Emulation
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.ctrlKey || e.altKey || e.metaKey) return;
       const key = e.key.toUpperCase();
       if (/^[A-Z]$/.test(key)) {
         selectLetter(key);
@@ -186,28 +187,27 @@
     }
 
     // 📡 Live Hardware Serial Event Listener (Syncs with ESP32 Piezo Mat via hardware_listener.py)
-    let lastHardwareTimestamp = Date.now() / 1000;
-    let initialHardwareCheck = true;
+    let letterHardwareListenerInitialized = false;
+    let lastHardwareTimestamp = 0;
 
     async function pollHardwareEvent() {
       try {
         const response = await fetch(`hardware_event.json?t=${Date.now()}`, { cache: 'no-store' });
         if (response.ok) {
           const eventData = await response.json();
+          if (!letterHardwareListenerInitialized) {
+            lastHardwareTimestamp = (eventData && eventData.timestamp) ? eventData.timestamp : (Date.now() / 1000);
+            letterHardwareListenerInitialized = true;
+            return;
+          }
           if (eventData && eventData.letter && eventData.timestamp) {
-            if (initialHardwareCheck) {
-              // Ignore past events recorded before page was loaded
-              lastHardwareTimestamp = eventData.timestamp;
-              initialHardwareCheck = false;
-              return;
-            }
-
             if (eventData.timestamp > lastHardwareTimestamp) {
               lastHardwareTimestamp = eventData.timestamp;
-              const letter = String(eventData.letter).trim().toUpperCase();
-              if (/^[A-Z]$/.test(letter)) {
-                console.log(`[Hardware Piezo Step Detected]: Letter ${letter} (GPIO ${eventData.gpio || 32})`);
-                selectLetter(letter);
+              const stepLetter = String(eventData.letter).trim().toUpperCase();
+              const gpio = eventData.gpio || (stepLetter === 'A' ? 32 : (stepLetter === 'B' ? 33 : (stepLetter === 'C' ? 36 : (stepLetter === 'D' ? 34 : (stepLetter === 'E' ? 35 : 32)))));
+              if (/^[A-Z]$/.test(stepLetter)) {
+                console.log(`[Hardware Piezo Step Detected]: Letter ${stepLetter} (GPIO ${gpio})`);
+                selectLetter(stepLetter);
               }
             }
           }
@@ -216,11 +216,12 @@
         // Silently wait for hardware listener / event file creation
       }
     }
-    // Poll hardware_event.json every 350ms
-    setInterval(pollHardwareEvent, 350);
+    // Poll hardware_event.json every 15ms (instantaneous response)
+    setInterval(pollHardwareEvent, 50);
 
     // 📡 Live Firebase Realtime Database Listener (Syncs with ESP32 Mat Triggers)
     let lastFirebaseLetter = '';
+    let initialFirebaseCheck = true;
     const FIREBASE_URL = 'https://interactive-mat-b38b8-default-rtdb.firebaseio.com/admin/currentLetter.json';
 
     async function pollFirebaseLiveStep() {
@@ -230,6 +231,12 @@
           const letterVal = await response.json();
           if (letterVal && typeof letterVal === 'string') {
             const letter = letterVal.trim().toUpperCase();
+            if (initialFirebaseCheck) {
+              lastFirebaseLetter = letter;
+              initialFirebaseCheck = false;
+              return;
+            }
+
             if (/^[A-Z]$/.test(letter) && letter !== lastFirebaseLetter) {
               lastFirebaseLetter = letter;
               console.log('[Firebase Live Step Detected]:', letter);
@@ -241,8 +248,8 @@
         // Network silent
       }
     }
-    // Poll Firebase every 400ms for fast real-time response
-    setInterval(pollFirebaseLiveStep, 400);
+    // Poll Firebase every 500ms
+    setInterval(pollFirebaseLiveStep, 500);
 
     renderGrid();
   </script>

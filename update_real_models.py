@@ -17,7 +17,9 @@ REAL_ANIMAL_MODELS = {
     "Bee": "Bee.glb",
     "Camel": "Camel.glb",
     "Cat": "Cat.glb",
-    "Cow": "Cow.glb"
+    "Cow": "Cow.glb",
+    "Deer": "Deer.glb",
+    "Dolphin": "Dolphin.glb"
 }
 
 REAL_FRUIT_MODELS = {
