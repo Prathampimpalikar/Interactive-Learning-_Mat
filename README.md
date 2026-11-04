@@ -1,25 +1,46 @@
-
 <div align="center">
 
-<img src="assets/alphamat-logo.png"
-     width="180"
-     alt="AlphaMat Project Logo"/>
+  <!-- AlphaMat Project Logo -->
+  <img src="assets/alphamat-logo.png"
+       width="180"
+       alt="AlphaMat Project Logo"/>
 
-<h1>AlphaMat™</h1>
+  <!-- Project Title -->
+  <h1>AlphaMat™</h1>
 
-<h3>Smart Interactive Learning System</h3>
+  <h3>Smart Interactive Learning System</h3>
 
-<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=600&size=20&pause=1000&color=FF6347&center=true&vCenter=true&width=600&lines=Learning+Comes+Alive!;Touch.+Explore.+Learn.;Making+Education+Interactive!;Powered+by+ESP32+%26+IoT"/>
+  <!-- Animated Tagline -->
+  <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=600&size=20&pause=1000&color=FF6347&center=true&vCenter=true&width=600&lines=Learning+Comes+Alive!;Touch.+Explore.+Learn.;Making+Education+Interactive!;Powered+by+ESP32+%26+IoT"
+       alt="Animated AlphaMat Tagline"/>
 
-<br/>
+  <br/>
 
-**A Smart Tactile Sensor Mat & 3D EduTech Hub**
+  **A Smart Tactile Sensor Mat & 3D EduTech Hub**
 
-<br/>
+  <br/><br/>
 
-<img src="https://img.shields.io/badge/ESP32-IoT-blue?style=flat-square"/>
-<img src="https://img.shields.io/badge/5-Piezo%20Sensors-orange?style=flat-square"/>
-<img src="https://img.shields.io/badge/3D-Interactive%20Learning-purple?style=flat-square"/>
+  <!-- Live Website -->
+  <a href="https://prathampimpalikar.github.io/Interactive-Learning-_Mat/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-Visit_AlphaMat-FF6347?style=for-the-badge"
+         alt="Visit AlphaMat Live Website"/>
+  </a>
+
+  <br/><br/>
+
+  <!-- Technology Badges -->
+  <img src="https://img.shields.io/badge/ESP32-IoT-blue?style=flat-square"/>
+  <img src="https://img.shields.io/badge/5-Piezo%20Sensors-orange?style=flat-square"/>
+  <img src="https://img.shields.io/badge/3D-Interactive%20Learning-purple?style=flat-square"/>
+  <img src="https://img.shields.io/badge/HTML-CSS-JavaScript-orange?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Python-Backend-blue?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Firebase-Realtime%20Database-yellow?style=flat-square"/>
+
+  <br/><br/>
+
+  **Touch. Explore. Learn.**
+
+  <br/>
 
 </div>
 
