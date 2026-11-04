@@ -1,25 +1,25 @@
 
-<!-- ================================================= -->
-<!-- ALPHAMAT - SMART INTERACTIVE LEARNING SYSTEM      -->
-<!-- ================================================= -->
-
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:090979,50:0077B6,100:00D4FF&height=220&section=header&text=AlphaMat&fontSize=75&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=SMART%20INTERACTIVE%20LEARNING%20SYSTEM&descSize=18&descAlignY=58" width="100%"/>
+<img src="assets/alphamat-logo.png"
+     width="180"
+     alt="AlphaMat Project Logo"/>
 
-<a href="#">
-<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=600&size=20&pause=1000&color=00D4FF&center=true&vCenter=true&width=650&lines=Touch.+Explore.+Learn.;Transforming+Touch+into+Learning;Powered+by+ESP32+%7C+IoT+%7C+Web+Technology;Making+Education+Interactive!" alt="Typing SVG"/>
-</a>
+<h1>AlphaMat™</h1>
+
+<h3>Smart Interactive Learning System</h3>
+
+<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=600&size=20&pause=1000&color=FF6347&center=true&vCenter=true&width=600&lines=Learning+Comes+Alive!;Touch.+Explore.+Learn.;Making+Education+Interactive!;Powered+by+ESP32+%26+IoT"/>
 
 <br/>
 
-<img src="https://img.shields.io/badge/Project-AlphaMat-0077B6?style=for-the-badge&logo=arduino&logoColor=white"/>
-<img src="https://img.shields.io/badge/Domain-IoT%20%7C%20EdTech-7B2CBF?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/Platform-Web%20Application-00B4D8?style=for-the-badge&logo=googlechrome&logoColor=white"/>
+**A Smart Tactile Sensor Mat & 3D EduTech Hub**
 
-<br/><br/>
+<br/>
 
-**An innovative interactive learning experience that connects physical touch with digital education.**
+<img src="https://img.shields.io/badge/ESP32-IoT-blue?style=flat-square"/>
+<img src="https://img.shields.io/badge/5-Piezo%20Sensors-orange?style=flat-square"/>
+<img src="https://img.shields.io/badge/3D-Interactive%20Learning-purple?style=flat-square"/>
 
 </div>
 
