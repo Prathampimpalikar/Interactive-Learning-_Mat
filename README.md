@@ -175,25 +175,48 @@ flowchart TD
 
 ---
 
-## 💻 Technology Stack
 
-<div align="center">
+## 💻 Technology Stack
 
 ### Hardware & Embedded
 
-<img src="https://skillicons.dev/icons?i=arduino" height="45"/>
-
-<img src="https://img.shields.io/badge/ESP32-Microcontroller-E7352C?style=for-the-badge&logo=espressif&logoColor=white"/>
-<img src="https://img.shields.io/badge/Embedded-C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white"/>
+<p align="center">
+  <img src="https://cdn.simpleicons.org/espressif/E7352C" height="22" />
+  <b> ESP32 </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/arduino/00979D" height="22" />
+  <b> Arduino IDE </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/cplusplus/00599C" height="22" />
+  <b> Embedded C++ </b>
+</p>
 
 ### Web Development
 
-<img src="https://skillicons.dev/icons?i=html,css,js,vscode" />
+<p align="center">
+  <img src="https://cdn.simpleicons.org/html5/E34F26" height="22" />
+  <b> HTML5 </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/css3/1572B6" height="22" />
+  <b> CSS3 </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/javascript/F7DF1E" height="22" />
+  <b> JavaScript </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/visualstudiocode/007ACC" height="22" />
+  <b> VS Code </b>
+</p>
 
-<img src="https://img.shields.io/badge/Web%20Serial%20API-Browser%20Communication-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white"/>
-<img src="https://img.shields.io/badge/3D-Google%20Model%20Viewer-00A86B?style=for-the-badge"/>
+### Communication & 3D
 
-</div>
+<p align="center">
+  <img src="https://cdn.simpleicons.org/googlechrome/4285F4" height="22" />
+  <b> Web Serial API </b>
+  &nbsp;&nbsp;
+  <img src="https://cdn.simpleicons.org/google/4285F4" height="22" />
+  <b> Google Model Viewer </b>
+</p>
+
 
 ---
 
