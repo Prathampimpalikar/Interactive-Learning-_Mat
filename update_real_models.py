@@ -19,6 +19,7 @@ REAL_ANIMAL_MODELS = {
     "Cat": "Cat.glb",
     "Cow": "Cow.glb",
     "Deer": "Deer.glb",
+    "Eagle": "Eagle.glb",
     "Dolphin": "Dolphin.glb"
 }
 
@@ -30,7 +31,8 @@ REAL_FRUIT_MODELS = {
     "Apple": "Apple.glb",
     "Avocado": "Avocado.glb",
     "Cherry": "Cherry.glb",
-    "Coconut": "Coconut.glb"
+    "Coconut": "Coconut.glb",
+    "Eggplant": "Eggplant.glb"
 }
 
 REAL_NUMBER_MODELS = {

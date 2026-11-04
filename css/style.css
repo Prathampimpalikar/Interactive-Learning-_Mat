@@ -373,6 +373,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .btn-logout:hover {
@@ -2116,4 +2117,229 @@ model-viewer {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-highlight);
+}
+
+
+/* ==========================================================================
+   Comprehensive Mobile & Tablet Responsive Enhancements (Screen-safe UI)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Header & Navigation */
+  .dash-nav-header {
+    padding: 10px 0;
+  }
+  .dash-nav-container {
+    padding: 0 14px;
+    gap: 10px;
+  }
+  .brand-group {
+    gap: 10px;
+  }
+  .brand-logo-img {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-title {
+    font-size: 1.25rem;
+  }
+  .brand-subtitle {
+    font-size: 0.72rem;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn-logout {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Body & Pathway Card Spacing */
+  .dash-body {
+    padding: 16px 12px 50px;
+  }
+  .pathway-step-card {
+    padding: 20px 14px;
+    border-radius: var(--radius-lg);
+  }
+  .pathway-step-title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+  .pathway-step-sub {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .pathway-breadcrumb {
+    font-size: 0.76rem;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  /* Piezo live banner */
+  .piezo-live-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .piezo-live-indicator {
+    gap: 10px;
+  }
+  .piezo-live-text {
+    font-size: 0.88rem;
+  }
+  .piezo-live-sub {
+    font-size: 0.78rem;
+  }
+  .piezo-live-badge {
+    align-self: flex-start;
+    font-size: 0.78rem;
+  }
+
+  /* Mat blocks grid: clean 2-column on mobile */
+  .mat-blocks-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .mat-3in1-card {
+    padding: 10px 8px;
+    gap: 8px;
+    border-radius: 14px;
+  }
+  .mat-block-num {
+    font-size: 0.7rem;
+  }
+  .mat-gpio-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+  .mat-options-row {
+    gap: 4px;
+  }
+  .mat-option-btn {
+    padding: 6px 2px;
+    border-radius: 8px;
+  }
+  .mat-option-char {
+    font-size: 1.25rem;
+  }
+  .mat-option-type {
+    font-size: 0.58rem;
+    margin-top: 2px;
+  }
+  .mat-card-footer {
+    font-size: 0.68rem;
+    padding-top: 6px;
+  }
+
+  /* Specimen selection cards */
+  .specimen-choice-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .specimen-select-card {
+    padding: 14px;
+  }
+
+  /* 3D Viewer */
+  .specimen-dual-preview {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .dash-stage-viewport {
+    min-height: 320px;
+    height: 50vh;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra-small mobile screens (e.g. 360px - 412px like in mobile viewport) */
+  .dash-nav-header {
+    padding: 8px 0;
+  }
+  .dash-nav-container {
+    padding: 0 10px;
+    gap: 6px;
+  }
+  .brand-group {
+    gap: 6px;
+  }
+  .brand-logo-img {
+    width: 30px;
+    height: 30px;
+  }
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  .brand-subtitle {
+    display: none !important; /* Hide long subtitle on phones so Log Out button never squishes or balloons */
+  }
+  .btn-logout {
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    border-radius: 9999px;
+    gap: 3px;
+  }
+  .theme-toggle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+  }
+
+  .dash-body {
+    padding: 12px 8px 36px;
+  }
+  .pathway-step-card {
+    padding: 14px 10px;
+    border-radius: 14px;
+  }
+  .pathway-step-title {
+    font-size: 1.35rem;
+  }
+  .pathway-step-sub {
+    font-size: 0.82rem;
+  }
+
+  .mat-blocks-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+  .mat-3in1-card {
+    padding: 8px 6px;
+    gap: 6px;
+    border-radius: 12px;
+  }
+  .mat-option-btn {
+    padding: 5px 2px;
+  }
+  .mat-option-char {
+    font-size: 1.15rem;
+  }
+  .mat-option-type {
+    font-size: 0.52rem;
+  }
+  .mat-card-footer {
+    display: none; /* Hide verbose hint footer on small mobile to keep card compact and clean */
+  }
+
+  /* Web Serial widget on phone */
+  .alphamat-serial-pill {
+    padding: 3px 8px !important;
+    font-size: 0.7rem !important;
+    gap: 5px !important;
+  }
+  #alphamatStatusText {
+    display: none !important; /* On small phone screens, show status dot + button + letter badge */
+  }
+  .alphamat-serial-btn {
+    padding: 3px 8px !important;
+    font-size: 0.7rem !important;
+  }
 }

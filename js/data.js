@@ -220,7 +220,7 @@ const ALPHAMAT_DATA = {
       "superpower": "Trunk hand with 40,000 muscles",
       "funFact": "Elephants hug with their trunks and have super long memories!",
       "description": "Elephants are gentle giant mammals with big flapping ears and long trunks.",
-      "image": "logo.jpg",
+      "image": "elephant.jpg",
       "model": "elephant.glb",
       "hasRealModel": true,
       "hasRealImage": true
@@ -235,9 +235,9 @@ const ALPHAMAT_DATA = {
       "superpower": "Telescopic sharp eyesight & soaring flight",
       "funFact": "Eagles can spot a small rabbit from 2 miles high in the sky!",
       "description": "Eagles are majestic birds of prey with huge wingspans and curved talons.",
-      "image": "logo.jpg",
-      "model": null,
-      "hasRealModel": false,
+      "image": "Eagle.jpg",
+      "model": "Eagle.glb",
+      "hasRealModel": true,
       "hasRealImage": true
     },
     {
@@ -1059,9 +1059,9 @@ const ALPHAMAT_DATA = {
       "vitamins": "Nasunin Brain Antioxidants, Fiber",
       "funFact": "Eggplants are botanically classified as berries because they develop from flowers with seeds!",
       "description": "Eggplants are glossy purple garden fruits celebrated in tasty dishes worldwide.",
-      "image": "Avocado.jpg",
-      "model": null,
-      "hasRealModel": false,
+      "image": "Eggplant.jpg",
+      "model": "Eggplant.glb",
+      "hasRealModel": true,
       "hasRealImage": true
     },
     {
@@ -1107,7 +1107,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "4x More Vitamin C than Oranges, Lycopene",
       "funFact": "A single guava has four times more Vitamin C than an orange!",
       "description": "Guavas are tropical fruits with bright green skins and aromatic centers.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1171,7 +1171,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Supercharged Vitamin C (20x Orange)",
       "funFact": "Drinking water after eating fresh Amla makes the water taste sweet!",
       "description": "Amla is a sacred green super-berry famous for boosting immunity.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1347,7 +1347,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Immune Vitamin C, Folate, Fiber",
       "funFact": "Navel oranges get their name because the small bottom bump looks like a belly button!",
       "description": "Navel oranges are sweet, seedless citrus fruits that make great snacks.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1427,7 +1427,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Vitamin C, Copper, Pectin",
       "funFact": "Quince fruits have such a floral aroma they were used as room perfume!",
       "description": "Quince is a golden pear-like fruit that turns rosy-pink when simmered into jams.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1491,7 +1491,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Vitamin C, Potassium, Digestive Acids",
       "funFact": "Mosambi juice is India's favorite gentle refreshing drink!",
       "description": "Sweet Lime (Mosambi) is a smooth green citrus fruit filled with soothing juice.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1571,7 +1571,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Vitamin C, Iron, Calcium",
       "funFact": "Also called June Plum, children love eating slices with a dash of salt!",
       "description": "Umbrella Fruit is a golden-green tropical fruit with a crunchy sweet-sour bite.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
@@ -1603,7 +1603,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "Vitamin A, Vitamin C, Iron",
       "funFact": "Velvet apples have a soft peach-fuzz skin that feels just like velvet cloth!",
       "description": "Velvet Apples are exotic tropical fruits covered in a soft reddish-brown velvet skin.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": "Apple.glb",
       "hasRealModel": true,
       "hasRealImage": true
@@ -1699,7 +1699,7 @@ const ALPHAMAT_DATA = {
       "vitamins": "3x Vitamin C of Lemon, Antioxidants",
       "funFact": "Yuzu citrus is so fragrant that floating whole yuzu in a warm bath is a winter festival tradition!",
       "description": "Yuzu is an aromatic golden citrus fruit prized for its heavenly sweet-tart perfume.",
-      "image": "Apple.jpg",
+      "image": "apple.jpg",
       "model": null,
       "hasRealModel": false,
       "hasRealImage": true
